@@ -25,7 +25,10 @@
 
 int take ( void *ptr )
 {
-    free ( ptr );
-    ptr = NULL;
+    if ( ptr != NULL )
+    {
+        free ( ptr );
+        ptr = NULL;
+    }
     return 0;
 }
