@@ -1,5 +1,4 @@
-@REM  Anthon-Starter: Installation helper for :Next Linux distribution series.
-@REM  This is the main batch file. Version 0.1.2
+@REM  Anthon-Starter: Installation helper for :Next Linux distribution series. Version 0.1.2
 @REM  Copyright (C) 2014 Anthon Open Source Community - Junde Studio. 
 @REM  Tencent QQ Group: 292606292
 @REM

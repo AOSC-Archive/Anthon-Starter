@@ -1,5 +1,4 @@
-@REM  Anthon-Starter: Installation helper for :Next Linux distribution series.
-@REM  This is the main batch file. Version 0.1.2
+@REM  Anthon-Starter: Installation helper for :Next Linux distribution series. Version 0.1.2
 @REM  Copyright (C) 2014 Anthon Open Source Community - Junde Studio. 
 @REM  Tencent QQ Group: 292606292
 @REM
@@ -8,26 +7,9 @@
 
 
 @echo off
-title Anthon Open Source Community - Junde Studio
-:language
-cls
-echo                    ====＞＞＞Choose your language:＜＜＜====
-echo                    [                                       ]
-echo                    [       1:  简体中文                    ]
-echo                    [       2:  English                     ]
-echo                    [                                       ]
-echo                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-echo.
-set /p lang=Input the number:
-if "%lang%"=="1" goto cn_main
-if "%lang%"=="2" goto en_main
-set lang=
-goto language
 
-
-
-
-
+if "%1"=="1" goto cn_main
+if "%1"=="2" goto en_main
 
 
 
@@ -80,23 +62,6 @@ if "%1"=="" (
   goto cn_chkgpt
  )
 )
-if "%1"==""nt5"" (
- set loader=NT5.x[Win2k/XP]
- goto cn_chkgpt
-)
-if "%1"==""nt6"" (
- set loader=NT6.x[WinVista+]
- goto cn_chkgpt
-)
-
-echo 没有探测到引导器或者参数错误，为安全起见，程序将退出。
-echo 您可以附加一个loader参数来强制设置引导器。
-echo 如果您使用的是WindowsNT/2k/XP系统：anthon_win.exe nt5
-echo 如果您使用的是WindowsVista/7系统：anthon_win.exe nt6
-echo.
-echo 详见安同开源社区相关帖子 http://jds.forum.anthonos.org/
-pause
-exit
 
 
 
