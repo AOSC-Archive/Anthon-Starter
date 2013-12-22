@@ -10,7 +10,7 @@ Latest Version
 
  The latest stable version is 0.1.1.3.
  * You can get it from http://mirror.anthonos.org/junde-studio/Projects/Anthon-Starter/anthonos-starter_0.1.1.3.7z
- * You can get source from http://mirror.anthonos.org/junde-studio/Projects/Anthon-Starter/anthonos-starter_sources_0.1.1.3.7z
+ * You can get source from http://mirror.anthonos.org/junde-studio/Projects/Anthon-Starter/anthonos-starter_0.1.1.3_Source.7z
  
  The next version is 0.1.2 (now here but haven't finished yet. DO NOT USE UNLESS YOU KNOW WHAT YOU ARE DOING!)
 
