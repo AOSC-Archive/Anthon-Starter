@@ -1,25 +1,33 @@
 # include <stdio.h>
-# include <io.h>
+# ifdef linux
+	# include <sys/io.h>
+# endif
+# ifdef windows
+	# include <io.h>
+# endif
 # include <stdlib.h>
 # include <string.h>
 
+
 void help_message( void );
-void check( char **img, char **tgt );
+int check( char **img, char **tgt );
 int extract ( char **img, char **tgt );
 int deploy ( char **tgt );
-int i, tmp;
+int i;
 
 int main ( int argc, char **argv )
 {
 	int noverify = 0, stepping = 0, verbose = 0, reboot = 0, quiet = 0;
 	
 	printf("\nAnthon-Starter 0.2.0-Dev  Copyright (C) 2014 AOSC-JDS\n");
+	# ifdef DEBUG
 	printf("\n==========Execute Information==========");
 	printf("\nCompile Time: %s %s\nGCC Version: %s\n", __DATE__, __TIME__, __VERSION__);
 	printf("%d Parameters detected.\n", argc-1);
 	for( i = 0; i<argc; i++)
 		printf("%s is argv[%d]\n", argv[i], i);
 	printf("=======================================\n");
+	# endif
 	if ( argc > 1)
 	{
 		if (strcmp(argv[1], "install") == 0)
@@ -60,18 +68,29 @@ int main ( int argc, char **argv )
 			
 			
 			
-			check( &argv[2], &argv[3] );
+			switch ( check( &argv[2], &argv[3] ) )
+			{
+				case 1:
+					printf("Cannot find the image file %s! Program exits.\n", argv[2]);
+					exit(1);
+				case 2:
+					printf("Cannot find the target directory %s or %s isn't ready! Program exits.\n", argv[3], argv[3]);
+					exit(1);
+			}
+			
 			if ( (extract( &argv[2], &argv[3] )) == 1)
 			{
 				printf("Error when extracting.\n");
 				exit(1);
 			}
+			
 			if ( (deploy( &argv[3] )) == 1)
 			{
 				printf("Error when deploying.\n");
 				exit(1);
 			}
-			printf("Done.\n");
+			printf("Done. Press any key to exit.\n");
+			system("pause > nul");
 			exit(0);
 		}
 		
@@ -96,45 +115,41 @@ void help_message( void )
 	printf("To report bugs please visit http://bugs.anthonos.org/\n");
 }
 
-void check( char **img, char **tgt )
+int check( char **img, char **tgt )
 {
 	printf("%s %s\n\n", *img, *tgt );
 	
 	if ( (access( *img, 00 )) == -1 )
-	{
-		printf("Cannot find the image file %s! Program exits.\n", *img);
-		exit(-1);
-	}
+		return 1;
 	if ( (access( *tgt, 06)) == -1 )
-	{
-		printf("Cannot find %s or %s is not ready.\n", *tgt, *tgt);
-		exit(-1);
-	}
+		return 2;
 }
 
 int extract ( char **img, char **tgt )
 {
-	char **t;
+	FILE *f;
+	char *t;
 	printf("Extracting Pre-Install Environment...\n");
 	
 	//So how to solve the problem of using malloc().
 	//Someone knows?
 	
-	/*t = malloc( 100 );
-	system("pause");
-	*t = "7z e ";
-	printf("%s\n", *t);
-	system("pause");
-	*t = strcat(*t, *img);
-	system("pause");
-	system(*t);*/
+	t = malloc( 31 + strlen( *img ) + strlen(*tgt) );
+	sprintf( t, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " boot/vmlinuz -y > nul" );
+	system(t);
+	free(t);
+	t = malloc( 30 + strlen( *img ) + strlen(*tgt) );
+	sprintf( t, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " boot/initrd -y > nul" );
+	system(t);
+	free(t);
 	printf("Extracting nessesary OS files...\n");
+	//I'll finish here some time...
 	return 0;
 }
 
 int deploy ( char **tgt )
 {
 	printf("Deploying bootloader...\n");
-	//AHHHHHHHHHH...
+	//I'll finish here some time...
 }
 
