@@ -1,187 +1,175 @@
+//Anthon-Starter: Installation helper for :Next Linux distribution series, version 0.2.0
+//Copyright (C) 2014 Anthon Open Source Community - Junde Studio
+//
+//This software is under GNU Genereal Public License 3 and WITHOUT ANY WARRANTY.
+//So you know it...
+
 # include <stdio.h>
-
-# ifdef windows
-	# include <io.h>
-# else
-	# include <sys/io.h>
-# endif
-
+# include <io.h>
 # include <stdlib.h>
 # include <string.h>
+# include "lang_en-US.h"
 
+# define CMD_BUFFER 512
+# define LOADER_EDIT_PRESENT 15
+# define LOADER_WRITE_MBR 16
 
-void help_message( void );
-int check( char **img, char **tgt );
-int extract ( int isquiet, char **img, char **tgt );
-int deploy ( char **tgt );
-int i;
+void init ( void );
+int verify ( const int imgv_status, const char *osimage, const char *ostarget );
+int backup ( void );
+int extract ( const char *osimage, const char *ostarget );
+int deploy ( const int ins_mode );
+void help_message ( void );
+
+char *g_cmdtmp;
+FILE *g_logfile;
 
 int main ( int argc, char **argv )
 {
-	int noverify = 0, reboot = 0, quiet = 0;
+	int imgv_status = 1, ins_mode = LOADER_EDIT_PRESENT,reboot = 0, tmp = 0;
+	g_cmdtmp = malloc ( CMD_BUFFER );
 	
-/* Test Info
-	printf("\n==========Execute Information==========");
-	printf("\nCompile Time: %s %s\nGCC Version: %s\n", __DATE__, __TIME__, __VERSION__);
-	printf("%d Parameters detected.\n", argc-1);
-	for( i = 0; i<argc; i++)
-		printf("%s is argv[%d]\n", argv[i], i);
-	printf("=======================================\n");
-	*/
-	if ( argc > 1)
-	{
-		if (strcmp(argv[1], "install") == 0)
-		{	
-			for ( i = 3; i<argc; i++ )
+	g_logfile = fopen( ".\\ast.log", "w" );
+	
+	if ( argc < 2 )
+		help_message();
+	
+	if ( argc >= 2 )
+	{	
+		if ( strcmp ( argv[1], "install" ) == 0 )
+		{
+			if ( ( argv[2] == NULL ) || ( argv[3] == NULL ) )
 			{
-				if (strcmp(argv[i], "--no-verify") == 0)
-					noverify = 1;
-				
-				if (strcmp(argv[i], "--quiet") == 0)
-				{
-					freopen( "ast.log", "w", stdout );
-					quiet = 1;
-				}
-				if (strcmp(argv[i], "--reboot") == 0)
-					reboot = 1;
+				fprintf( stderr, MISSING_PARAMETERS );
+				fprintf( g_logfile, MISSING_PARAMETERS );
+				return 1;
 			}
 			
-			//printf("noverify? %d; reboot? %d;\n", noverify, reboot);
+			for ( tmp = 3; tmp < argc; tmp++ )
+			{
+				if ( strcmp ( argv[tmp], "--no-verify" ) == 0 )
+					imgv_status = 0;
+				if ( strcmp ( argv[tmp], "--quiet" ) == 0 )
+					{
+					}
+				if ( strcmp ( argv[tmp], "--reboot" ) == 0 )
+					{
+						reboot = 1;
+					}
+			}
 			
-			// NOW BEGIN!
+			fprintf ( stdout, MAIN_TITLE );
+			fprintf ( g_logfile, MAIN_TITLE );
 			
-			printf("\nAnthon-Starter 0.2.0-Dev  Copyright (C) 2014 AOSC-JDS\n\n");
-			switch ( check( &argv[2], &argv[3] ) )
+			init ();
+			
+			switch ( verify ( imgv_status, argv[2], argv[3] ) )
 			{
 				case 1:
-					fprintf( stderr, "\nCannot find the image file %s! Program exits.\n", argv[2] );
-					exit(2);
+					fprintf( stderr, ERROR_CANNOT_FIND_IMAGE, argv[2] );
+					fprintf( g_logfile, ERROR_CANNOT_FIND_IMAGE, argv[2] );
+					exit ( 1 );
 				case 2:
-					fprintf( stderr, "\nCannot find the target directory %s or %s is not ready! Program exits.\n", argv[3], argv[3] );
-					exit(2);
+					fprintf( stderr, ERROR_CANNOT_FIND_TARGET, argv[3], argv[3] );
+					fprintf( g_logfile, ERROR_CANNOT_FIND_TARGET, argv[3], argv[3] );
+					exit ( 1 );
+				case 7:
+					fprintf( stderr, ERROR_WHEN_VERIFYING );
+					fprintf( g_logfile, ERROR_WHEN_VERIFYING );
+					exit ( 1 );
 			}
-			
-			if ( (extract( quiet, &argv[2], &argv[3] )) == 1)
-			{
-				fprintf( stderr, "***Error: Extracting failed. Program exits.\n" );
-				exit(1);
-			}
-			
-			if ( (deploy( &argv[3] )) == 1 )
-			{
-				fprintf( stderr, "Error when deploying.\n" );
-				exit(1);
-			}
-			printf("Done.\n");
-			fclose(stdout);
-			# ifdef windows
-			// if ( reboot == 1 ) system("shutdown -r -t 00");
-			# else
-			// if ( reboot == 1 ) system("reboot");
-			# endif
-			exit(0);
-		}
-		
-		if (strcmp(argv[1], "help") == 0)
-		{
-			help_message();
-			exit(0);
 		}
 	}
-	help_message();
-	return 0;
 }
+
+
+void init ( void )
+{
+	int init_rtn = 0;
+	fprintf( stdout, INIT_TITLE );
+	fprintf( g_logfile, INIT_TITLE );
+	if ( access ( ".\\src\\7z.exe", 00 ) == -1 )
+	{
+		fprintf ( stderr, CANNOT_FIND_7ZEXE );
+		fprintf ( g_logfile, CANNOT_FIND_7ZEXE );
+		if ( init_rtn == 0 )
+			init_rtn = init_rtn + 1;
+	}
+	if ( access ( ".\\src\\7z.exe", 00 ) == -1 )
+	{
+		fprintf ( stderr, CANNOT_FIND_7ZDLL );
+		fprintf ( g_logfile, CANNOT_FIND_7ZDLL );
+		if ( init_rtn == 0 )
+			init_rtn = init_rtn + 1;
+	}
+		if ( access ( ".\\src\\wget.exe", 00 ) == -1 )
+	{
+		fprintf ( stderr, CANNOT_FIND_WGET );
+		fprintf ( g_logfile, CANNOT_FIND_WGET );
+		if ( init_rtn == 0 )
+			init_rtn = init_rtn + 1;
+	}
+		if ( access ( ".\\src\\sha256sum.exe", 00 ) == -1 )
+	{
+		fprintf ( stderr, CANNOT_FIND_SHA256SUMEXE );
+		fprintf ( g_logfile, CANNOT_FIND_SHA256SUMEXE );
+		if ( init_rtn == 0 )
+			init_rtn = init_rtn + 1;
+	}
+	
+	if ( init_rtn != 0)
+	{
+		fprintf ( stderr, ERROR_WHEN_INITIALIZING );
+		fprintf ( g_logfile, ERROR_WHEN_INITIALIZING );
+		exit ( 1 );
+	}
+}
+
+
+int verify ( const int imgv_status, const char *osimage, const char *ostarget )
+{
+	fprintf ( stdout, VERIFY_TITLE );
+	fprintf ( g_logfile, VERIFY_TITLE );
+	if ( access ( osimage, 00 ) == -1 )
+		return 1;
+	if ( access ( ostarget, 06 ) == -1 )
+		return 2;
+	
+	if ( imgv_status == 1 )
+	{
+		char *verify_shasum = malloc ( 66 );
+		
+		sprintf ( g_cmdtmp, "%s %s", ".\\src\\sha256sum.exe -b", osimage );
+		//printf ( "%s\n", strncpy ( verify_shasum, system ( g_cmdtmp ), 65 ) );
+			return 0;
+	}
+	
+}
+
+
+int backup ( void )
+{
+}
+
+
+int extract ( const char *osimage, const char *ostarget )
+{
+}
+
+
+int deploy ( const int ins_mode )
+{
+}
+
 
 void help_message( void )
 {
 	printf("\nAnthon-Starter 0.2.0-Dev  Copyright (C) 2014 AOSC-JDS\n");
 	printf("\nUsage: ast <command> <image_file> <install_target> [<switches>...]\n");
 	printf("\n<Commands>\n");
-	printf("\tinstall: Install the specify AOSC distro to the computer\n\thelp: Show the help");
+	printf("\tinstall: Install the specify AOSC distro to the computer\n\thelp: Show this help");
 	printf("\n\n<Switches>\n");
 	printf("\t--no--verify\tDo not verify the image file\n\t--loader=\tSet the installation of bootloader\n\t\t\t  Available parameters:\n\t\t\t    edit_present (Edit the present NT loader, default)\n\t\t\t    write_mbr (Edit the MBR)\n\t--reboot\tAutomatically reboot the system\n\t--quiet\t\tExecute quietly\n");
 	printf("\nFor any more information, please visit http://wiki.anthonos.org/\n");
 	printf("To report bugs please visit http://bugs.anthonos.org/\n");
 }
-
-int check( char **img, char **tgt )
-{
-	//printf("%s %s\n\n", *img, *tgt );
-	printf("Verifying image file...\n");
-	if ( (access( *img, 00 )) == -1 )
-		return 1;
-	if ( (access( *tgt, 06)) == -1 )
-		return 2;
-	
-	// Here we will add wget & sha256sum to verify the image files
-	// wget: Get the latest image files' sha256 sum;
-	// sha256sum: Verify the image
-	// Then we compare the two results.
-}
-
-int extract ( int isquiet, char **img, char **tgt )
-{
-	char *c; // the Commands
-	
-	printf("Extracting Pre-Install Environment...\n");
-	// VMLINUZ
-	if ( isquiet == 1 )
-	{
-		c = malloc( 25 + strlen( *img ) + strlen(*tgt) );
-		sprintf( c, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " boot/vmlinuz -y" );
-	} else
-	{
-		c = malloc( 31 + strlen( *img ) + strlen(*tgt) );
-		sprintf( c, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " boot/vmlinuz -y > nul" );
-	}
-	if ( system(c) != 0 )
-	{
-		fprintf( stderr, "  ***Error when extracting PE kernel (vmlinuz)!\n" );
-		return 1;
-	} // WTF!! How to get 7-zip's error code?!
-	
-	// INITRD
-	if ( isquiet == 1 )
-	{
-		c = realloc( c, 24 + strlen( *img ) + strlen(*tgt) );
-		sprintf( c, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " boot/initrd -y" );
-	} else
-	{
-		c = realloc( c, 30 + strlen( *img ) + strlen(*tgt) );
-		sprintf( c, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " boot/initrd -y > nul" );
-	}
-	if ( system(c) != 0 )
-	{
-		fprintf( stderr, "  ***Error when extracting PE initial RAM disk (initrd)!\n" );
-		return 1;
-	}
-	
-	//SQUASH
-	printf("Extracting necessary OS files...\n  Please wait patiently for it may takes a long time...\n");
-	if ( isquiet == 1 )
-	{
-		c = realloc( c, 19 + strlen( *img ) + strlen(*tgt) );
-		sprintf( c, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " squash -y" );
-	} else
-	{
-		c = realloc( c, 25 + strlen( *img ) + strlen(*tgt) );
-		sprintf( c, "%s%s%s%s%s", "7z x ", *img, " -o", *tgt, " squash -y > nul" );
-	}
-	if ( system(c) != 0 )
-	{
-		fprintf( stderr, "  ***Error when extracting squashfs file!\n" );
-		return 1;
-	}
-	
-	return 0;
-}
-
-int deploy ( char **tgt )
-{
-	printf("Deploying bootloader...\n");
-	// Here we will add:
-	//   1. if --loader=edit_present we will backup the NT loader and change it;
-	//   2. if --loader=write_mbr we will backup the MBR and write GRUB in it;
-	//   3. if detected --reboot execute "shutdown" or "halt".
-}
-
