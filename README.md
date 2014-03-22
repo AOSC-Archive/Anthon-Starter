@@ -30,7 +30,7 @@ Usage
  * Download Anthon-Starter for Linux and switch to terminal (simulator);
  * Get in the folder where Anthon-Starter located and run ./anthon-starter (it's a bash file!);
  * Follow the tips. There are two languages for you: Simplified Chinese and English;
- * Anthon-Starter will automatically not only setup the bootloader but also install Anthon GNU/Linux for you. You just need to andwer some questions and wait 3-5 minutes. Then just restart your computer:)
+ * Anthon-Starter will automatically not only setup the bootloader but also install Anthon GNU/Linux for you. You just need to answer some questions and wait 3-5 minutes. Then just restart your computer:)
  
 Developer(s)
 ==============
