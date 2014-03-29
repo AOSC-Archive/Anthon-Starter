@@ -32,9 +32,10 @@ Usage
  * Follow the tips. There are two languages for you: Simplified Chinese and English;
  * Anthon-Starter will automatically not only setup the bootloader but also install Anthon GNU/Linux for you. You just need to answer some questions and wait 3-5 minutes. Then just restart your computer:)
  
-Developer(s)
+Developers
 ==============
  Anthon-Starter is developed and maintenanced by Anthon Open Source Community - Junde Studio.
  
  Junde Yi <lmy441900@gmail.com>
+ Haoming Xu <18929292333@163.com>
  
