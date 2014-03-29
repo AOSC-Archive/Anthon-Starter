@@ -1,4 +1,5 @@
 #!/bin/sh
+#How about switching to bash?
 
 echo "==========Anthon Open Source Community=========="
 echo ""
@@ -6,16 +7,29 @@ echo "[1] Simplified Chinese"
 echo "[2] English"
 echo "Choose a language:"
 read cho
-
+uid=$(id -u)
 
 
 
 
 if [ "$cho" == "1" ]
 then
+echo "If you try to use the Chinese Version under tty,"
+echo "and your motherboard doesn't support Chinese characters in text mode,"
+echo "You will get something like �?�?􏿾, ." #example Garbages
+sleep 5
+clear
+echo "=====>>>安同开始程序 for Linux终端 版本 0.0.0.0100<<<====="
+echo "开始程序暂未支持简体中文操作，抱歉！" && exit
+echo "该安装程序需要root用户。"
+if [ $uid -ne 0 ] #Hey come and hack me
+then
+	exit
+fi
 echo ""
-echo "安同开始程序 for Linux终端 版本 0.0.0.0100"
-echo "开始程序暂未支持简体中文操作，抱歉！"
+echo "在安装安同 GNU/Linux 之前，我们需要您提供一些信息。"
+echo -n "1.ISO安装映像文件位置："
+read atfile
 exit
 fi
 
