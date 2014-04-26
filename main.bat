@@ -1,9 +1,17 @@
-@REM  Anthon-Starter: Installation helper for :Next Linux distribution series. Version 0.1.2
-@REM  Copyright (C) 2014 Anthon Open Source Community - Junde Studio. 
-@REM  Tencent QQ Group: 292606292
-@REM
-@REM  This software is under GNU Genereal Public License 3 and WITHOUT ANY WARRANTY.
-@REM  So you know it...            
+@REM  Anthon-Starter: Installation helper for AOSC Linux distribution series, version 0.1.2
+@REM  Copyright 2014 Anthon Open Source Community.
+@REM  
+@REM  Licensed under the Apache License, Version 2.0 (the "License");
+@REM  you may not use this file except in compliance with the License.
+@REM  You may obtain a copy of the License at
+@REM  
+@REM    http://www.apache.org/licenses/LICENSE-2.0
+@REM  
+@REM  Unless required by applicable law or agreed to in writing, software
+@REM  distributed under the License is distributed on an "AS IS" BASIS,
+@REM  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+@REM  See the License for the specific language governing permissions and
+@REM  limitations under the License.
 
 
 @echo off
