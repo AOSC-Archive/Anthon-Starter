@@ -1,5 +1,5 @@
 @REM  Anthon-Starter: Installation helper for AOSC Linux distribution series, version 0.1.2
-@REM  Copyright 2014 Anthon Open Source Community.
+@REM  Copyright (C) 2014 Anthon Open Source Community.
 @REM  
 @REM  Licensed under the Apache License, Version 2.0 (the "License");
 @REM  you may not use this file except in compliance with the License.
@@ -14,6 +14,9 @@
 @REM  limitations under the License.
 
 
+
+
+
 @echo off
 
 REM Check the parameters(%1 is language; %2 is loader type)
@@ -25,16 +28,20 @@ if "%1"==""1"" goto cn_main
 if "%2"==""2"" goto en_main
 goto self_del
 
-REM //////////SimplifiedChinese
+REM //////////Simplified Chinese
 :cn_main
 cls
 title 安同开始程序 0.1.2
 echo ====================＞＞＞欢迎使用安同开始程序＜＜＜====================
 echo.
-echo 本程序将引导您轻松地从硬盘安装安同GNU/Linux桌面版
-echo （或是社区合作项目IcenowyLinux）
+echo 本程序将引导您轻松地从硬盘安装安同开源社区的操作系统发行版：
+echo     * AnthonOS, AOSC桌面版；
+echo     * CentralPoint, AOSC服务器版；
+echo     * IcenowyLinux, AOSC技术架构版；
+echo     * ...
 echo.
-echo * 要马上开始安装，请直接敲击回车键；
+echo.
+echo * 要马上开始安装，请直接敲击 回车 键；
 echo * 要查看本程序的版权信息请键入 license 然后回车；
 echo * 关于本程序请键入 about 然后回车；
 echo * 退出本程序请键入 exit 然后回车。
@@ -66,23 +73,61 @@ goto cn_main
 
 :cn_check
 cls
+
+
+REM Detect GPT...
+REM   For init.bat has no power to do it...
+mountvol W:\ /s
+if "%errorlevel%"=="0" (
+	if exist W:\EFI\ (
+		set gpt_status=1
+		mountvol W:\ /d
+		goto detect_gpt_done_cn
+	) else (
+		set gpt_status=0
+		mountvol W:\ /d
+		goto detect_gpt_done_cn
+	)
+) else (
+	echo *** 致命错误：安同开始程序无法正常挂载ESP分区，错误代码 %errorlevel%
+	echo     为安全起见，程序即将关闭。对此我们深感抱歉。
+	echo.
+	echo     请将这个问题报告给社区！访问
+	echo         http://bugs.anthonos.org
+	echo     向我们报告这个问题...
+	echo.
+	echo     按下任意键关闭本程序。
+	pause > nul
+	goto self_del
+)
+
+
+:detect_gpt_done_cn
+
+
 echo =====================＞＞＞第 1 步  检查计算机＜＜＜====================
 echo.
 if "%2"==""nt5"" echo * 探测到您的系统类型为Windows NT5系列（Windows 2k, XP等）
 if "%2"==""nt6"" echo * 探测到您的系统类型为Windows NT6系列（Windows Vista, 7, 8等）
+if "%gpt_status%"=="1" echo * 探测到您使用了GUID分区表（GPT）
+if "%gpt_status%"=="0" echo * 探测到您使用了主引导记录（MBR）
 echo.
 echo 在安装系统之前，请您注意以下注意事项：
-echo   1. 请务必把安装所需文件装入本地硬盘（而不是U盘、移动硬盘、MP3等设备）；
+echo.
+echo   1. 请 *务必* 把安装所需文件装入本地硬盘（而不是U盘、移动硬盘、MP3等设备）；
+echo.
 echo   2. 安同开源社区所有发行版均只运行在x86_64架构的中央处理器上，请自行查询您的
 echo        计算机是否符合要求，安同开始程序暂时不提供自动检查功能；
-echo   3. 安同开源社区所有发行版要求计算机带有不少于2GB内存的计算机来运行，否则可能
-echo        出现运行缓慢、卡顿的情况；
-echo   4. 本程序遵循GNU GPL许可证发布，安同开源社区发行版则均遵循GNU LGPL发布。
+echo.
+echo   3. 请保证您在安装相应版本的系统之前认真地阅读了硬件要求以免使您不快；
+echo.
+echo   4. 本程序遵循Apache 2.0许可证发布，安同开源社区发行版则均遵循GNU LGPL发布。
+echo.
 echo.
 echo 确认无误后，请键入 y 继续安装，直接按下回车或输入其他字符退出安同开始程序。
 set /p chkcho=→
 if "%chkcho%"=="y" goto cn_image
-REM Delete the temp files
+REM Or exit, delete the temp files
 goto self_del
 
 
@@ -94,6 +139,7 @@ echo =====================＞＞＞第 2 步  选择文件＜＜＜======================
 echo.
 echo 请键入您所获取的光盘映像文件的所在位置。
 echo   【注意】键入各种非法字符和路径将导致操作失败！
+echo.
 echo 右键粘贴功能可用；键入 EXIT 可以退出本程序。
 set /p file=→
 if "%file%"=="EXIT" goto self_del
@@ -135,7 +181,8 @@ echo 请指定引导到安装程序所使用的启动方式。
 echo   【注意】除非您拥有专业知识，否则请使用默认设置“通过NT引导器嵌套引导”！
 echo.
 echo   * 直接按下回车键设定安装方式为“通过NT引导器嵌套引导”；
-echo   * 输入 write_mbr 并按下回车键设定安装方式为“通过主引导记录启动”；
+if "%gpt_status%"=="0" echo   * 输入 write_mbr 并按下回车键设定安装方式为“通过主引导记录启动”；
+if "%gpt_status%"=="1" echo   * 输入 write_gpt 并按下回车键设定安装方式为“通过EFI引导启动”；
 echo   * 键入 EXIT 并按下回车键可以退出本程序。
 set /p instway=→
 if "%instway%"=="EXIT" goto self_del
@@ -144,6 +191,7 @@ if "%instway%"=="" (
 	goto cn_ready
 )
 if "%instway%"=="write_mbr" goto cn_ready
+if "%instway%"=="write_gpt" goto cn_ready
 set instway=
 goto cn_way
 
@@ -158,10 +206,12 @@ echo * 您设定的文件为：%file%
 echo * 您设定的解压路径为：%location%
 if "%instway%"=="edit_present" echo * 您将通过NT引导器嵌套引导安装程序（默认设置）
 if "%instway%"=="write_mbr" echo * 您将通过修改主引导记录引导安装程序
+if "%instway%"=="write_gpt" echo * 您将通过修改ESP来从EFI引导安装程序
 echo.
 echo 按下回车键开始准备安装程序，否则请键入 no 然后回车。
 echo   键入 EXIT 然后按下回车可以退出本程序。
 set /p yesno=→
+if "%yesno%"=="EXIT" goto self_del
 if "%yesno%"=="no" (
 	set file=
 	set location=
@@ -169,7 +219,6 @@ if "%yesno%"=="no" (
 	set yesno=
 	goto cn_image
 )
-if "%yesno%"=="EXIT" goto self_del
 if "%yesno%"=="" goto cn_run
 set yesno=
 goto cn_ready
@@ -177,10 +226,18 @@ goto cn_ready
 :cn_run
 cls
 echo ========================＞＞＞准备安装程序中＜＜＜========================
-echo 安同开始程序正在努力准备好安装程序。
-echo 这个过程需要一些时候。请耐心等待。
 echo.
-echo  00％ 备份系统重要位置...
+echo    _          _   _                      ____  _             _            
+echo    / \   _ __ | |_| |__   ___  _ __      / ___|| |_ __ _ _ __| |_ ___ _ __ 
+echo   / _ \ | '_ \| __| '_ \ / _ \| '_ \ ____\___ \| __/ _` | '__| __/ _ \ '__|
+echo  / ___ \| | | | |_| | | | (_) | | | |_____|__) | || (_| | |  | ||  __/ |   
+echo /_/   \_\_| |_|\__|_| |_|\___/|_| |_|    |____/ \__\__,_|_|   \__\___|_|   
+echo.
+echo.
+echo 安同开始程序正在努力准备好安装程序。
+echo 这个过程需要一些时间，如果您选择泡上一杯咖啡应该是不错的选择。
+echo.
+echo （第一步，共XX步）  备份系统重要位置...
 
 if "%2"==""nt5"" (
 	attrib -s -h -r %systemdrive%\boot.ini
@@ -188,35 +245,70 @@ if "%2"==""nt5"" (
 	)
 if "%2"==""nt6"" bcdedit /export %systemdrive%\ast_bkup\BCDbckup
 
-dd if=\\?\Device\Harddisk0\Partition1 of=%systemdrive%\ast_bkup\MBRbckup bs=512 count=1
+dd if=\\?\Device\Harddisk0\Partition1 of=%systemdrive%\ast_bkup\MBRbckup bs=446 count=1
 
-REM /*******************************RESEARCHING...*/
-REM echo  10％　校验安装文件...
-REM wget http://mirror.anthonos.org/junde-studio/sha_image_aosc.txt
-REM sha256sum --check sha_image_aosc.txt > nul
-REM if not "%errorlevel%"=="0" (
-REM 	echo        *** 映像文件校验失败！继续进行安装可能导致安装失败... 错误代码：%errorlevel%
-REM 	echo            继续安装请输入 y 然后按下回车，输入其它字符或回车退出程序。
-REM 	set /p vercho=           →
-REM 	if not "%vercho%"=="y" goto self_del
-REM )
 
-echo  30％ 解压预安装环境内核...
+echo （第二步，共XX步）  解压预安装环境内核...
 REM While extracting the files in [image_file]/boot/ , the new folder 'boot' will be created too.
 REM For some users will install some recovery software (like One-key Ghost, it'll create a folder named 'boot' too),
 REM   we first extract them into %temp%\ and then copy them into ast_strt.
 7z x %file% -o%temp%\ boot\vmlinuz -y > nul
 move %temp%\boot\vmlinuz %systemdrive%\ast_strt
 
-echo  45％ 解压预安装环境内存盘...
+echo （第三步，共XX步）  解压预安装环境内存盘...
 7z x %file% -o%temp%\ boot\initrd -y > nul
 move %temp%\boot\initrd %systemdrive%\ast_strt
 
-echo  55％ 解压操作系统安装文件...
+echo （第四步，共XX步）  解压操作系统安装文件...
 echo         * 本过程耗时较长，请耐心等待。
-7z x %file% -o%location% squash -y >nul
+7z x %file% -o%location% live\live.squashfs -y >nul
 
-echo  85％ 开始部署启动...
+echo （第一步，共XX步）  校验安装文件...
+echo     1 / 3  校验预安装环境内核...
+7z x %file% -o%systemdrive%\ast_temp md5sum
+for /f "delims=" %%i in ('md5sum.exe -b %systemdrive%\ast_strt\vmlinuz') do set md5sum_buf=%%i
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^1:"') do set md5sum_vmlinuz=%%b
+if "%md5sum_buf:~0,32%" NEQ "%md5sum_vmlinuz%" (
+	echo                       *** 错误: 预安装环境内核校验失败！
+	set verify_error=1
+)
+set md5sum_vmlinuz=
+set md5sum_buf=
+
+echo     2 / 3  校验预安装环境内存盘...
+for /f "delims=" %%i in ('md5sum.exe -b %systemdrive%\ast_strt\initrd') do set md5sum_buf=%%i
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^2:"') do set md5sum_initrd=%%b
+if "%md5sum_buf:~0,32%" NEQ "%md5sum_initrd%" (
+	echo                       *** 错误: 预安装环境内存盘校验失败！
+	set verify_error=1
+)
+set md5sum_initrd=
+set md5sum_buf=
+
+echo     3 / 3  校验操作系统安装文件...
+for /f "delims=" %%i in ('md5sum.exe -b %location%live\live.squashfs') do set md5sum_buf=%%i
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^3:"') do set md5sum_squash=%%b
+if "%md5sum_buf:~0,32%" NEQ "%md5sum_squash%" (
+	echo                       *** 错误: 操作系统安装文件校验失败！
+	set verify_error=1
+)
+set md5sum_squash=
+set md5sum_buf=
+
+if "%verify_error%"=="0" goto verify_success
+
+echo        *** 映像文件校验失败！继续进行安装可能导致安装失败...
+echo            若要继续安装请输入 y 然后按下回车，输入其它字符或回车退出程序。
+set /p vercho=            →
+if not "%vercho%"=="y" (
+	rd /s /q %location%live\
+	goto self_del
+)
+
+:verify_success
+
+
+echo （第五步，共XX步）  开始部署启动...
 
 if "%instway%"=="edit_present" (
 	if "%2"==""nt5"" goto cn_nt5_ntldr_edit
@@ -233,17 +325,17 @@ REM So we make this little hack...
 :cn_nt5_ntldr_edit
 echo [boot loader] > %systemdrive%\boot.ini
 echo timeout=10 >> %systemdrive%\boot.ini
-echo default=%systemdrive%\g2ldr >> %systemdrive%\boot.ini
+echo default=%systemdrive%\ast_strt\g2ldr.mbr >> %systemdrive%\boot.ini
 echo [operating systems] >> %systemdrive%\boot.ini
 echo %systemdrive%\WINDOWS="启动原来的Windows操作系统" >> %systemdrive%\boot.ini
-echo %systemdrive%\g2ldr="启动安同 GNU/Linux安装程序" >> %systemdrive%\boot.ini
+echo %systemdrive%\ast_strt\g2ldr.mbr="启动安同 GNU/Linux安装程序" >> %systemdrive%\boot.ini
 echo. >> %systemdrive%\boot.ini
 goto edit_done
-	
+
 :cn_nt6_bcd_edit
 for /f "delims=" %%i in ('bcdedit /create /d "启动安同 GNU/Linux 安装程序" /application bootsector') do set uid=%%i
 bcdedit /set %uid:~2,38% device partition=%systemdrive%
-bcdedit /set %uid:~2,38% path \g2ldr
+bcdedit /set %uid:~2,38% path \ast_strt\g2ldr.mbr
 bcdedit /displayorder %uid:~2,38% /addlast
 bcdedit /default %uid:~2,38%
 bcdedit /timeout 10
@@ -252,74 +344,43 @@ goto edit_done
 
 :edit_done
 
-echo  90％ 正在部署启动...已完成第一步，共三步
+echo  （第六步，共XX步）  正在部署启动...
 
-if "%1"==""1"" (
-	echo # Grub.cfg generated by Anthon-Starter 0.1.2 > %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo set default="1" >> %systemdrive%\ast_strt\grub.cfg
-	echo set gfxmode=1024x768 >> %systemdrive%\ast_strt\grub.cfg
-	echo terminal_output gfxterm >> %systemdrive%\ast_strt\grub.cfg
-	echo set timeout="10" >> %systemdrive%\ast_strt\grub.cfg
-	echo loadfont /ast_strt/unicode.pf2 >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo menuentry "启动原来的 Windows 操作系统" { >> %systemdrive%\ast_strt\grub.cfg
-	echo   search --set=root --no-floppy /ntldr >> %systemdrive%\ast_strt\grub.cfg
-	echo   chainloader /ntldr >> %systemdrive%\ast_strt\grub.cfg
-	echo   boot >> %systemdrive%\ast_strt\grub.cfg
-	echo } >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo menuentry "启动安同 GNU/Linux 安装程序" { >> %systemdrive%\ast_strt\grub.cfg
-	echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
-	echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject rw >> %systemdrive%\ast_strt\grub.cfg
-	echo   initd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
-	echo   boot >> %systemdrive%\ast_strt\grub.cfg
-	echo } >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo menuentry "启动安同 GNU/Linux 安装程序（安全显示设定模式）"{ >> %systemdrive%\ast_strt\grub.cfg
-	echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
-	echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject nomodeset vga=normal rw >> %systemdrive%\ast_strt\grub.cfg
-	echo   initd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
-	echo   boot >> %systemdrive%\ast_strt\grub.cfg
-	echo } >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-)
-if "%2"==""2"" (
-	echo # Grub.cfg generated by Anthon-Starter 0.1.2 > %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo set default="1" >> %systemdrive%\ast_strt\grub.cfg
-	echo set gfxmode=1024x768 >> %systemdrive%\ast_strt\grub.cfg
-	echo terminal_output gfxterm >> %systemdrive%\ast_strt\grub.cfg
-	echo set timeout="10" >> %systemdrive%\ast_strt\grub.cfg
-	echo loadfont /ast_strt/unicode.pf2 >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo menuentry "Start Windows Operating System" { >> %systemdrive%\ast_strt\grub.cfg
-	echo   search --set=root --no-floppy /ntldr >> %systemdrive%\ast_strt\grub.cfg
-	echo   chainloader /ntldr >> %systemdrive%\ast_strt\grub.cfg
-	echo   boot >> %systemdrive%\ast_strt\grub.cfg
-	echo } >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo menuentry "Start Anthon GNU/Linux Installer" { >> %systemdrive%\ast_strt\grub.cfg
-	echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
-	echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject rw >> %systemdrive%\ast_strt\grub.cfg
-	echo   initd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
-	echo   boot >> %systemdrive%\ast_strt\grub.cfg
-	echo } >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-	echo menuentry "启动安同 GNU/Linux 安装程序（安全显示设定模式）"{ >> %systemdrive%\ast_strt\grub.cfg
-	echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
-	echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject nomodeset vga=normal rw >> %systemdrive%\ast_strt\grub.cfg
-	echo   initd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
-	echo   boot >> %systemdrive%\ast_strt\grub.cfg
-	echo } >> %systemdrive%\ast_strt\grub.cfg
-	echo. >> %systemdrive%\ast_strt\grub.cfg
-)
-echo  95％ 正在部署启动...已完成第二步，共三步
+echo # Grub.cfg generated by Anthon-Starter 0.1.2 > %systemdrive%\ast_strt\grub.cfg
+echo. >> %systemdrive%\ast_strt\grub.cfg
+echo set default="1" >> %systemdrive%\ast_strt\grub.cfg
+echo set gfxmode=1024x768 >> %systemdrive%\ast_strt\grub.cfg
+echo terminal_output gfxterm >> %systemdrive%\ast_strt\grub.cfg
+echo set timeout="10" >> %systemdrive%\ast_strt\grub.cfg
+echo loadfont /ast_strt/unicode.pf2 >> %systemdrive%\ast_strt\grub.cfg
+echo. >> %systemdrive%\ast_strt\grub.cfg
+echo menuentry "启动原来的 Windows 操作系统" { >> %systemdrive%\ast_strt\grub.cfg
+echo   search --set=root --no-floppy /ntldr >> %systemdrive%\ast_strt\grub.cfg
+echo   chainloader /ntldr >> %systemdrive%\ast_strt\grub.cfg
+echo   boot >> %systemdrive%\ast_strt\grub.cfg
+echo } >> %systemdrive%\ast_strt\grub.cfg
+echo. >> %systemdrive%\ast_strt\grub.cfg
+echo menuentry "启动安同 GNU/Linux 安装程序" { >> %systemdrive%\ast_strt\grub.cfg
+echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
+echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject rw >> %systemdrive%\ast_strt\grub.cfg
+echo   initrd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
+echo   boot >> %systemdrive%\ast_strt\grub.cfg
+echo } >> %systemdrive%\ast_strt\grub.cfg
+echo. >> %systemdrive%\ast_strt\grub.cfg
+echo menuentry "启动安同 GNU/Linux 安装程序（安全显示设定模式）"{ >> %systemdrive%\ast_strt\grub.cfg
+echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
+echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject nomodeset vga=normal rw >> %systemdrive%\ast_strt\grub.cfg
+echo   initrd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
+echo   boot >> %systemdrive%\ast_strt\grub.cfg
+echo } >> %systemdrive%\ast_strt\grub.cfg
+echo. >> %systemdrive%\ast_strt\grub.cfg
 
-copy %systemdrive%\ast_temp\g2ldr %systemdrive%\
-copy %systemdrive%\ast_temp\unicode.pf2 %systemdrive%\ast_strt\
 
-echo 100％ 正在部署启动...已完成第三步，共三步
+copy %systemdrive%\ast_temp\g2ldr.mbr %systemdrive\ast_strt\ > nul
+copy %systemdrive%\ast_temp\g2ldr %systemdrive%\ > nul
+copy %systemdrive%\ast_temp\unicode.pf2 %systemdrive%\ast_strt\ > nul
+
+
 pause
 
 
@@ -329,7 +390,7 @@ echo =======================＞＞＞就绪啦＜＜＜=======================
 echo.
 echo 安同开始程序已经准备好了操作系统的安装部署，即将重新启动到安装程序。
 echo 请保存好您的工作，按下任意键重新启动您的电脑。
-pause>nul
+pause > nul
 goto before_reboot
 
 
@@ -340,7 +401,7 @@ echo.
 echo 您输入的这个文件并不存在！请确认路径是否错误...
 echo.
 echo 按下任意键返回上一步！
-pause>nul
+pause > nul
 set file=
 goto cn_image
 
@@ -371,9 +432,9 @@ cls
 title Anthon-Starter 0.1.2
 echo =========================＞＞＞Welcome!＜＜＜=========================
 echo.
-echo We haven't finished it yet!
+echo Not Finished Yet.
 pause > nul
-exit
+goto self_del
 
 
 

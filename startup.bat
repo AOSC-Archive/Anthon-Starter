@@ -1,5 +1,5 @@
 @REM  Anthon-Starter: Installation helper for AOSC Linux distribution series, version 0.1.2
-@REM  Copyright 2014 Anthon Open Source Community.
+@REM  Copyright (C) 2014 Anthon Open Source Community.
 @REM  
 @REM  Licensed under the Apache License, Version 2.0 (the "License");
 @REM  you may not use this file except in compliance with the License.
@@ -12,6 +12,9 @@
 @REM  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 @REM  See the License for the specific language governing permissions and
 @REM  limitations under the License.
+
+
+
 
 
 @echo off

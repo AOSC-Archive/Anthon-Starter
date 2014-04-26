@@ -1,5 +1,5 @@
 @REM  Anthon-Starter: Installation helper for AOSC Linux distribution series, version 0.1.2
-@REM  Copyright 2014 Anthon Open Source Community.
+@REM  Copyright (C) 2014 Anthon Open Source Community.
 @REM  
 @REM  Licensed under the Apache License, Version 2.0 (the "License");
 @REM  you may not use this file except in compliance with the License.
@@ -14,18 +14,21 @@
 @REM  limitations under the License.
 
 
+
+
+
 @echo off
 title Anthon Open Source Community
 :language
 cls
-echo                      ====£¾£¾£¾Choose your language:£¼£¼£¼====
-echo                      [                                       ]
-echo                      [       1:  ¼òÌåÖĞÎÄ                    ]
-echo                      [       2:  English                     ]
-echo                      [                                       ]
-echo                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo                 ====  è¯·é€‰æ‹©è¯­è¨€ / Please choose your language  ====
+echo                 [                                                  ]
+echo                 [             è¾“å…¥ 1 é€‰ç”¨ç®€ä½“ä¸­æ–‡ã€‚                ]
+echo                 [         To use English please input 2.           ]
+echo                 [                                                  ]
+echo                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo.
-set /p lang=Input the number:
+set /p lang=â†’
 if "%lang%"=="" (
 	set lang=
 	goto language
@@ -33,11 +36,11 @@ if "%lang%"=="" (
 
 cls
 if "%lang%"=="1" (
-	title ÕıÔÚ×°ÔØ³ÌĞò...
+	title æ­£åœ¨è£…è½½ç¨‹åº...
 	echo.
-	echo                                       ÄãºÃ¡£
+	echo                                       ä½ å¥½ã€‚
 	echo.
-	echo ÕıÔÚ×°ÔØ³ÌĞò...
+	echo æ­£åœ¨è£…è½½ç¨‹åº...
 	goto check
 )
 if "%lang%"=="2" (
@@ -50,6 +53,7 @@ if "%lang%"=="2" (
 )
 set lang=
 goto language
+
 
 :check
 REM Check if files have exist.
@@ -72,16 +76,18 @@ cd /d C:\ast_temp > nul
 7z e .\misc > nul
 del .\misc > nul
 
+REM Check the type of loader ( OS )
 if exist %systemdrive%\boot.ini set loader=nt5
 if exist %systemdrive%\Windows\boot\ set loader=nt6
 
-
+REM GO YOU!
 start .\main.exe %lang% %loader%
+
 REM WHAT IF SOMEONE CLICK 'NO' WHEN UAC NOTIFIES?
 if "%errorlevel%"=="5" (
 	if "%lang%"=="1" (
-		echo   ×¢Òâ£ºÄú¾Ü¾øÁË°²Í¬¿ªÊ¼³ÌĞòµÄÌáÉıÈ¨ÏŞ£¬°²Í¬¿ªÊ¼³ÌĞò½«ÎŞ·¨ÔËĞĞ¡£
-		echo         °´ÈÎÒâ¼üÍË³ö±¾³ÌĞò¡£
+		echo   æ³¨æ„ï¼šæ‚¨æ‹’ç»äº†å®‰åŒå¼€å§‹ç¨‹åºçš„æå‡æƒé™ï¼Œå®‰åŒå¼€å§‹ç¨‹åºå°†æ— æ³•è¿è¡Œã€‚
+		echo         æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
 		)
 	if "%lang%"=="2" (
 		echo Attention: You've refused the elevated permission requirement of Anthon-Starter!
@@ -98,10 +104,11 @@ exit
 
 if "%errorlevel%"=="0" exit
 
+REM There must be something wrong when error code isn't 0...
 if "%lang%"=="1" (
-	echo   *** ³ÌĞò×°ÔØÆÚ¼ä·¢ÉúÁËÖÂÃüµÄ´íÎó£¬°²Í¬¿ªÊ¼³ÌĞòÎŞ·¨ÔËĞĞ¡£
-	echo   *** ´íÎó´úÂë£º%errorlevel%
-	echo   °´ÈÎÒâ¼üÍË³ö±¾³ÌĞò¡£
+	echo   *** ç¨‹åºè£…è½½æœŸé—´å‘ç”Ÿäº†è‡´å‘½çš„é”™è¯¯ï¼Œå®‰åŒå¼€å§‹ç¨‹åºæ— æ³•è¿è¡Œã€‚
+	echo   *** é”™è¯¯ä»£ç ï¼š%errorlevel%
+	echo   æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
 	)
 if "%lang%"=="2" (
 	echo   *** An error occurred when initializing and Anthon-Starter cannot run.
