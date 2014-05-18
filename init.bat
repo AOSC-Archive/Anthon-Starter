@@ -19,16 +19,17 @@
 
 @echo off
 title Anthon Open Source Community
+mode con lines=25 cols=85
 :language
 cls
-echo                 ====  è¯·é€‰æ‹©è¯­è¨€ / Please choose your language  ====
+echo                 ====  ÇëÑ¡ÔñÓïÑÔ / Please choose your language  ====
 echo                 [                                                  ]
-echo                 [             è¾“å…¥ 1 é€‰ç”¨ç®€ä½“ä¸­æ–‡ã€‚                ]
+echo                 [             ÊäÈë 1 Ñ¡ÓÃ¼òÌåÖÐÎÄ¡£                ]
 echo                 [         To use English please input 2.           ]
 echo                 [                                                  ]
 echo                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo.
-set /p lang=â†’
+set /p lang=¡ú
 if "%lang%"=="" (
 	set lang=
 	goto language
@@ -36,17 +37,17 @@ if "%lang%"=="" (
 
 cls
 if "%lang%"=="1" (
-	title æ­£åœ¨è£…è½½ç¨‹åº...
+	title ÕýÔÚ×°ÔØ³ÌÐò...
 	echo.
-	echo                                       ä½ å¥½ã€‚
+	echo                                         ÄãºÃ¡£
 	echo.
-	echo æ­£åœ¨è£…è½½ç¨‹åº...
+	echo ÕýÔÚ×°ÔØ³ÌÐò...
 	goto check
 )
 if "%lang%"=="2" (
 	title Initializing...
 	echo.
-	echo                                       Hello.
+	echo                                        Hello.
 	echo.
 	echo Initializing...
 	goto check
@@ -86,8 +87,8 @@ start .\main.exe %lang% %loader%
 REM WHAT IF SOMEONE CLICK 'NO' WHEN UAC NOTIFIES?
 if "%errorlevel%"=="5" (
 	if "%lang%"=="1" (
-		echo   æ³¨æ„ï¼šæ‚¨æ‹’ç»äº†å®‰åŒå¼€å§‹ç¨‹åºçš„æå‡æƒé™ï¼Œå®‰åŒå¼€å§‹ç¨‹åºå°†æ— æ³•è¿è¡Œã€‚
-		echo         æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
+		echo   ×¢Òâ£ºÄú¾Ü¾øÁË°²Í¬¿ªÊ¼³ÌÐòµÄÌáÉýÈ¨ÏÞ£¬°²Í¬¿ªÊ¼³ÌÐò½«ÎÞ·¨ÔËÐÐ¡£
+		echo         °´ÈÎÒâ¼üÍË³ö±¾³ÌÐò¡£
 		)
 	if "%lang%"=="2" (
 		echo Attention: You've refused the elevated permission requirement of Anthon-Starter!
@@ -106,13 +107,18 @@ if "%errorlevel%"=="0" exit
 
 REM There must be something wrong when error code isn't 0...
 if "%lang%"=="1" (
-	echo   *** ç¨‹åºè£…è½½æœŸé—´å‘ç”Ÿäº†è‡´å‘½çš„é”™è¯¯ï¼Œå®‰åŒå¼€å§‹ç¨‹åºæ— æ³•è¿è¡Œã€‚
-	echo   *** é”™è¯¯ä»£ç ï¼š%errorlevel%
-	echo   æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
+	echo   *** ³ÌÐò×°ÔØÆÚ¼ä·¢ÉúÁËÖÂÃüµÄ´íÎó£¬°²Í¬¿ªÊ¼³ÌÐòÎÞ·¨ÔËÐÐ¡£
+	echo   *** ´íÎó´úÂë£º%errorlevel%
+	echo.
+	echo       Çë·ÃÎÊ http://bugs.anthonos.org ÏòÎÒÃÇ±¨¸æÕâ¸öÎÊÌâ...
+	echo.
+	echo °´ÈÎÒâ¼üÍË³ö±¾³ÌÐò¡£
 	)
 if "%lang%"=="2" (
 	echo   *** An error occurred when initializing and Anthon-Starter cannot run.
 	echo   *** Error code: %errorlevel%
+	echo.
+	echo       Please visit http://bugs.anthonos.org to report this problem!
 	echo   Press any key to exit.
 	)
 pause > nul
