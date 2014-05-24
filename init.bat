@@ -91,9 +91,9 @@ if "%errorlevel%"=="5" (
 		echo         按任意键退出本程序。
 		)
 	if "%lang%"=="2" (
-		echo Attention: You've refused the elevated permission requirement of Anthon-Starter!
-		echo            Anthon-Starter cannot run successfully.
-		echo Press any key to exit the program.
+		echo   Attention: You've refused the permission elevating requirement of Anthon-Starter!
+		echo              Anthon-Starter cannot run successfully.
+		echo   Press any key to exit the program.
 	)
 pause > nul
 rd /s /q %systemdrive%\ast_strt
@@ -115,10 +115,11 @@ if "%lang%"=="1" (
 	echo 按任意键退出本程序。
 	)
 if "%lang%"=="2" (
-	echo   *** An error occurred when initializing and Anthon-Starter cannot run.
+	echo   *** An error occurred when initializing and Anthon-Starter cannot run successfully.
 	echo   *** Error code: %errorlevel%
 	echo.
 	echo       Please visit http://bugs.anthonos.org to report this problem!
+	echo.
 	echo   Press any key to exit.
 	)
 pause > nul

@@ -62,7 +62,7 @@ if "%cho%"=="about" (
 	set cho=
 	goto cn_about
 )
-if "%cho%"=="exit" (
+if /i "%cho%"=="exit" (
 	set cho=
 	goto self_del
 )
@@ -115,7 +115,7 @@ echo.
 echo ÔÚ°²×°ÏµÍ³Ö®Ç°£¬ÇëÄú×¢ÒâÒÔÏÂ×¢ÒâÊÂÏî£º
 echo.
 echo   1. Çë¡¾Îñ±Ø¡¿°Ñ°²×°ËùÐèÎÄ¼þ×°Èë±¾µØÓ²ÅÌ£¨¶ø²»ÊÇUÅÌ¡¢ÒÆ¶¯Ó²ÅÌ¡¢MP3µÈÉè±¸£©£¬Òò´ËÔÚ
-echo        ÄúÖ´ÐÐÏÂÒ»²½Ö®Ç°Çë°Î³ýËùÓÐÍâ½ÓÉè±¸
+echo        ÄúÖ´ÐÐÏÂÒ»²½Ö®Ç°Çë°Î³ýËùÓÐÍâ½ÓÉè±¸£»
 echo.
 echo   2. °²Í¬¿ªÔ´ÉçÇøËùÓÐ·¢ÐÐ°æ¾ùÖ»ÔËÐÐÔÚx86_64¼Ü¹¹µÄÖÐÑë´¦ÀíÆ÷ÉÏ£¬Çë×ÔÐÐ²éÑ¯ÄúµÄ¼ÆËã»ú
 echo        ÊÇ·ñ·ûºÏÒªÇó£¬°²Í¬¿ªÊ¼³ÌÐòÔÝÊ±²»Ìá¹©×Ô¶¯¼ì²é¹¦ÄÜ£»
@@ -127,7 +127,7 @@ echo.
 echo.
 echo È·ÈÏÎÞÎóºó£¬Ö±½Ó°´ÏÂ»Ø³µ¼ü¼ÌÐø°²×°£¬¼üÈë EXIT ¿ÉÒÔÍË³ö±¾³ÌÐò¡£
 set /p chkcho=¡ú
-if "%chkcho%"=="EXIT" goto self_del
+if /i "%chkcho%"=="EXIT" goto self_del
 if "%chkcho%"=="" goto cn_image
 REM Or exit, delete the temp files
 set chkcho=
@@ -145,7 +145,7 @@ echo   ¡¾×¢Òâ¡¿¼üÈë¸÷ÖÖ·Ç·¨×Ö·ûºÍÂ·¾¶½«µ¼ÖÂ²Ù×÷Ê§°Ü£¡
 echo.
 echo ÓÒ¼üÕ³Ìù¹¦ÄÜ¿ÉÓÃ£»¼üÈë EXIT ¿ÉÒÔÍË³ö±¾³ÌÐò¡£
 set /p file=¡ú
-if "%file%"=="EXIT" goto self_del
+if /i "%file%"=="EXIT" goto self_del
 if "%file%"=="^" goto cn_err1
 if "%file%"=="." goto cn_err1
 if "%file%"=="*" goto cn_err1
@@ -155,7 +155,44 @@ if "%file%"=="," goto cn_err1
 if "%file%"=="=" goto cn_err1
 if "%file%"=="" goto cn_err1
 if not exist %file% goto cn_err1
-goto cn_target
+
+REM Check if the image file is AOSC Linux distribution...
+echo.
+echo °²Í¬¿ªÊ¼³ÌÐòÕýÔÚ¼ìÑé´ËÎÄ¼þ...
+C:\ast_temp\7z x %file% -o%systemdrive%\ast_temp\ md5sum.ast -y > nul
+if not "%errorlevel%"=="0" (
+	echo     *** ¾¯¸æ£ºÕâ²»ÊÇ°²Í¬¿ªÊ¼³ÌÐòËùÖ§³ÖµÄÎÄ¼þ£¬´íÎó´úÂë£º%errorlevel%
+	echo               ¼ÌÐø²Ù×÷½«µ¼ÖÂÒâÏë²»µ½µÄºó¹û£¬Òò´Ë°²Í¬¿ªÊ¼³ÌÐò¾Ü¾ø²Ù×÷Õâ¸öÎÄ¼þ¡£
+	echo.
+	echo         Çë½«ÎÊÌâ±¨¸æµ½ http://bugs.anthonos.org/
+	echo.
+	echo     °´ÏÂÈÎÒâ¼üÍË³ö°²Í¬¿ªÊ¼³ÌÐò¡£
+	pause > nul
+	goto self_del
+)
+
+REM Get the information inside the image file...
+for /f "tokens=3 delims=: " %%a in ('findstr /n .* md5sum.ast^|findstr "^2:"') do set imginfo_os=%%a
+for /f "tokens=4 delims=: " %%a in ('findstr /n .* md5sum.ast^|findstr "^2:"') do set imginfo_dist=%%a
+for /f "tokens=5 delims=: " %%a in ('findstr /n .* md5sum.ast^|findstr "^2:"') do set imginfo_ver=%%a
+for /f "tokens=6 delims=: " %%a in ('findstr /n .* md5sum.ast^|findstr "^2:"') do set imginfo_lang=%%a
+if "%imginfo_dist%"=="anos" goto cn_target
+if "%imginfo_dist%"=="ancp" goto cn_target
+if "%imginfo_dist%"=="icnl" goto cn_target
+if "%imginfo_dist%"=="spin" goto cn_target
+REM There must be something interesting...
+echo     *** ´íÎó£ºÕâ²»ÊÇ°²Í¬¿ªÊ¼³ÌÐòËùÖ§³ÖµÄ°æ±¾£¡
+echo               ´úÏµ£º%imginfo_os%
+echo               ·¢ÐÐ£º%imginfo_dist%
+echo               °æ±¾£º%imginfo_ver%
+echo.
+echo               ¼ÌÐø²Ù×÷¿ÉÄÜ·¢ÉúÒâÏë²»µ½µÄºó¹û£¬Òò´Ë°²Í¬¿ªÊ¼³ÌÐò½«¾Ü¾ø²Ù×÷¡£
+echo.
+echo         Çë½«ÎÊÌâ±¨¸æµ½ http://bugs.anthonos.org/
+echo.
+echo     °´ÏÂÈÎÒâ¼üÍË³ö°²Í¬¿ªÊ¼³ÌÐò¡£
+pause > nul
+goto self_del
 
 
 :cn_target
@@ -167,7 +204,7 @@ echo   Ö±½Ó°´ÏÂ»Ø³µ¼ü½«Éè¶¨½âÑ¹Î»ÖÃÎª%systemdrive%\
 echo.
 echo   * ÊäÈë·½Ê½Ê¾Àý£º%systemdrive%\  ¼üÈë EXIT ¿ÉÒÔÍË³ö±¾³ÌÐò¡£
 set /p location=¡ú
-if "%location%"=="EXIT" goto self_del
+if /i "%location%"=="EXIT" goto self_del
 if "%location%"=="" (
 	set location=%systemdrive%\
 	goto cn_way
@@ -188,13 +225,26 @@ if "%gpt_status%"=="0" echo   * ÊäÈë write_mbr ²¢°´ÏÂ»Ø³µ¼üÉè¶¨°²×°·½Ê½Îª¡°Í¨¹ýÖ
 if "%gpt_status%"=="1" echo   * ÊäÈë write_gpt ²¢°´ÏÂ»Ø³µ¼üÉè¶¨°²×°·½Ê½Îª¡°Í¨¹ýEFIÒýµ¼Æô¶¯¡±£»
 echo   * ¼üÈë EXIT ²¢°´ÏÂ»Ø³µ¼ü¿ÉÒÔÍË³ö±¾³ÌÐò¡£
 set /p instway=¡ú
-if "%instway%"=="EXIT" goto self_del
+if /i "%instway%"=="EXIT" goto self_del
 if "%instway%"=="" (
 	set instway=edit_present
 	goto cn_ready
 )
-if "%instway%"=="write_mbr" goto cn_ready
-if "%instway%"=="write_gpt" goto cn_ready
+if "%instway%"=="write_mbr" (
+	REM Check if GPT was detected.
+	if "%gpt_status%"=="1" (
+		set instway=
+		goto cn_way
+	)
+	goto cn_ready
+)
+if "%instway%"=="write_gpt" (
+	if "%gpt_status%"=="0" (
+		set instway=
+		goto cn_way
+	)
+	goto cn_ready
+)
 set instway=
 goto cn_way
 
@@ -205,8 +255,18 @@ cls
 echo  =======================£¾£¾£¾ µÚ 5 ²½  ×¼±¸°²×°³ÌÐò £¼£¼£¼=========================
 echo.
 echo ÇëÈ·ÈÏÄúµÄÉèÖÃÊÇ·ñÕýÈ·£º
+echo.
 echo * ÄúÉè¶¨µÄÎÄ¼þÎª£º%file%
+echo       - ´úÏµ£ºAOSC OS%imginfo_os:~2,3%
+if "%imginfo_dist%"=="anos" echo       - ·¢ÐÐ°æ±¾£º°²Í¬×ÀÃæ°æ±¾
+if "%imginfo_dist%"=="ancp" echo       - ·¢ÐÐ°æ±¾£º°²Í¬·þÎñÆ÷°æ±¾ ( CentralPoint )
+if "%imginfo_dist%"=="icnl" echo       - ·¢ÐÐ°æ±¾£º°²Í¬¼¼Êõ¼Ü¹¹°æ±¾ ( IcenowyLinux )
+if "%imginfo_dist%"=="spin" echo       - ·¢ÐÐ°æ±¾£ºAOSCÅÉÉú°æ±¾ ( AOSC Spins )
+echo       - ÏµÍ³°æ±¾ºÅ£º%imginfo_ver%
+echo       - ÏµÍ³ÓïÑÔ£º%imginfo_lang%
+echo.
 echo * ÄúÉè¶¨µÄ½âÑ¹Â·¾¶Îª£º%location%
+echo.
 if "%instway%"=="edit_present" echo * Äú½«Í¨¹ýNTÒýµ¼Æ÷Ç¶Ì×Òýµ¼°²×°³ÌÐò£¨Ä¬ÈÏÉèÖÃ£©
 if "%instway%"=="write_mbr" echo * Äú½«Í¨¹ýÐÞ¸ÄÖ÷Òýµ¼¼ÇÂ¼Òýµ¼°²×°³ÌÐò
 if "%instway%"=="write_gpt" echo * Äú½«Í¨¹ýÐÞ¸ÄESPÀ´´ÓEFIÒýµ¼°²×°³ÌÐò
@@ -214,7 +274,7 @@ echo.
 echo °´ÏÂ»Ø³µ¼ü¿ªÊ¼×¼±¸°²×°³ÌÐò£¬·ñÔòÇë¼üÈë no È»ºó»Ø³µ¡£
 echo   ¼üÈë EXIT È»ºó°´ÏÂ»Ø³µ¿ÉÒÔÍË³ö±¾³ÌÐò¡£
 set /p yesno=¡ú
-if "%yesno%"=="EXIT" goto self_del
+if /i "%yesno%"=="EXIT" goto self_del
 if "%yesno%"=="no" (
 	set file=
 	set location=
@@ -244,33 +304,33 @@ echo £¨µÚÒ»²½£¬¹²XX²½£©  ±¸·ÝÏµÍ³ÖØÒªÎ»ÖÃ...
 pause
 goto self_del
 
-if "%2"==""nt5"" (
+if "%~2"=="nt5" (
 	attrib -s -h -r %systemdrive%\boot.ini
 	copy %systemdrive%\boot.ini %systemdrive%\ast_bkup
 	)
-if "%2"==""nt6"" bcdedit /export %systemdrive%\ast_bkup\BCDbckup
+if "%~2"=="nt6" bcdedit /export %systemdrive%\ast_bkup\BCDbckup
 
-dd if=\\?\Device\Harddisk0\Partition1 of=%systemdrive%\ast_bkup\MBRbckup bs=446 count=1
+REM dd if=\\?\Device\Harddisk0\Partition1 of=%systemdrive%\ast_bkup\MBRbckup bs=446 count=1
 
 
 echo £¨µÚ¶þ²½£¬¹²XX²½£©  ½âÑ¹Ô¤°²×°»·¾³ÄÚºË...
 REM While extracting the files in [image_file]/boot/ , the new folder 'boot' will be created too.
 REM For some users will install some recovery software (like One-key Ghost, it'll create a folder named 'boot' too),
 REM   we first extract them into %temp%\ and then copy them into ast_strt.
-7z x %file% -o%temp%\ boot\vmlinuz -y > nul
+C:\ast_temp\7z x %file% -o%temp%\ boot\vmlinuz -y > nul
 move %temp%\boot\vmlinuz %systemdrive%\ast_strt
 
 echo £¨µÚÈý²½£¬¹²XX²½£©  ½âÑ¹Ô¤°²×°»·¾³ÄÚ´æÅÌ...
-7z x %file% -o%temp%\ boot\initrd -y > nul
+C:\ast_temp\7z x %file% -o%temp%\ boot\initrd -y > nul
 move %temp%\boot\initrd %systemdrive%\ast_strt
 
 echo £¨µÚËÄ²½£¬¹²XX²½£©  ½âÑ¹²Ù×÷ÏµÍ³°²×°ÎÄ¼þ...
 echo         * ±¾¹ý³ÌºÄÊ±½Ï³¤£¬ÇëÄÍÐÄµÈ´ý¡£
-7z x %file% -o%location% live\live.squashfs -y >nul
+C:\ast_temp\7z x %file% -o%location% live\live.squashfs -y > nul
 
 echo £¨µÚÒ»²½£¬¹²XX²½£©  Ð£Ñé°²×°ÎÄ¼þ...
 echo     1 / 3  Ð£ÑéÔ¤°²×°»·¾³ÄÚºË...
-7z x %file% -o%systemdrive%\ast_temp md5sum
+C:\ast_temp\7z x %file% -o%systemdrive%\ast_temp md5sum
 for /f "delims=" %%i in ('md5sum.exe -b %systemdrive%\ast_strt\vmlinuz') do set md5sum_buf=%%i
 for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^1:"') do set md5sum_vmlinuz=%%b
 if "%md5sum_buf:~0,32%" NEQ "%md5sum_vmlinuz%" (
@@ -334,8 +394,8 @@ if "%instway%"=="write_gpt" (
 
 
 if "%instway%"=="edit_present" (
-	if "%2"==""nt5"" goto cn_nt5_ntldr_edit
-	if "%2"==""nt6"" goto cn_nt6_bcd_edit
+	if "%~2"=="nt5" goto cn_nt5_ntldr_edit
+	if "%~2"=="nt6" goto cn_nt6_bcd_edit
 )
 REM While setting variable in an "if(...)", it doesn't work. F**k CMD!
 REM So we make this little hack...
