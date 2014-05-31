@@ -19,12 +19,18 @@
 
 @echo off
 
-REM Check the parameters(%1 is language; %2 is loader type)
+REM Check whether the parameters exists (for insurance):
+REM   %1 : Language
+REM   %2 : Type of boot loader
 if "%~1"=="" exit
 if "%~2"=="" exit
 
+REM Define the size of console:
+REM   Height: 25 lines
+REM   Width : 85 characters
 mode con lines=25 cols=85
 
+REM Judge the language
 if "%~1"=="1" goto cn_main
 if "%~1"=="2" goto en_main
 goto self_del
@@ -92,7 +98,7 @@ if "%errorlevel%"=="0" (
 	)
 ) else (
 	echo *** 致命错误：安同开始程序无法正常挂载ESP分区，错误代码 %errorlevel%
-	echo     为安全起见，程序即将关闭。对此我们深感抱歉。
+	echo     为安全起见，程序即将关闭。对此我们深感抱歉。
 	echo.
 	echo     请访问 http://bugs.anthonos.org 向我们报告这个问题...
 	echo.
@@ -159,10 +165,10 @@ if not exist %file% goto cn_err1
 REM Check if the image file is AOSC Linux distribution...
 echo.
 echo 安同开始程序正在检验此文件...
-C:\ast_temp\7z x %file% -o%systemdrive%\ast_temp\ md5sum.ast -y > nul
+%systemdrive%\ast_temp\7z x %file% -o%systemdrive%\ast_temp\ md5sum.ast -y > nul
 if not "%errorlevel%"=="0" (
 	echo     *** 警告：这不是安同开始程序所支持的文件，错误代码：%errorlevel%
-	echo               继续操作将导致意想不到的后果，因此安同开始程序拒绝操作这个文件。
+	echo               继续操作将导致意想不到的后果，因此安同开始程序拒绝操作这个文件。
 	echo.
 	echo         请将问题报告到 http://bugs.anthonos.org/
 	echo.
@@ -181,12 +187,13 @@ if "%imginfo_dist%"=="ancp" goto cn_target
 if "%imginfo_dist%"=="icnl" goto cn_target
 if "%imginfo_dist%"=="spin" goto cn_target
 REM There must be something interesting...
-echo     *** 错误：这不是安同开始程序所支持的版本！
+echo     *** 错误：这不是安同开始程序所支持的系统版本！
 echo               代系：%imginfo_os%
 echo               发行：%imginfo_dist%
 echo               版本：%imginfo_ver%
+echo               语言：%imginfo_lang%
 echo.
-echo               继续操作可能发生意想不到的后果，因此安同开始程序将拒绝操作。
+echo               继续操作可能发生意想不到的后果，因此安同开始程序将拒绝操作。
 echo.
 echo         请将问题报告到 http://bugs.anthonos.org/
 echo.
@@ -300,7 +307,7 @@ echo.
 echo 安同开始程序正在努力准备好安装程序。
 echo 这个过程需要一些时间，如果您选择泡上一杯咖啡应该是不错的选择。
 echo.
-echo （第一步，共XX步）  备份系统重要位置...
+echo （第一步，共六步）  备份系统重要位置...
 pause
 goto self_del
 
@@ -313,48 +320,49 @@ if "%~2"=="nt6" bcdedit /export %systemdrive%\ast_bkup\BCDbckup
 REM dd if=\\?\Device\Harddisk0\Partition1 of=%systemdrive%\ast_bkup\MBRbckup bs=446 count=1
 
 
-echo （第二步，共XX步）  解压预安装环境内核...
-REM While extracting the files in [image_file]/boot/ , the new folder 'boot' will be created too.
-REM For some users will install some recovery software (like One-key Ghost, it'll create a folder named 'boot' too),
+echo （第二步，共六步）  解压预安装环境内核...
+REM While extracting the files in [image_file]/boot/ , the new folder "boot" will be created too.
+REM Because some users would install some recovery software (like "One-key Ghost", 7-Zip will create a folder named "boot" too),
 REM   we first extract them into %temp%\ and then copy them into ast_strt.
-C:\ast_temp\7z x %file% -o%temp%\ boot\vmlinuz -y > nul
+%systemdrive%\ast_temp\7z x %file% -o%temp%\ boot\vmlinuz -y > nul
 move %temp%\boot\vmlinuz %systemdrive%\ast_strt
 
-echo （第三步，共XX步）  解压预安装环境内存盘...
-C:\ast_temp\7z x %file% -o%temp%\ boot\initrd -y > nul
+echo （第三步，共六步）  解压预安装环境内存盘...
+%systemdrive%\ast_temp\7z x %file% -o%temp%\ boot\initrd -y > nul
 move %temp%\boot\initrd %systemdrive%\ast_strt
 
-echo （第四步，共XX步）  解压操作系统安装文件...
+echo （第四步，共六步）  解压操作系统安装文件...
 echo         * 本过程耗时较长，请耐心等待。
-C:\ast_temp\7z x %file% -o%location% live\live.squashfs -y > nul
+REM But notice that if we remove the folder "live" the kernel won't be able to find it...
+%systemdrive%\ast_temp\7z x %file% -o%location% live\live.squashfs -y > nul
 
-echo （第一步，共XX步）  校验安装文件...
+echo （第五步，共六步）  校验安装文件...
 echo     1 / 3  校验预安装环境内核...
-C:\ast_temp\7z x %file% -o%systemdrive%\ast_temp md5sum
-for /f "delims=" %%i in ('md5sum.exe -b %systemdrive%\ast_strt\vmlinuz') do set md5sum_buf=%%i
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^1:"') do set md5sum_vmlinuz=%%b
-if "%md5sum_buf:~0,32%" NEQ "%md5sum_vmlinuz%" (
-	echo                       *** 错误: 预安装环境内核校验失败！
+REM Read md5sum.ast
+for /f "delims=" %%i in ('%systemdrive%\ast_temp\md5sum.exe -b %systemdrive%\ast_strt\vmlinuz') do set md5sum_buf=%%i
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum.ast^|findstr "^4:"') do set md5sum_vmlinuz=%%b
+if "%md5sum_buf:~0,32%" NEQ "%md5sum_vmlinuz:~0,32%" (
+	echo                       *** 错误: 预安装环境内核校验失败！
 	set verify_error=1
 )
 set md5sum_vmlinuz=
 set md5sum_buf=
 
 echo     2 / 3  校验预安装环境内存盘...
-for /f "delims=" %%i in ('md5sum.exe -b %systemdrive%\ast_strt\initrd') do set md5sum_buf=%%i
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^2:"') do set md5sum_initrd=%%b
-if "%md5sum_buf:~0,32%" NEQ "%md5sum_initrd%" (
-	echo                       *** 错误: 预安装环境内存盘校验失败！
+for /f "delims=" %%i in ('%systemdrive%\ast_temp\md5sum.exe -b %systemdrive%\ast_strt\initrd') do set md5sum_buf=%%i
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^5:"') do set md5sum_initrd=%%b
+if "%md5sum_buf:~0,32%" NEQ "%md5sum_initrd:~0,32%" (
+	echo                       *** 错误: 预安装环境内存盘校验失败！
 	set verify_error=1
 )
 set md5sum_initrd=
 set md5sum_buf=
 
 echo     3 / 3  校验操作系统安装文件...
-for /f "delims=" %%i in ('md5sum.exe -b %location%live\live.squashfs') do set md5sum_buf=%%i
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^3:"') do set md5sum_squash=%%b
-if "%md5sum_buf:~0,32%" NEQ "%md5sum_squash%" (
-	echo                       *** 错误: 操作系统安装文件校验失败！
+for /f "delims=" %%i in ('%systemdrive%\ast_temp\md5sum.exe -b %location%live\live.squashfs') do set md5sum_buf=%%i
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum^|findstr "^6:"') do set md5sum_squash=%%b
+if "%md5sum_buf:~0,32%" NEQ "%md5sum_squash:~0,32%" (
+	echo                       *** 错误: 操作系统安装文件校验失败！
 	set verify_error=1
 )
 set md5sum_squash=
@@ -362,7 +370,7 @@ set md5sum_buf=
 
 if "%verify_error%"=="0" goto cn_verify_success
 
-echo        *** 映像文件校验失败！继续进行安装可能导致安装失败...
+echo        *** 映像文件校验失败！继续进行安装可能导致安装失败...
 echo            若要继续安装请输入 y 然后按下回车，输入其它字符或回车退出程序。
 set /p vercho=            →
 if not "%vercho%"=="y" (
@@ -373,7 +381,7 @@ if not "%vercho%"=="y" (
 :cn_verify_success
 
 
-echo （第五步，共XX步）  开始部署启动...
+echo （第六步，共六步）  开始部署启动...
 
 if "%instway%"=="write_mbr" (
 	grubinst --grub2 (hd0)
@@ -383,13 +391,15 @@ if "%instway%"=="write_gpt" (
 	mountvol W:\ /s
 	if not "%errorlevel%"=="0" (
 		echo     *** 致命错误：ESP分区挂载失败！错误代码：%errorlevel%
-		echo         为安全起见，安同开始程序将不再对分区表进行操作。
+		echo         为安全起见，安同开始程序将不再对分区表进行操作。
 		echo         系统部署方式将更改为：通过NT引导器嵌套引导安装程序（默认设置）。
 		mountvol W:\ /d
 		if "%2"==""nt5"" goto cn_nt5_ntldr_edit
 		if "%2"==""nt6"" goto cn_nt6_bcd_edit
 	)
-	
+	mkdir W:\AOSC\
+	copy %systemdrive%\bootx64.efi W:\AOSC\ > nul
+	goto cn_edit_done
 )
 
 
@@ -397,7 +407,7 @@ if "%instway%"=="edit_present" (
 	if "%~2"=="nt5" goto cn_nt5_ntldr_edit
 	if "%~2"=="nt6" goto cn_nt6_bcd_edit
 )
-REM While setting variable in an "if(...)", it doesn't work. F**k CMD!
+REM While setting variables in "if(...)", it doesn't work usually. F**k CMD!
 REM So we make this little hack...
 
 :cn_nt5_ntldr_edit
@@ -422,43 +432,52 @@ goto cn_edit_done
 
 :cn_edit_done
 
+REM Generate grub.cfg
+if "%instway%"=="edit_present" set g2ldrcfg=%systemdrive%\ast_strt\grub.cfg
+if "%instway%"=="write_mbr" set g2ldrcfg=%systemdrive%\ast_strt\grub.cfg
+if "%instway%"=="write_gpt" set g2ldrcfg=W:\AOSC\grub.cfg
 
-echo  （第六步，共XX步）  正在部署启动...
+echo # Grub.cfg generated by Anthon-Starter 0.1.2 > %g2ldrcfg%
+echo. >> %g2ldrcfg%
+echo set default="1" >> %g2ldrcfg%
+echo set gfxmode=1024x768 >> %g2ldrcfg%
+echo terminal_output gfxterm >> %g2ldrcfg%
+echo set timeout="10" >> %g2ldrcfg%
+if "%instway%"=="edit_present" echo loadfont /ast_strt/unicode.pf2 >> %g2ldrcfg%
+if "%instway%"=="write_mbr" echo loadfont /ast_strt/unicode.pf2 >> %g2ldrcfg%
+if "%instway%"=="write_gpt" echo loadfont /AOSC/unicode.pf2 >> %g2ldrcfg%
+echo. >> %g2ldrcfg%
+echo menuentry "启动原来的 Windows 操作系统" { >> %g2ldrcfg%
+echo   search --set=root --no-floppy /ntldr >> %g2ldrcfg%
+echo   chainloader /ntldr >> %g2ldrcfg%
+echo   boot >> %g2ldrcfg%
+echo } >> %g2ldrcfg%
+echo. >> %g2ldrcfg%
+echo menuentry "启动安同 GNU/Linux 安装程序" { >> %g2ldrcfg%
+echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %g2ldrcfg%
+echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject rw >> %g2ldrcfg%
+echo   initrd /ast_strt/initrd >> %g2ldrcfg%
+echo   boot >> %g2ldrcfg%
+echo } >> %g2ldrcfg%
+echo. >> %g2ldrcfg%
+echo menuentry "启动安同 GNU/Linux 安装程序（安全显示设定模式）" { >> %g2ldrcfg%
+echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %g2ldrcfg%
+echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject nomodeset vga=normal rw >> %g2ldrcfg%
+echo   initrd /ast_strt/initrd >> %g2ldrcfg%
+echo   boot >> %g2ldrcfg%
+echo } >> %g2ldrcfg%
+echo. >> %g2ldrcfg%
 
-echo # Grub.cfg generated by Anthon-Starter 0.1.2 > %systemdrive%\ast_strt\grub.cfg
-echo. >> %systemdrive%\ast_strt\grub.cfg
-echo set default="1" >> %systemdrive%\ast_strt\grub.cfg
-echo set gfxmode=1024x768 >> %systemdrive%\ast_strt\grub.cfg
-echo terminal_output gfxterm >> %systemdrive%\ast_strt\grub.cfg
-echo set timeout="10" >> %systemdrive%\ast_strt\grub.cfg
-echo loadfont /ast_strt/unicode.pf2 >> %systemdrive%\ast_strt\grub.cfg
-echo. >> %systemdrive%\ast_strt\grub.cfg
-echo menuentry "启动原来的 Windows 操作系统" { >> %systemdrive%\ast_strt\grub.cfg
-echo   search --set=root --no-floppy /ntldr >> %systemdrive%\ast_strt\grub.cfg
-echo   chainloader /ntldr >> %systemdrive%\ast_strt\grub.cfg
-echo   boot >> %systemdrive%\ast_strt\grub.cfg
-echo } >> %systemdrive%\ast_strt\grub.cfg
-echo. >> %systemdrive%\ast_strt\grub.cfg
-echo menuentry "启动安同 GNU/Linux 安装程序" { >> %systemdrive%\ast_strt\grub.cfg
-echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
-echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject rw >> %systemdrive%\ast_strt\grub.cfg
-echo   initrd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
-echo   boot >> %systemdrive%\ast_strt\grub.cfg
-echo } >> %systemdrive%\ast_strt\grub.cfg
-echo. >> %systemdrive%\ast_strt\grub.cfg
-echo menuentry "启动安同 GNU/Linux 安装程序（安全显示设定模式）"{ >> %systemdrive%\ast_strt\grub.cfg
-echo   search --set=root --no-floppy /ast_strt/vmlinuz >> %systemdrive%\ast_strt\grub.cfg
-echo   linux /ast_strt/vmlinuz boot=live config quiet noswap noeject nomodeset vga=normal rw >> %systemdrive%\ast_strt\grub.cfg
-echo   initrd /ast_strt/initrd >> %systemdrive%\ast_strt\grub.cfg
-echo   boot >> %systemdrive%\ast_strt\grub.cfg
-echo } >> %systemdrive%\ast_strt\grub.cfg
-echo. >> %systemdrive%\ast_strt\grub.cfg
 
+if not "%instway%"=="write_gpt" (
+	copy %systemdrive%\ast_temp\g2ldr.mbr %systemdrive\ast_strt\ > nul
+	copy %systemdrive%\ast_temp\g2ldr %systemdrive%\ > nul
+)
 
-copy %systemdrive%\ast_temp\g2ldr.mbr %systemdrive\ast_strt\ > nul
-copy %systemdrive%\ast_temp\g2ldr %systemdrive%\ > nul
-copy %systemdrive%\ast_temp\unicode.pf2 %systemdrive%\ast_strt\ > nul
+if not "%instway%"=="write_gpt" copy %systemdrive%\ast_temp\unicode.pf2 %systemdrive%\ast_strt\ > nul
+if "%instway%"=="write_gpt" copy %systemdrive%\ast_temp\unicode.pf2 W:\AOSC\ > nul
 
+if "%instway%"=="write_gpt" mountvol W:\ /d
 
 pause
 
@@ -478,7 +497,7 @@ cls
 echo  ===============================＞＞＞ 出错啦 ＜＜＜================================
 echo.
 echo 您输入的这个：%file%
-echo 它并不存在！请确认路径是否错误...
+echo 它并不存在！请确认路径是否错误...
 echo.
 echo 按下任意键返回上一步！
 pause > nul
@@ -490,7 +509,7 @@ cls
 echo  ===============================＞＞＞ 出错啦 ＜＜＜================================
 echo.
 echo 您输入的这个：%location%
-echo 它并不存在！请确认盘符是否错误...
+echo 它并不存在！请确认盘符是否错误...
 echo.
 echo 按下任意键返回上一步！
 pause>nul
@@ -577,7 +596,9 @@ goto en_main
 
 
 :before_reboot
-echo %1 > %systemdrive%\ast_strt\info.ast
+REM Generate info.ast for startup.exe
+echo # info.ast generated by Anthon-Starter 0.1.2 > %systemdrive%\ast_strt\info.ast
+echo %~1 >> %systemdrive%\ast_strt\info.ast
 echo %location% >> %systemdrive%\ast_strt\info.ast
 copy %systemdrive%\ast_temp\startup.exe %systemdrive%\ast_strt\
 reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v Anthon-Starter_Startup_Utility /t REG_SZ /d %systemdrive%\ast_strt\startup.exe /f
@@ -586,12 +607,10 @@ REM shutdown -r -t 00
 exit
 
 :self_del
-set ptable=
 set loader=
 set file=
 set location=
 set instway=
-set freesize=
 set cho=
 set chkcho=
 set yesno=
