@@ -36,7 +36,6 @@ For 0.1.2:
 Developers
 ==============
 
-Junde Yi <lmy441900@gmail.com>
-
-Haoming Xu <18929292333@163.com>
- 
+* Junde Yi <lmy441900@gmail.com>
+* Haoming Xu <18929292333@163.com>
+* Zixing Liu <liushuyu011@gmail.com> 
