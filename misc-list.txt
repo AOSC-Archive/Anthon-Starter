@@ -1,0 +1,16 @@
+.\main.exe
+.\startup.exe
+
+.\g2ldr
+.\g2ldr.mbr
+.\bootx64.efi
+.\unicode.pf2
+
+.\dd.exe
+.\md5sum.exe
+
+.\libiconv2.dll
+.\libintl3.dll
+
+.\LICENSE
+.\splash.png

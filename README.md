@@ -33,6 +33,17 @@ For 0.1.2:
 * Wait for 3-5 minutes. Anthon-Starter will automatically finish the deploying work.
 * Then the LiveDVD system of Anthon GNU/Linux will start. You just need to execute the installer inside.
 
+Build
+==============
+
+To Build Anthon-Starter, you need:
+
+* Bat to Exe Converter
+* Microsoft(R) Windows(R) NT or later
+* CMD
+
+Remember to check if the source file is in ANSI! For more details, please visit http://wiki.anthonos.org/projects:anthon-starter:devel-guide
+
 Developers
 ==============
 
