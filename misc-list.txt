@@ -1,16 +1,29 @@
-.\main.exe
-.\startup.exe
-
-.\g2ldr
-.\g2ldr.mbr
-.\bootx64.efi
-.\unicode.pf2
-
-.\dd.exe
-.\md5sum.exe
-
-.\libiconv2.dll
-.\libintl3.dll
-
-.\LICENSE
-.\splash.png
+│  ast.ico
+│  LICENSE
+│  misc-list.txt
+│  README.md
+│
+├─7-Zip (included in init, exe)
+│      7z.dll
+│      7z.exe
+│
+├─Development Snapshot (exe)
+│      anthon-starter.exe
+│
+├─misc
+│      bootx64.efi
+│      g2ldr
+│      g2ldr.mbr
+│      grub-efi.cfg
+│      grub-pc.cfg
+│      libiconv2.dll
+│      libintl3.dll
+│      LICENSE
+│      md5sum.exe
+│      splash.png
+│      unicode.pf2
+│
+└─source
+        init.bat
+        main.bat
+        startup.bat
