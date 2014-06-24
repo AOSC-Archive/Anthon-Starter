@@ -20,28 +20,44 @@
 @echo off
 title Anthon Open Source Community
 mode con lines=25 cols=85
+:detectlang
+for /f "eol=! skip=2 tokens=3" %%i in ('reg query "HKCU\Control Panel\International" /v "sLanguage"') do set "plang=%%i"    @rem echo %%i
+    if "%plang%" == "CHS" (
+        set lang=1
+        goto language
+    )
+    if "%plang%" == "ENU" (
+        set lang=2
+        goto language
+    )
+    if "%plang%" == "CHT" (
+        goto language
+    )
+    )
+set lang=
+goto language
+
 :language
 cls
-echo                 ====  ÇëÑ¡ÔñÓïÑÔ / Please choose your language  ====
+echo                 ====  ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ / Please choose your language  ====
 echo                 [                                                  ]
-echo                 [             ÊäÈë 1 Ñ¡ÓÃ¼òÌåÖÐÎÄ¡£                ]
+echo                 [             ï¿½ï¿½ï¿½ï¿½ 1 Ñ¡ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½                ]
 echo                 [         To use English please input 2.           ]
 echo                 [                                                  ]
 echo                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo.
-set /p lang=¡ú
+
 if "%lang%"=="" (
-	set lang=
-	goto language
+        set /p lang=ï¿½ï¿½
 )
 
 cls
 if "%lang%"=="1" (
-	title ÕýÔÚ×°ÔØ³ÌÐò...
+	title ï¿½ï¿½ï¿½ï¿½×°ï¿½Ø³ï¿½ï¿½ï¿½...
 	echo.
-	echo                                         ÄãºÃ¡£
+	echo                                         ï¿½ï¿½ï¿½Ã¡ï¿½
 	echo.
-	echo ÕýÔÚ×°ÔØ³ÌÐò...
+	echo ï¿½ï¿½ï¿½ï¿½×°ï¿½Ø³ï¿½ï¿½ï¿½...
 	goto check
 )
 if "%lang%"=="2" (
@@ -60,6 +76,10 @@ goto language
 REM Check if files have exist.
 if exist %systemdrive%\ast_temp\ rd /s /q %systemdrive%\ast_temp
 if exist %systemdrive%\ast_strt\ rd /s /q %systemdrive%\ast_strt
+ REM ***WHAT IF SOMEONE START THE PROGRAM MANY TIMES?
+  if exist %systemdrive%\ast_bkup_00\ (
+      rd /s /q %systemdrive%\ast_bkup_00
+  ) 
 if exist %systemdrive%\ast_bkup\ (
 	REM ***WHAT IF SOMEONE START THE PROGRAM WHEN OS CRASHED?
 	ren %systemdrive%\ast_bkup ast_bkup_00
@@ -70,25 +90,86 @@ REM Now begins initializing...
 mkdir C:\ast_bkup > nul
 mkdir C:\ast_temp > nul
 mkdir C:\ast_strt > nul
+if not exist .\7z.exe (
+    if "%lang%"=="2" (
+        echo Error: 7z.exe was not found. And Anthon-Starter cannot run successfully. 
+        echo         Program will now exit! Press any key to exit!
+        pause>nul
+        cls
+        exit
+)
+    if "%lang%"=="1" (
+        echo Error: 7z.exe ä¸å­˜åœ¨. å®‰åŒå¼€å§‹ç¨‹åºå°†ä¸èƒ½è¿è¡Œ. 
+        echo          æŒ‰ä»»æ„é”®é€€å‡º!
+        pause>nul
+        cls
+        exit
+)
+)
 copy .\7z.exe C:\ast_temp > nul
+if not exist .\7z.dll (
+    if "%lang%"=="1" (
+        echo Error: 7z.dll was not found. And Anthon-Starter cannot run successfully. 
+        echo         Program will now exit! Press any key to exit!
+        pause>nul
+        cls
+        exit
+)
+    if "%lang%"=="2" (
+        echo Error: 7z.dll ä¸å­˜åœ¨. å®‰åŒå¼€å§‹ç¨‹åºå°†ä¸èƒ½è¿è¡Œ. 
+        echo          æŒ‰ä»»æ„é”®é€€å‡º!
+        pause>nul
+        cls
+        exit
+)
+)
 copy .\7z.dll C:\ast_temp > nul
+if not exist misc (
+     if "%lang%"=="2" (
+        echo Error: misc was not found. And Anthon-Starter cannot run successfully. 
+        echo       Program will now exit! Press any key to exit!
+        pause>nul
+        cls
+        exit
+)
+    if "%lang%"=="1" (
+        echo é”™è¯¯: misc ä¸å­˜åœ¨. å®‰åŒå¼€å§‹ç¨‹åºå°†ä¸èƒ½è¿è¡Œ. 
+        echo     æŒ‰ä»»æ„é”®é€€å‡º!
+        pause>nul
+        cls
+        exit
+)
+)
 copy .\misc C:\ast_temp > nul
 cd /d C:\ast_temp > nul
 7z e .\misc > nul
 del .\misc > nul
 
+
 REM Check the type of loader ( OS )
 if exist %systemdrive%\boot.ini set loader=nt5
 if exist %systemdrive%\Windows\boot\ set loader=nt6
-
+REM CHECK IF 7Z HAVE GENERATED "main.exe"
+if not exist .\main.exe (
+    if "%lang%"=="1" (
+        echo   é”™è¯¯:ç¨‹åºåœ¨è¿è¡Œæ—¶å‘ç”Ÿé—®é¢˜,ä¸èƒ½ç»§ç»­! é”™è¯¯ä»£ç ï¼š%errorlevel%  æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
+    )
+    if "%lang%"=="2" (
+        echo   Error: A FATAL error occurred while running, so the program cannot continue! 
+        echo   The error code is ï¼š%errorlevel%
+        echo   Press any key to exit the program.
+    )
+    pause>nul
+    exit
+ )
 REM GO YOU!
 start .\main.exe %lang% %loader%
 
 REM WHAT IF SOMEONE CLICK 'NO' WHEN UAC NOTIFIES?
 if "%errorlevel%"=="5" (
 	if "%lang%"=="1" (
-		echo   ×¢Òâ£ºÄú¾Ü¾øÁË°²Í¬¿ªÊ¼³ÌÐòµÄÌáÉýÈ¨ÏÞ£¬°²Í¬¿ªÊ¼³ÌÐò½«ÎÞ·¨ÔËÐÐ¡£
-		echo         °´ÈÎÒâ¼üÍË³ö±¾³ÌÐò¡£
+		echo   ×¢ï¿½â£ºï¿½ï¿½ï¿½Ü¾ï¿½ï¿½Ë°ï¿½Í¬ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½Þ£ï¿½ï¿½ï¿½Í¬ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½
+		echo         ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		)
 	if "%lang%"=="2" (
 		echo   Attention: You've refused the permission elevating requirement of Anthon-Starter!
@@ -96,23 +177,19 @@ if "%errorlevel%"=="5" (
 		echo   Press any key to exit the program.
 	)
 pause > nul
-rd /s /q %systemdrive%\ast_strt
-rd /s /q %systemdrive%\ast_bkup
-rd /s /q %systemdrive%\ast_temp
-set lang=
-exit
+goto dist_clean
 )
 
 if "%errorlevel%"=="0" exit
 
 REM There must be something wrong when error code isn't 0...
 if "%lang%"=="1" (
-	echo   *** ³ÌÐò×°ÔØÆÚ¼ä·¢ÉúÁËÖÂÃüµÄ´íÎó£¬°²Í¬¿ªÊ¼³ÌÐòÎÞ·¨ÔËÐÐ¡£
-	echo   *** ´íÎó´úÂë£º%errorlevel%
+	echo   *** ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½Ú¼ä·¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ó£¬°ï¿½Í¬ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½
+	echo   *** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£º%errorlevel%
 	echo.
-	echo       Çë·ÃÎÊ http://bugs.anthonos.org ÏòÎÒÃÇ±¨¸æÕâ¸öÎÊÌâ...
+	echo       ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ http://bugs.anthonos.org ï¿½ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...
 	echo.
-	echo °´ÈÎÒâ¼üÍË³ö±¾³ÌÐò¡£
+	echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	)
 if "%lang%"=="2" (
 	echo   *** An error occurred when initializing and Anthon-Starter cannot run successfully.
@@ -123,6 +200,8 @@ if "%lang%"=="2" (
 	echo   Press any key to exit.
 	)
 pause > nul
+goto dist_clean
+:dist_clean
 rd /s /q %systemdrive%\ast_strt
 rd /s /q %systemdrive%\ast_bkup
 rd /s /q %systemdrive%\ast_temp
