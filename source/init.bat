@@ -17,17 +17,19 @@
 
 
 
-@echo off
+@echo off & setlocal
 title Anthon Open Source Community
 mode con lines=25 cols=85
 :detectlang
 for /f "eol=! skip=2 tokens=3" %%i in ('reg query "HKCU\Control Panel\International" /v "sLanguage"') do set "plang=%%i"    @rem echo %%i
     if "%plang%" == "CHS" (
         set lang=1
+        echo                 自动选择了中文简体
         goto language
     )
     if "%plang%" == "ENU" (
         set lang=2
+        echo                 The program selected English 
         goto language
     )
     if "%plang%" == "CHT" (
@@ -36,28 +38,26 @@ for /f "eol=! skip=2 tokens=3" %%i in ('reg query "HKCU\Control Panel\Internatio
     )
 set lang=
 goto language
-
+    
 :language
 cls
-echo                 ====  ��ѡ������ / Please choose your language  ====
+echo                 ====  请选择语言 / Please choose your language  ====
 echo                 [                                                  ]
-echo                 [             ���� 1 ѡ�ü������ġ�                ]
+echo                 [             输入 1 选用简体中文。                ]
 echo                 [         To use English please input 2.           ]
 echo                 [                                                  ]
 echo                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo.
-
-if "%lang%"=="" (
-        set /p lang=��
+if "%lang%" == "" (
+    set /p lang=→
 )
-
 cls
 if "%lang%"=="1" (
-	title ����װ�س���...
+	title 正在装载程序...
 	echo.
-	echo                                         ���á�
+	echo                                         你好。
 	echo.
-	echo ����װ�س���...
+	echo 正在装载程序...
 	goto check
 )
 if "%lang%"=="2" (
@@ -75,7 +75,7 @@ goto language
 :check
 REM Check if files have exist.
 if exist %systemdrive%\ast_temp\ rd /s /q %systemdrive%\ast_temp
-if exist %systemdrive%\ast_strt\ rd /s /q %systemdrive%\ast_strt
+if exist %systemdrive%\ast_strt\ rd /s /q %systemdrive%\ast_strt 
  REM ***WHAT IF SOMEONE START THE PROGRAM MANY TIMES?
   if exist %systemdrive%\ast_bkup_00\ (
       rd /s /q %systemdrive%\ast_bkup_00
@@ -86,6 +86,8 @@ if exist %systemdrive%\ast_bkup\ (
 	rd /s /q %systemdrive%\ast_bkup
 	)
 
+
+  
 REM Now begins initializing...
 mkdir C:\ast_bkup > nul
 mkdir C:\ast_temp > nul
@@ -145,7 +147,6 @@ cd /d C:\ast_temp > nul
 7z e .\misc > nul
 del .\misc > nul
 
-
 REM Check the type of loader ( OS )
 if exist %systemdrive%\boot.ini set loader=nt5
 if exist %systemdrive%\Windows\boot\ set loader=nt6
@@ -163,13 +164,13 @@ if not exist .\main.exe (
     exit
  )
 REM GO YOU!
-start .\main.exe %lang% %loader%
+start .\main.exe "%lang%" %loader%
 
 REM WHAT IF SOMEONE CLICK 'NO' WHEN UAC NOTIFIES?
 if "%errorlevel%"=="5" (
 	if "%lang%"=="1" (
-		echo   ע�⣺���ܾ��˰�ͬ��ʼ����������Ȩ�ޣ���ͬ��ʼ�������޷����С�
-		echo         ���������˳���������
+		echo   注意：您拒绝了安同开始程序的提升权限，安同开始程序将无法运行。
+		echo         按任意键退出本程序。
 		)
 	if "%lang%"=="2" (
 		echo   Attention: You've refused the permission elevating requirement of Anthon-Starter!
@@ -184,15 +185,15 @@ if "%errorlevel%"=="0" exit
 
 REM There must be something wrong when error code isn't 0...
 if "%lang%"=="1" (
-	echo   *** ����װ���ڼ䷢���������Ĵ��󣬰�ͬ��ʼ�����޷����С�
-	echo   *** �������룺%errorlevel%
+	echo   *** 程序装载期间发生了致命的错误，安同开始程序无法运行。
+	echo   *** 错误代码：%errorlevel%
 	echo.
-	echo       ������ http://bugs.anthonos.org �����Ǳ�����������...
+	echo       请访问 http://bugs.anthonos.org 向我们报告这个问题...
 	echo.
-	echo ���������˳���������
+	echo 按任意键退出本程序。
 	)
 if "%lang%"=="2" (
-	echo   *** An error occurred when initializing and Anthon-Starter cannot run successfully.
+	echo   *** A FATAL error occurred when initializing and Anthon-Starter cannot launch successfully.
 	echo   *** Error code: %errorlevel%
 	echo.
 	echo       Please visit http://bugs.anthonos.org to report this problem!
