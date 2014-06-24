@@ -22,8 +22,8 @@ cls
 title Anthon Open Source Community
 
 if not exist %systemdrive%\ast_strt\info.ast (
-	echo ¾¯¸æ£ºÕÒ²»µ½ÅäÖÃÎÄ¼þ¡£½«È±ÉÙ²¿·Ö¹¦ÄÜ¡£
-	echo Warning: Can't load the settings. Some features will be missing.
+	echo è­¦å‘Šï¼šæ‰¾ä¸åˆ°é…ç½®æ–‡ä»¶ã€‚å°†ç¼ºå°‘éƒ¨åˆ†åŠŸèƒ½ã€‚
+	echo Warning: Can't load the settings. Some features will not be available.
 	set lang=na
 	set location=na
 	ping 127.0.0.1 >nul
@@ -33,42 +33,42 @@ if not exist %systemdrive%\ast_strt\info.ast (
 cls
 echo Loading...
 REM Read the configuration data
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.ast^|findstr "^3:"') do set lang=%%b
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.ast^|findstr "^4:"') do set loader=%%b
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.ast^|findstr "^5:"') do set gpt_status=%%b
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.ast^|findstr "^6:"') do set instway=%%b
-for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.ast^|findstr "^7:"') do set location=%%b
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.ast^|findstr "^1:"') do set lang=%%b
+for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.ast^|findstr "^2:"') do set location=%%b
 REM Check if the backup files exist
 :skip_read_info
 if not exist %systemdrive%\ast_bkup\ (
-	if "%lang:~0,-1%"=="1" echo   *** ¾¯¸æ£ºÕÒ²»µ½±¸·ÝÎÄ¼þ¡£
-	if "%lang:~0,-1%"=="2" echo   *** Warning: Cannot find backup file.
+	if "%lang%"==""2" " echo   *** Warning: Cannot find backup file.
+	if "%lang%"==""1" " echo   *** è­¦å‘Šï¼šæ‰¾ä¸åˆ°å¤‡ä»½æ–‡ä»¶ã€‚
+	if "%lang%"==""2" " echo   *** Warning: Cannot find backup file.
+	if "%lang%"=="na" echo   *** Warning: Cannot find backup file.
 	pause
 )
 
-if "%lang:~0,-1%"=="1" goto cn_main
-if "%lang:~0,-1%"=="2" goto en_main
+if "%lang%"==""1" " goto cn_main
+if "%lang%"==""2" " goto en_main
+if "%lang%"=="na" goto en_main
 
 
 :cn_main
 cls
-title °²Í¬¿ªÊ¼³ÌÐò 0.1.2
-echo ====================£¾£¾£¾»¶Ó­Ê¹ÓÃ°²Í¬¿ªÊ¼³ÌÐò£¼£¼£¼====================
+title å®‰åŒå¼€å§‹ç¨‹åº 0.1.2
+echo ====================ï¼žï¼žï¼žæ¬¢è¿Žä½¿ç”¨å®‰åŒå¼€å§‹ç¨‹åºï¼œï¼œï¼œ====================
 echo.
-echo ¸ÐÐ»Äú°²×°°²Í¬¿ªÔ´ÉçÇø·¢ÐÐ°æ¡£
-echo ÏÖÔÚ°²Í¬¿ªÊ¼³ÌÐòÒÑ¾­×¼±¸ºÃÁË¶Ô°²×°ºóÏµÍ³²ÐÁôÎÄ¼þµÄÇåÉ¨¡£
+echo æ„Ÿè°¢æ‚¨å®‰è£…å®‰åŒ GNU/Linuxï¼Œåœ¨æ­¤å…¨ä½“å¼€å‘äººå‘˜ç¥æ‚¨èƒ½å¤Ÿæ„‰å¿«åœ°ä½¿ç”¨å®‰åŒ GNU/Linuxã€‚
+echo çŽ°åœ¨å®‰åŒå¼€å§‹ç¨‹åºå·²ç»å‡†å¤‡å¥½äº†å¯¹å®‰è£…åŽç³»ç»Ÿæ®‹ç•™æ–‡ä»¶çš„æ¸…æ‰«ã€‚
 echo.
-echo Çë°´ÈÎÒâ¼üÖ´ÐÐ²Ù×÷£¬»òÕßÄú¿ÉÒÔ¹Øµô´Ë´°¿Ú¡£
+echo è¯·æŒ‰ä»»æ„é”®æ‰§è¡Œæ“ä½œï¼Œæˆ–è€…æ‚¨å¯ä»¥å…³æŽ‰æ­¤çª—å£ã€‚
 pause > nul
 goto run
 
 :en_main
 cls
 title Anthon-Starter 0.1.2
-echo =========================£¾£¾£¾ Welcome! £¼£¼£¼=========================
+echo =========================ï¼žï¼žï¼ž Welcome! ï¼œï¼œï¼œ=========================
 echo.
-echo Thank you for installing AOSC distribution.
-echo Here we hope that you'll have a pleasant trip with it.
+echo Thank you for choosing Anthon GNU/Linux.
+echo Here all the developers wish you have a pleasant trip with Anthon GNU/Linux.
 echo.
 echo Now Anthon-Starter is ready for trash cleaning.
 echo.
@@ -79,8 +79,8 @@ goto run
 
 
 :run
-if "%lang:~0,-1%"=="1" echo ÇëÉÔºò£¬°²Í¬¿ªÊ¼³ÌÐòÕýÔÚÖ´ÐÐÈÎÎñ¡­¡­
-if "%lang:~0,-1%"=="2" echo Please wait while Anthon-Starter is cleaning files...
+if "%lang%"==""1" " echo è¯·ç¨å€™ï¼Œå®‰åŒå¼€å§‹ç¨‹åºæ­£åœ¨æ‰§è¡Œä»»åŠ¡â€¦â€¦
+if "%lang%"==""2" " echo Please wait while Anthon-Starter is cleaning files...
 
 if exist %systemdrive%\ast_bkup\boot.ini (
 	attrib -s -h -r %systemdrive%\boot.ini
@@ -92,24 +92,21 @@ if exist %systemdrive%\ast_bkup\BCDbckup (
 	bcdedit /import %systemdrive%\ast_bkup\BCDbckup
 )
 
-rd /s /q %systemdrive%\ast_bkup\
-rd /s /q %systemdrive%\ast_temp\
+rd /s /q %systemdrive%\ast_bkup
+rd /s /q %systemdrive%\ast_temp
 del /f %systemdrive%\g2ldr
-rd /s /q %location%live\
-
-:: AHHHHHHH!!! WHO HELP ME TO FINISH HERE!!
-
+del /f %location:~0,3%squash
 reg delete HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v Anthon-Starter_Startup_Utility /f
-if "%lang:~0,-1%"=="1" goto finish1
-if "%lang:~0,-1%"=="2" goto finish2
+if "%lang%"==""1" " goto finish1
+if "%lang%"==""2" " goto finish2
 goto finish2
 
 :finish1
 cls
-echo ²Ù×÷ÒÑÍê³É£¡¸ÐÐ»Äú¶Ô°²Í¬ GNU/Linux µÄÖ§³Ö£¡
+echo æ“ä½œå·²å®Œæˆï¼æ„Ÿè°¢æ‚¨å¯¹å®‰åŒ GNU/Linux çš„æ”¯æŒï¼
 echo.
-echo Çë°´ÈÎÒâ¼ü½áÊø±¾³ÌÐò¡£
-pause > nul
+echo è¯·æŒ‰ä»»æ„é”®ç»“æŸæœ¬ç¨‹åºã€‚
+pause>nul
 rd /s /q %systemdrive%\ast_strt
 exit
 
@@ -118,6 +115,7 @@ cls
 echo Cleaning has already finished! Thanks for your support!
 echo.
 echo Press any key to finish.
-pause > nul
+pause>nul
 rd /s /q %systemdrive%\ast_strt
 exit
+
