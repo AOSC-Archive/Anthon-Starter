@@ -17,31 +17,47 @@
 
 
 
-@echo off
+@echo off & setlocal
 title Anthon Open Source Community
 mode con lines=25 cols=85
+:detectlang
+for /f "eol=! skip=2 tokens=3" %%i in ('reg query "HKCU\Control Panel\International" /v "sLanguage"') do set "plang=%%i"    @rem echo %%i
+    if "%plang%" == "CHS" (
+        set lang=1
+        echo                 è‡ªåŠ¨é€‰æ‹©äº†ä¸­æ–‡ç®€ä½“
+        goto language
+    )
+    if "%plang%" == "ENU" (
+        set lang=2
+        echo                 The program selected English 
+        goto language
+    )
+    if "%plang%" == "CHT" (
+        goto language
+    )
+    )
+set lang=
+goto language
+    
 :language
 cls
-echo                 ====  ÇëÑ¡ÔñÓïÑÔ / Please choose your language  ====
+echo                 ====  è¯·é€‰æ‹©è¯­è¨€ / Please choose your language  ====
 echo                 [                                                  ]
-echo                 [             ÊäÈë 1 Ñ¡ÓÃ¼òÌåÖÐÎÄ¡£                ]
+echo                 [             è¾“å…¥ 1 é€‰ç”¨ç®€ä½“ä¸­æ–‡ã€‚                ]
 echo                 [         To use English please input 2.           ]
 echo                 [                                                  ]
 echo                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo.
-set /p lang=¡ú
-if "%lang%"=="" (
-	set lang=
-	goto language
+if "%lang%" == "" (
+    set /p lang=â†’
 )
-
 cls
 if "%lang%"=="1" (
-	title ÕýÔÚ×°ÔØ³ÌÐò...
+	title æ­£åœ¨è£…è½½ç¨‹åº...
 	echo.
-	echo                                         ÄãºÃ¡£
+	echo                                         ä½ å¥½ã€‚
 	echo.
-	echo ÕýÔÚ×°ÔØ³ÌÐò...
+	echo æ­£åœ¨è£…è½½ç¨‹åº...
 	goto check
 )
 if "%lang%"=="2" (
@@ -59,19 +75,73 @@ goto language
 :check
 REM Check if files have exist.
 if exist %systemdrive%\ast_temp\ rd /s /q %systemdrive%\ast_temp
-if exist %systemdrive%\ast_strt\ rd /s /q %systemdrive%\ast_strt
+if exist %systemdrive%\ast_strt\ rd /s /q %systemdrive%\ast_strt 
+ REM ***WHAT IF SOMEONE START THE PROGRAM MANY TIMES?
+  if exist %systemdrive%\ast_bkup_00\ (
+      rd /s /q %systemdrive%\ast_bkup_00
+  ) 
 if exist %systemdrive%\ast_bkup\ (
 	REM ***WHAT IF SOMEONE START THE PROGRAM WHEN OS CRASHED?
 	ren %systemdrive%\ast_bkup ast_bkup_00
 	rd /s /q %systemdrive%\ast_bkup
 	)
 
+
+  
 REM Now begins initializing...
 mkdir C:\ast_bkup > nul
 mkdir C:\ast_temp > nul
 mkdir C:\ast_strt > nul
+if not exist .\7z.exe (
+    if "%lang%"=="2" (
+        echo Error: 7z.exe was not found. And Anthon-Starter cannot run successfully. 
+        echo         Program will now exit! Press any key to exit!
+        pause>nul
+        cls
+        exit
+)
+    if "%lang%"=="1" (
+        echo Error: 7z.exe ä¸å­˜åœ¨. å®‰åŒå¼€å§‹ç¨‹åºå°†ä¸èƒ½è¿è¡Œ. 
+        echo          æŒ‰ä»»æ„é”®é€€å‡º!
+        pause>nul
+        cls
+        exit
+)
+)
 copy .\7z.exe C:\ast_temp > nul
+if not exist .\7z.dll (
+    if "%lang%"=="1" (
+        echo Error: 7z.dll was not found. And Anthon-Starter cannot run successfully. 
+        echo         Program will now exit! Press any key to exit!
+        pause>nul
+        cls
+        exit
+)
+    if "%lang%"=="2" (
+        echo Error: 7z.dll ä¸å­˜åœ¨. å®‰åŒå¼€å§‹ç¨‹åºå°†ä¸èƒ½è¿è¡Œ. 
+        echo          æŒ‰ä»»æ„é”®é€€å‡º!
+        pause>nul
+        cls
+        exit
+)
+)
 copy .\7z.dll C:\ast_temp > nul
+if not exist misc (
+     if "%lang%"=="2" (
+        echo Error: misc was not found. And Anthon-Starter cannot run successfully. 
+        echo       Program will now exit! Press any key to exit!
+        pause>nul
+        cls
+        exit
+)
+    if "%lang%"=="1" (
+        echo é”™è¯¯: misc ä¸å­˜åœ¨. å®‰åŒå¼€å§‹ç¨‹åºå°†ä¸èƒ½è¿è¡Œ. 
+        echo     æŒ‰ä»»æ„é”®é€€å‡º!
+        pause>nul
+        cls
+        exit
+)
+)
 copy .\misc C:\ast_temp > nul
 cd /d C:\ast_temp > nul
 7z e .\misc > nul
@@ -80,15 +150,27 @@ del .\misc > nul
 REM Check the type of loader ( OS )
 if exist %systemdrive%\boot.ini set loader=nt5
 if exist %systemdrive%\Windows\boot\ set loader=nt6
-
+REM CHECK IF 7Z HAVE GENERATED "main.exe"
+if not exist .\main.exe (
+    if "%lang%"=="1" (
+        echo   é”™è¯¯:ç¨‹åºåœ¨è¿è¡Œæ—¶å‘ç”Ÿé—®é¢˜,ä¸èƒ½ç»§ç»­! é”™è¯¯ä»£ç ï¼š%errorlevel%  æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
+    )
+    if "%lang%"=="2" (
+        echo   Error: A FATAL error occurred while running, so the program cannot continue! 
+        echo   The error code is ï¼š%errorlevel%
+        echo   Press any key to exit the program.
+    )
+    pause>nul
+    exit
+ )
 REM GO YOU!
-start .\main.exe %lang% %loader%
+start .\main.exe "%lang%" %loader%
 
 REM WHAT IF SOMEONE CLICK 'NO' WHEN UAC NOTIFIES?
 if "%errorlevel%"=="5" (
 	if "%lang%"=="1" (
-		echo   ×¢Òâ£ºÄú¾Ü¾øÁË°²Í¬¿ªÊ¼³ÌÐòµÄÌáÉýÈ¨ÏÞ£¬°²Í¬¿ªÊ¼³ÌÐò½«ÎÞ·¨ÔËÐÐ¡£
-		echo         °´ÈÎÒâ¼üÍË³ö±¾³ÌÐò¡£
+		echo   æ³¨æ„ï¼šæ‚¨æ‹’ç»äº†å®‰åŒå¼€å§‹ç¨‹åºçš„æå‡æƒé™ï¼Œå®‰åŒå¼€å§‹ç¨‹åºå°†æ— æ³•è¿è¡Œã€‚
+		echo         æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
 		)
 	if "%lang%"=="2" (
 		echo   Attention: You've refused the permission elevating requirement of Anthon-Starter!
@@ -96,26 +178,22 @@ if "%errorlevel%"=="5" (
 		echo   Press any key to exit the program.
 	)
 pause > nul
-rd /s /q %systemdrive%\ast_strt
-rd /s /q %systemdrive%\ast_bkup
-rd /s /q %systemdrive%\ast_temp
-set lang=
-exit
+goto dist_clean
 )
 
 if "%errorlevel%"=="0" exit
 
 REM There must be something wrong when error code isn't 0...
 if "%lang%"=="1" (
-	echo   *** ³ÌÐò×°ÔØÆÚ¼ä·¢ÉúÁËÖÂÃüµÄ´íÎó£¬°²Í¬¿ªÊ¼³ÌÐòÎÞ·¨ÔËÐÐ¡£
-	echo   *** ´íÎó´úÂë£º%errorlevel%
+	echo   *** ç¨‹åºè£…è½½æœŸé—´å‘ç”Ÿäº†è‡´å‘½çš„é”™è¯¯ï¼Œå®‰åŒå¼€å§‹ç¨‹åºæ— æ³•è¿è¡Œã€‚
+	echo   *** é”™è¯¯ä»£ç ï¼š%errorlevel%
 	echo.
-	echo       Çë·ÃÎÊ http://bugs.anthonos.org ÏòÎÒÃÇ±¨¸æÕâ¸öÎÊÌâ...
+	echo       è¯·è®¿é—® http://bugs.anthonos.org å‘æˆ‘ä»¬æŠ¥å‘Šè¿™ä¸ªé—®é¢˜...
 	echo.
-	echo °´ÈÎÒâ¼üÍË³ö±¾³ÌÐò¡£
+	echo æŒ‰ä»»æ„é”®é€€å‡ºæœ¬ç¨‹åºã€‚
 	)
 if "%lang%"=="2" (
-	echo   *** An error occurred when initializing and Anthon-Starter cannot run successfully.
+	echo   *** A FATAL error occurred when initializing and Anthon-Starter cannot launch successfully.
 	echo   *** Error code: %errorlevel%
 	echo.
 	echo       Please visit http://bugs.anthonos.org to report this problem!
@@ -123,6 +201,8 @@ if "%lang%"=="2" (
 	echo   Press any key to exit.
 	)
 pause > nul
+goto dist_clean
+:dist_clean
 rd /s /q %systemdrive%\ast_strt
 rd /s /q %systemdrive%\ast_bkup
 rd /s /q %systemdrive%\ast_temp

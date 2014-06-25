@@ -17,13 +17,13 @@
 
 
 
-@echo off
+@echo off & setlocal
 cls
 title Anthon Open Source Community
 
 if not exist %systemdrive%\ast_strt\info.ast (
-	echo ¾¯¸æ£ºÕÒ²»µ½ÅäÖÃÎÄ¼þ¡£½«È±ÉÙ²¿·Ö¹¦ÄÜ¡£
-	echo Warning: Can't load the settings. Some features will be missing.
+	echo è­¦å‘Šï¼šæ‰¾ä¸åˆ°é…ç½®æ–‡ä»¶ã€‚å°†ç¼ºå°‘éƒ¨åˆ†åŠŸèƒ½ã€‚
+	echo Warning: Can't load the settings. Some features will not be availble.
 	set lang=na
 	set location=na
 	ping 127.0.0.1 >nul
@@ -41,7 +41,7 @@ for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_strt\info.a
 REM Check if the backup files exist
 :skip_read_info
 if not exist %systemdrive%\ast_bkup\ (
-	if "%lang:~0,-1%"=="1" echo   *** ¾¯¸æ£ºÕÒ²»µ½±¸·ÝÎÄ¼þ¡£
+	if "%lang:~0,-1%"=="1" echo   *** è­¦å‘Šï¼šæ‰¾ä¸åˆ°å¤‡ä»½æ–‡ä»¶ã€‚
 	if "%lang:~0,-1%"=="2" echo   *** Warning: Cannot find backup file.
 	pause
 )
@@ -52,20 +52,20 @@ if "%lang:~0,-1%"=="2" goto en_main
 
 :cn_main
 cls
-title °²Í¬¿ªÊ¼³ÌÐò 0.1.2
-echo ====================£¾£¾£¾»¶Ó­Ê¹ÓÃ°²Í¬¿ªÊ¼³ÌÐò£¼£¼£¼====================
+title å®‰åŒå¼€å§‹ç¨‹åº 0.1.2
+echo ====================ï¼žï¼žï¼žæ¬¢è¿Žä½¿ç”¨å®‰åŒå¼€å§‹ç¨‹åºï¼œï¼œï¼œ====================
 echo.
-echo ¸ÐÐ»Äú°²×°°²Í¬¿ªÔ´ÉçÇø·¢ÐÐ°æ¡£
-echo ÏÖÔÚ°²Í¬¿ªÊ¼³ÌÐòÒÑ¾­×¼±¸ºÃÁË¶Ô°²×°ºóÏµÍ³²ÐÁôÎÄ¼þµÄÇåÉ¨¡£
+echo æ„Ÿè°¢æ‚¨å®‰è£…å®‰åŒå¼€æºç¤¾åŒºå‘è¡Œç‰ˆã€‚
+echo çŽ°åœ¨å®‰åŒå¼€å§‹ç¨‹åºå·²ç»å‡†å¤‡å¥½äº†å¯¹å®‰è£…åŽç³»ç»Ÿæ®‹ç•™æ–‡ä»¶çš„æ¸…æ‰«ã€‚
 echo.
-echo Çë°´ÈÎÒâ¼üÖ´ÐÐ²Ù×÷£¬»òÕßÄú¿ÉÒÔ¹Øµô´Ë´°¿Ú¡£
+echo è¯·æŒ‰ä»»æ„é”®æ‰§è¡Œæ“ä½œï¼Œæˆ–è€…æ‚¨å¯ä»¥å…³æŽ‰æ­¤çª—å£ã€‚
 pause > nul
 goto run
 
 :en_main
 cls
 title Anthon-Starter 0.1.2
-echo =========================£¾£¾£¾ Welcome! £¼£¼£¼=========================
+echo =========================ï¼žï¼žï¼ž Welcome! ï¼œï¼œï¼œ=========================
 echo.
 echo Thank you for installing AOSC distribution.
 echo Here we hope that you'll have a pleasant trip with it.
@@ -79,7 +79,7 @@ goto run
 
 
 :run
-if "%lang:~0,-1%"=="1" echo ÇëÉÔºò£¬°²Í¬¿ªÊ¼³ÌÐòÕýÔÚÖ´ÐÐÈÎÎñ¡­¡­
+if "%lang:~0,-1%"=="1" echo è¯·ç¨å€™ï¼Œå®‰åŒå¼€å§‹ç¨‹åºæ­£åœ¨æ‰§è¡Œä»»åŠ¡â€¦â€¦
 if "%lang:~0,-1%"=="2" echo Please wait while Anthon-Starter is cleaning files...
 
 if exist %systemdrive%\ast_bkup\boot.ini (
@@ -97,7 +97,7 @@ rd /s /q %systemdrive%\ast_temp\
 del /f %systemdrive%\g2ldr
 rd /s /q %location%live\
 
-:: AHHHHHHH!!! WHO HELP ME TO FINISH HERE!!
+REM AHHHHHHH!!! WHO HELP ME TO FINISH HERE!!
 
 reg delete HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v Anthon-Starter_Startup_Utility /f
 if "%lang:~0,-1%"=="1" goto finish1
@@ -106,9 +106,9 @@ goto finish2
 
 :finish1
 cls
-echo ²Ù×÷ÒÑÍê³É£¡¸ÐÐ»Äú¶Ô°²Í¬ GNU/Linux µÄÖ§³Ö£¡
+echo æ“ä½œå·²å®Œæˆï¼æ„Ÿè°¢æ‚¨å¯¹å®‰åŒ GNU/Linux çš„æ”¯æŒï¼
 echo.
-echo Çë°´ÈÎÒâ¼ü½áÊø±¾³ÌÐò¡£
+echo è¯·æŒ‰ä»»æ„é”®ç»“æŸæœ¬ç¨‹åºã€‚
 pause > nul
 rd /s /q %systemdrive%\ast_strt
 exit
