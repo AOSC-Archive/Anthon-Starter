@@ -97,7 +97,7 @@ rd /s /q %systemdrive%\ast_temp\
 del /f %systemdrive%\g2ldr
 rd /s /q %location%live\
 
-:: AHHHHHHH!!! WHO HELP ME TO FINISH HERE!!
+
 
 reg delete HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v Anthon-Starter_Startup_Utility /f
 if "%lang:~0,-1%"=="1" goto finish1
