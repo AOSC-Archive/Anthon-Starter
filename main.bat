@@ -383,8 +383,6 @@ if not "%vercho%"=="y" (
 
 
 echo （第六步，共六步）  开始部署启动...
-echo %instway%
-pause
 
 if "%instway%"=="write_mbr" (
 	set instway=edit_present
@@ -405,8 +403,6 @@ if "%instway%"=="write_gpt" (
 	goto cn_edit_done
 )
 if "%instway%"=="edit_present" (
-	echo dbgp03: %instway%
-	pause
 	if "%~2"=="nt5" goto cn_nt5_ntldr_edit
 	if "%~2"=="nt6" goto cn_nt6_bcd_edit
 )
@@ -433,8 +429,6 @@ goto cn_edit_done
 
 
 :cn_edit_done
-echo cn_edit_done
-pause
 
 :: Generate grub.cfg
 if "%instway%"=="edit_present" (
@@ -514,23 +508,24 @@ goto cn_target
 :: //////////English
 :en_main
 cls
-title 安同开始程序 0.1.2
-echo  ========================＞＞＞ 欢迎使用安同开始程序 ＜＜＜=========================
+title Anthon-Starter 0.1.2
+echo  ==============================＞＞＞ Welcome! ＜＜＜===============================
 echo.
-echo 本程序将引导您轻松地从硬盘安装安同开源社区的操作系统发行版：
-echo     * AnthonOS, AOSC桌面版；
-echo     * CentralPoint, AOSC服务器版；
-echo     * IcenowyLinux, AOSC技术架构版；
-echo     * AOSC Spins, AOSC派生版本；
+echo This program will guide you to complete the processess of installing the AnthonOS
+echo from your local hard drive! The following versions are currently supported:
+echo     * AnthonOS, The desktop version of AOSC;
+echo     * CentralPoint, The server version of AOSC;
+echo     * IcenowyLinux, The technical preview version of AOSC;
+echo     * AOSC Spins, The derivative version of AOSC;
 echo     * ...
 echo.
 echo.
-echo * 要马上开始安装，请直接敲击 回车 键；
-echo * 要查看本程序的版权信息请键入 license 然后回车；
-echo * 关于本程序请键入 about 然后回车；
-echo * 退出本程序请键入 exit 然后回车。
+echo * To start installation, please hit [ENTER];
+echo * To view the license about this program, please input "license" and hit [ENTER];
+echo * To view the about information, please input "about" and hit [ENTER] ;
+echo * If you want to quit, please input "exit" and hit [ENTER];
 echo.
-set /p cho=选择一个选项：
+set /p cho=Please make a choice:
 if "%cho%"=="" (
 	set cho=
 	goto en_check
@@ -560,7 +555,7 @@ cls
 
 
 :: Detect GPT... init.bat has no power to do it.
-echo 安同开始程序正在检测磁盘...
+echo We are checking your hard drive...
 mountvol W:\ /s
 if "%errorlevel%"=="0" (
 	if exist W:\EFI\ (
@@ -573,12 +568,12 @@ if "%errorlevel%"=="0" (
 		goto detect_gpt_done_en
 	)
 ) else (
-	echo *** 致命错误：安同开始程序无法正常挂载ESP分区，错误代码 %errorlevel%
-	echo     为安全起见，程序即将关闭。对此我们深感抱歉。
+	echo *** FATAL ERROR: Anthon-Starter Program cannot mount ESP partition, error code: %errorlevel%
+	echo     For some security reasons, program will now exit. We're really sorry for it.
 	echo.
-	echo     请访问 http://bugs.anthonos.org 向我们报告这个问题...
+	echo     Please visit http://bugs.anthonos.org to report this problem...
 	echo.
-	echo     按下任意键关闭本程序。
+	echo     Press any key to exit!
 	pause > nul
 	goto self_del
 )
@@ -587,27 +582,30 @@ if "%errorlevel%"=="0" (
 :detect_gpt_done_en
 
 cls
-echo  =========================＞＞＞ 第 1 步  检查计算机 ＜＜＜=========================
+echo  ===================＞＞＞ Step 1  Checking your computer ＜＜＜====================
 echo.
-if "%~2"=="nt5" echo * 探测到您的系统类型为Windows NT5系列（Windows 2k, XP等）
-if "%~2"=="nt6" echo * 探测到您的系统类型为Windows NT6系列（Windows Vista, 7, 8等）
-if "%gpt_status%"=="1" echo * 探测到您使用了GUID分区表（GPT）
-if "%gpt_status%"=="0" echo * 探测到您使用了主引导记录（MBR）
+if "%~2"=="nt5" echo * We detected Windows NT5 series on your computer (like Windows 2k, XP)
+if "%~2"=="nt6" echo * We detected Windows NT6 series on your computer（like as Windows Vista, 7, 8）
+if "%gpt_status%"=="1" echo * We found that you are using GUID Partition Table (GPT)
+if "%gpt_status%"=="0" echo * We found that you are using Master Boot Record (MBR)
 echo.
-echo 在安装系统之前，请您注意以下注意事项：
+echo Before installing please read the folloing instructions carefully: 
 echo.
-echo   1. 请【务必】把安装所需文件装入本地硬盘（而不是U盘、移动硬盘、MP3等设备），因此在
-echo        您执行下一步之前请拔除所有外接设备；
+echo   1. Please PUT ALL YOUR INSTALLATION FILES INTO YOUR LOCAL HARD DRIVE 
+echo        (NOT U-DISK, Portable hard disk, or MP3 etc...)
+echo        PLEASE REMOVE ALL THE PORTABLE DEVICE BEFORE INSTALLING!
 echo.
-echo   2. 安同开源社区所有发行版均只运行在x86_64架构的中央处理器上，请自行查询您的计算机
-echo        是否符合要求，安同开始程序暂时不提供自动检查功能；
+echo   2. All those versions can only run on x86_64 CPU, please check your computer
+echo        whether it is meet the requirements, this program currently cannot detect it;
 echo.
-echo   3. 请保证您在安装相应版本的系统之前认真地阅读了硬件要求以免使您不快；
+echo   3. Please check the hardware requirements before installing, otherwise you may
+echo        feel unhappy;
 echo.
-echo   4. 安同开源社区发行版则均遵循 GNU LGPL 协议发布。
+echo   4. All the AOSC distribution are published under GNU LGPL license.
 echo.
 echo.
-echo 确认无误后，直接按下回车键继续安装，键入 EXIT 可以退出本程序。
+echo If everything goes well, please hit [ENTER] to start installation,
+echo   or type EXIT to quit. 
 set /p chkcho=→
 if /i "%chkcho%"=="EXIT" goto self_del
 if "%chkcho%"=="" goto en_image
@@ -620,12 +618,12 @@ goto detect_gpt_done_en
 
 :en_image
 cls
-echo  =========================＞＞＞ 第 2 步  选择文件 ＜＜＜===========================
+echo  ======================＞＞＞ Step 2  Choosing Files ＜＜＜=========================
 echo.
-echo 请键入您所获取的光盘映像文件的所在位置。
-echo   【注意】键入各种非法字符和路径将导致操作失败！
+echo Please input the path of the image file which you obtained from our website
+echo   【WARNING】Any illegal characters are not accepted here！
 echo.
-echo 右键粘贴功能可用；键入 EXIT 可以退出本程序。
+echo You can paste your path by right-clicking your mouse; type EXIT to quit.
 set /p file=→
 if /i "%file%"=="EXIT" goto self_del
 if "%file%"=="^" goto en_err1
@@ -640,15 +638,15 @@ if not exist %file% goto en_err1
 
 :: Check if the image file is AOSC Linux distribution...
 echo.
-echo 安同开始程序正在检验此文件...
+echo We are verifying this file...
 %systemdrive%\ast_temp\7z x %file% -o%systemdrive%\ast_temp\ md5sum.ast -y > nul
 if not "%errorlevel%"=="0" (
-	echo     *** 警告：这不是安同开始程序所支持的文件，错误代码：%errorlevel%
-	echo               继续操作将导致意想不到的后果，因此安同开始程序拒绝操作这个文件。
+	echo     *** WARNING: This file is not supported by the program, error code: %errorlevel%
+	echo               It would cause serious problems if you choose to continue.
+	echo               So Anthon-Starter will refuse to continue!
+	echo         Please report this issue to http://bugs.anthonos.org/
 	echo.
-	echo         请将问题报告到 http://bugs.anthonos.org/
-	echo.
-	echo     按下任意键退出安同开始程序。
+	echo     Press any key to quit.
 	pause > nul
 	goto self_del
 )
@@ -663,29 +661,29 @@ if "%imginfo_dist%"=="ancp" goto en_target
 if "%imginfo_dist%"=="ienl" goto en_target
 if "%imginfo_dist%"=="spin" goto en_target
 :: There must be something interesting...
-echo     *** 错误：这不是安同开始程序所支持的系统版本！
-echo               代系：%imginfo_os%
-echo               发行：%imginfo_dist%
-echo               版本：%imginfo_ver%
-echo               语言：%imginfo_lang%
+echo     *** ERROR: This distribution is not supported！
+echo               Generation:   %imginfo_os%
+echo               Distribution: %imginfo_dist%
+echo               Verion:       %imginfo_ver%
+echo               language:     %imginfo_lang%
 echo.
-echo               继续操作可能发生意想不到的后果，因此安同开始程序将拒绝操作。
+echo               It would cause serious problems if you choose to continue.
+echo               So Anthon-Starter will refuse to continue!
+echo         Please report this issue to http://bugs.anthonos.org/
 echo.
-echo         请将问题报告到 http://bugs.anthonos.org/
-echo.
-echo     按下任意键退出安同开始程序。
+echo     Press any key to quit.
 pause > nul
 goto self_del
 
 
 :en_target
 cls
-echo  =========================＞＞＞ 第 3 步  解压位置 ＜＜＜===========================
+echo  ==========================＞＞＞ Step 3  Extract ＜＜＜============================
 echo.
-echo 请输入一个解压位置以确保安装程序可以正常释放文件。
-echo   直接按下回车键将设定解压位置为%systemdrive%\
+echo Please input a path where Anthon-Starter can extract its files to.
+echo   If you hit [ENTER] without input anything, we will extract to %systemdrive%\
 echo.
-echo   * 输入方式示例：%systemdrive%\  键入 EXIT 可以退出本程序。
+echo   * e.g.: %systemdrive%\  Type EXIT to quit.
 set /p location=→
 if /i "%location%"=="EXIT" goto self_del
 if "%location%"=="" (
@@ -698,15 +696,15 @@ goto en_way
 
 :en_way
 cls
-echo  =========================＞＞＞ 第 4 步  安装方式 ＜＜＜===========================
+echo  ==========================＞＞＞ Step 4  Method ＜＜＜=============================
 echo.
-echo 请指定引导到安装程序所使用的启动方式。
-echo   【注意】除非您拥有专业知识，否则请使用默认设置“通过NT引导器嵌套引导”！
-echo.
-echo   * 直接按下回车键设定安装方式为“通过NT引导器嵌套引导”；
-if "%gpt_status%"=="0" echo   * 安装方式“通过主引导记录启动”【暂不被支持】；
-if "%gpt_status%"=="1" echo   * 输入 write_gpt 并按下回车键设定安装方式为“通过EFI引导启动”；
-echo   * 键入 EXIT 并按下回车键可以退出本程序。
+echo Please choose a method to boot the installer.
+echo   【WARNING】UNLESS YOU KNOW WHAT YOU ARE DOING, OTHERWISE PLEASE SELECT
+echo    “boot installer by NT bootloader”！
+echo   * Hit [ENTER] directly to choose “boot installer by NT bootloader”;
+if "%gpt_status%"=="0" echo   * Type write_mbr to choose “Boot from MBR”;
+if "%gpt_status%"=="1" echo   * Type write_gpt to choose “Boot from EFI”;
+echo   * Type EXIT to quit.
 set /p instway=→
 if /i "%instway%"=="EXIT" goto self_del
 if "%instway%"=="" (
@@ -737,27 +735,27 @@ goto en_way
 
 :en_ready
 cls
-echo  =======================＞＞＞ 第 5 步  准备安装程序 ＜＜＜=========================
+echo  =====================＞＞＞ Step 5  Ready to Install ＜＜＜=========================
 echo.
-echo 请确认您的设置是否正确：
+echo Please check all you settings before moving to installer: 
 echo.
-echo * 您设定的文件为：%file%
-echo       - 代系：AOSC OS%imginfo_os:~2,3%
-if "%imginfo_dist%"=="anos" echo       - 发行版本：安同桌面版本
-if "%imginfo_dist%"=="ancp" echo       - 发行版本：安同服务器版本 ( CentralPoint )
-if "%imginfo_dist%"=="ienl" echo       - 发行版本：安同技术架构版本 ( IcenowyLinux )
-if "%imginfo_dist%"=="spin" echo       - 发行版本：AOSC派生版本 ( AOSC Spins )
-echo       - 系统版本号：%imginfo_ver%
-echo       - 系统语言：%imginfo_lang%
+echo * The file you have chosen: %file%
+echo       - Generation: AOSC OS%imginfo_os:~2,3%
+if "%imginfo_dist%"=="anos" echo       - Distro: AOSC Desktop
+if "%imginfo_dist%"=="ancp" echo       - Distro: AOSC Server ( CentralPoint )
+if "%imginfo_dist%"=="icnl" echo       - Distro: AOSC Tech preview ( IcenowyLinux )
+if "%imginfo_dist%"=="spin" echo       - Distro: AOSC derivative ( AOSC Spins )
+echo       - Version:  %imginfo_ver%
+echo       - Language: %imginfo_lang%
 echo.
-echo * 您设定的解压路径为：%location%
+echo * And will extract files to %location%
 echo.
-if "%instway%"=="edit_present" echo * 您将通过NT引导器嵌套引导安装程序（默认设置）
-if "%instway%"=="write_mbr" echo * 您将通过修改主引导记录引导安装程序
-if "%instway%"=="write_gpt" echo * 您将通过修改ESP来从EFI引导安装程序
+if "%instway%"=="edit_present" echo * You will boot installer by NT bootloader（default）
+if "%instway%"=="write_mbr" echo * You will boot installer by modifying MBR
+if "%instway%"=="write_gpt" echo * You will boot installer by modifying ESP to boot from EFI
 echo.
-echo 按下回车键开始准备安装程序，否则请键入 no 然后回车。
-echo   键入 EXIT 然后按下回车可以退出本程序。
+echo Hit [ENTER] to continue, otherwise please type "no".
+echo   Type EXIT to quit.
 set /p yesno=→
 if /i "%yesno%"=="EXIT" goto self_del
 if "%yesno%"=="no" (
@@ -773,7 +771,7 @@ goto en_ready
 
 :en_run
 cls
-echo  ============================＞＞＞ 准备安装程序中 ＜＜＜===========================
+echo  ============================＞＞＞ Preparing installer ＜＜＜======================
 echo          _          _   _                      ____  _             _
 echo         / \   _ __ ^| ^|_^| ^|__   ___  _ __      / ___^|^| ^|_ __ _ _ __^| ^|_ ___ _ __
 echo        / _ \  '_ \^| __^| '_ \ / _ \^| '_ \ ____\___ \^| __/ _` ^| '__^| __/ _ \ '__^|
@@ -782,10 +780,10 @@ echo      /_/   \_\_^| ^|_^|\__^|_^| ^|_^|\___/^|_^| ^|_^|    ^|____/ \__\__,_^|
 echo.
 echo  ===================================================================================
 echo.
-echo 安同开始程序正在努力准备好安装程序。
-echo 这个过程需要一些时间，如果您选择泡上一杯咖啡应该是不错的选择。
+echo We are trying to preparing installer...
+echo It may take a while. During this time, why not making a pot of coffee?
 echo.
-echo （第一步，共六步）  备份系统重要位置...
+echo (1 of 6)  Backing up ...
 
 
 if "%~2"=="nt5" (
@@ -797,49 +795,49 @@ if "%~2"=="nt6" bcdedit /export %systemdrive%\ast_bkup\BCDbckup
 :: dd if=\\?\Device\Harddisk0\Partition1 of=%systemdrive%\ast_bkup\MBRbckup bs=446 count=1
 
 
-echo （第二步，共六步）  解压预安装环境内核...
+echo (2 of 6)  Decompressing pre-installation environment kernel...
 :: While extracting the files in [image_file]/boot/ , the new folder "boot" will be created by 7-Zip too.
 :: For some users would install some recovery software (like "One-key Ghost", they will create a folder named "boot" too),
 ::   we first extract them into %temp%\ and then copy them into ast_strt\ .
 %systemdrive%\ast_temp\7z x %file% -o%temp%\ boot\vmlinuz -y > nul
 move %temp%\boot\vmlinuz %systemdrive%\ast_strt\ > nul
 
-echo （第三步，共六步）  解压预安装环境内存盘...
+echo (3 of 6)  Decompressing pre-installation environment RAM disk...
 %systemdrive%\ast_temp\7z x %file% -o%temp%\ boot\initrd -y > nul
 move %temp%\boot\initrd %systemdrive%\ast_strt\ > nul
 
-echo （第四步，共六步）  解压操作系统安装文件...
-echo         * 本过程耗时较长，请耐心等待。
+echo (4 of 6)  Decompressing operating system ...
+echo         * It may take much time here, so please wait patiently!
 :: But notice that if we ::ove the folder "live" the kernel won't be able to find it...
 %systemdrive%\ast_temp\7z x %file% -o%location% live\live.squashfs -y > nul
 
-echo （第五步，共六步）  校验安装文件...
-echo     1 / 3  校验预安装环境内核...
+echo (5 of 6)  Verifying files...
+echo     1 / 3  Verifying pre-installation environment kernel...
 :: Read md5sum.ast
 for /f "delims=" %%i in ('%systemdrive%\ast_temp\md5sum.exe -b %systemdrive%\ast_strt\vmlinuz') do set md5sum_buf=%%i
 for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum.ast^|findstr "^4:"') do set md5sum_vmlinuz=%%b
 if not %md5sum_buf:~1,33% == %md5sum_vmlinuz:~0,32% (
-	echo                       *** 错误: 预安装环境内核校验失败！
+	echo                       *** ERROR: pre-installation environment kernel is not correct!
 	set verify_error=1
 )
 set md5sum_vmlinuz=
 set md5sum_buf=
 
-echo     2 / 3  校验预安装环境内存盘...
+echo     2 / 3  Verifying pre-installation environment RAM disk...
 for /f "delims=" %%i in ('%systemdrive%\ast_temp\md5sum.exe -b %systemdrive%\ast_strt\initrd') do set md5sum_buf=%%i
 for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum.ast^|findstr "^5:"') do set md5sum_initrd=%%b
 if not %md5sum_buf:~1,33% == %md5sum_initrd:~0,32% (
-	echo                       *** 错误: 预安装环境内存盘校验失败！
+	echo                       *** ERROR: pre-installation environment RAM disk is not correct!
 	set verify_error=1
 )
 set md5sum_initrd=
 set md5sum_buf=
 
-echo     3 / 3  校验操作系统安装文件...
+echo     3 / 3  Verifying operating system...
 for /f "delims=" %%i in ('%systemdrive%\ast_temp\md5sum.exe -b %location%live\live.squashfs') do set md5sum_buf=%%i
 for /f "tokens=1* delims=:" %%a in ('findstr /n .* %systemdrive%\ast_temp\md5sum.ast^|findstr "^6:"') do set md5sum_squash=%%b
 if not %md5sum_buf:~1,33% == %md5sum_squash:~0,32% (
- 	echo                       *** 错误: 操作系统安装文件校验失败！
+ 	echo                       *** ERROR: operating system is not correct!
  	set verify_error=1
 )
 set md5sum_squash=
@@ -847,8 +845,8 @@ set md5sum_buf=
 
 if not defined verify_error goto en_verify_success
 
-echo        *** 映像文件校验失败！继续进行安装可能导致安装失败...
-echo            若要继续安装请输入 y 然后按下回车，输入其它字符或回车退出程序。
+echo        *** Failed to verify files！If you choose to continue, you may face errors...
+echo            type y to force continue, type other characters to quit.
 set /p vercho=            →
 if not "%vercho%"=="y" (
 	rd /s /q %location%live\
@@ -858,9 +856,7 @@ if not "%vercho%"=="y" (
 :en_verify_success
 
 
-echo （第六步，共六步）  开始部署启动...
-echo %instway%
-pause
+echo (6 of 6)  Start deploying boot...
 
 if "%instway%"=="write_mbr" (
 	set instway=edit_present
@@ -869,9 +865,9 @@ if "%instway%"=="write_mbr" (
 if "%instway%"=="write_gpt" (
 	mountvol W:\ /s
 	if not "%errorlevel%"=="0" (
-		echo     *** 致命错误：ESP分区挂载失败！错误代码：%errorlevel%
-		echo         为安全起见，安同开始程序将不再对分区表进行操作。
-		echo         系统部署方式将更改为：通过NT引导器嵌套引导安装程序（默认设置）。
+		echo     *** FATAL ERROR: Failed to mount ESP partition! Error code: %errorlevel%
+		echo         For security reasons, Anthon-Starter will not modify your Partition table.
+		echo         The deploy method has changed to: boot installer by NT bootloader (default).
 		mountvol W:\ /d
 		if "%~2"=="nt5" goto en_nt5_ntldr_edit
 		if "%~2"=="nt6" goto en_nt6_bcd_edit
@@ -881,8 +877,6 @@ if "%instway%"=="write_gpt" (
 	goto en_edit_done
 )
 if "%instway%"=="edit_present" (
-	echo dbgp03: %instway%
-	pause
 	if "%~2"=="nt5" goto en_nt5_ntldr_edit
 	if "%~2"=="nt6" goto en_nt6_bcd_edit
 )
@@ -893,13 +887,13 @@ echo [boot loader] > %systemdrive%\boot.ini
 echo timeout=10 >> %systemdrive%\boot.ini
 echo default=%systemdrive%\ast_strt\g2ldr.mbr >> %systemdrive%\boot.ini
 echo [operating systems] >> %systemdrive%\boot.ini
-echo %systemdrive%\WINDOWS="启动原来的 Windows 操作系统" >> %systemdrive%\boot.ini
-echo %systemdrive%\ast_strt\g2ldr.mbr="启动 AOSC Live" >> %systemdrive%\boot.ini
+echo %systemdrive%\WINDOWS="Start original Windows" >> %systemdrive%\boot.ini
+echo %systemdrive%\ast_strt\g2ldr.mbr="Start AOSC Live" >> %systemdrive%\boot.ini
 echo. >> %systemdrive%\boot.ini
 goto en_edit_done
 
 :en_nt6_bcd_edit
-for /f "delims=" %%i in ('bcdedit /create /d "启动 AOSC Live" /application bootsector') do set uid=%%i
+for /f "delims=" %%i in ('bcdedit /create /d "Start AOSC Live" /application bootsector') do set uid=%%i
 bcdedit /set %uid:~2,38% device partition=%systemdrive%
 bcdedit /set %uid:~2,38% path \ast_strt\g2ldr.mbr
 bcdedit /displayorder %uid:~2,38% /addlast
@@ -909,8 +903,6 @@ goto en_edit_done
 
 
 :en_edit_done
-echo en_edit_done
-pause
 
 :: Generate grub.cfg
 if "%instway%"=="edit_present" (
@@ -949,34 +941,34 @@ goto en_finish
 
 :en_finish
 cls
-echo  ==============================＞＞＞ 需要重启 ＜＜＜===============================
+echo  =============================＞＞＞ HERE WE GO ＜＜＜==============================
 echo.
-echo 安同开始程序已经准备好了操作系统的安装部署，即将重新启动到安装程序。
-echo 请保存好您的工作，按下任意键重新启动您的电脑。
+echo Anthon-Starter has finished preparing installer, and will soon reboot to installer.
+echo Please save all your current data, and then press any key to reboot.
 pause > nul
 goto before_reboot
 
 
 :en_err1
 cls
-echo  ===============================＞＞＞ 出错啦 ＜＜＜================================
+echo  ===============================＞＞＞ ERROR! ＜＜＜================================
 echo.
-echo 您输入的这个：%file%
-echo 它并不存在！请确认路径是否错误...
+echo You typed: %file%
+echo That is not exist！Please make sure you have input the right path...
 echo.
-echo 按下任意键返回上一步！
+echo Press any key to back！
 pause > nul
 set file=
 goto en_image
 
 :en_err2
 cls
-echo  ===============================＞＞＞ 出错啦 ＜＜＜================================
+echo  ===============================＞＞＞ ERROR! ＜＜＜================================
 echo.
-echo 您输入的这个：%location%
-echo 它并不存在！请确认盘符是否错误...
+echo You typed: %location%
+echo That is not exist! Please make sure you have input the right path...
 echo.
-echo 按下任意键返回上一步！
+echo Press any key to back！
 pause>nul
 set location=
 goto en_target
