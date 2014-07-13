@@ -1,7 +1,7 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
  * Copyright (C) 2014 Anthon Open Source Community
- * This file is a part of Anthon-Starter, for function declaration using.
+ * This file is a part of Anthon-Starter.
  * 
  * Anthon-Starter is licensed under GNU LGPL: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
@@ -18,12 +18,12 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* int main ( int argc, char** argv, char** envp ); */
+/* int main ( int argc, char **argv, char **envp ); */
 
 /*
  * chkargs: Check the arguments which is passed to Anthon-Starter.
  */
-int chkargs ( int argc, char** argv );
+int chkargs ( int argc, char **argv );
 
 /*
  * run: Including
@@ -46,7 +46,7 @@ int init ();
 /*
  * getsysinfo: Get the system info, such as system drive, CPU architecture, etc.
  */
-int getsysinfo ( char** envp );
+int getsysinfo ( char **envp );
 
 /*
  * backup: Backup the important files before we do everything.
