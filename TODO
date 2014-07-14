@@ -1,2 +1,3 @@
 1. Variables that included in function run() ---- Junde Yi
 2. Use "p = getenv ( "SystemDrive" );" to get system drive. ---- Junde Yi
+3. chkargs ---- Junde Yi

@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* int main ( int argc, char **argv, char **envp ); */
+/* int main ( int argc, char **argv ); */
 
 /*
  * chkargs: Check the arguments which is passed to Anthon-Starter.

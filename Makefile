@@ -11,7 +11,7 @@ SRCDIR =
 DESTDIR =
 
 all:
-	$(CC) $(CCFLAGS) -o $(EXENAME).exe main.c help_message.c
+	$(CC) $(CCFLAGS) -o $(EXENAME).exe main.c chkargs.c help_message.c
 
 resource:
 # 	$(RES) -i ast.rc -o $(DESTDIR)ast_rc.o

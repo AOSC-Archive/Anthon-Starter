@@ -19,33 +19,20 @@
  */
 
 # include <stdio.h>
+/* In MinGW io.h is directory put in root directory.
+ * For I'm working with Linux now so it is in directory "sys". Will change when returning to Windows (w)
+ * # include <io.h>
+ */
 # include <sys/io.h>
 # include <stdlib.h>
 # include <string.h>
 
-# include "funcs.h"
+# include "funcs.h" /* Dunction prototypes */
+# include "defs.h" /* Definitions */
 
-# define PTABLE_UNKNOWN 0
-# define PTABLE_MBR 5
-# define PTABLE_GPT 6
-
-# define LOADER_NTLDR 7
-# define LOADER_BCD 8
-# define LOADER_UNKNOWN 9
-
-# define EDIT_PRESENT 15
-# define EDIT_MBR 16
-# define EDIT_ESP 17
-
-# define ANOS 25
-# define ANCP 26
-# define ICNL 27
-# define SPIN 28
-# define UNKN 29
-
-int main ( int argc, char **argv, char **envp )
+int main ( int argc, char **argv )
 {
-    /* Declare variables */
+    /* Declare variables and initialize them. */
     int loader = LOADER_UNKNOWN, instform = EDIT_PRESENT, ptable = PTABLE_UNKNOWN;
     char *osimage = ( char* ) NULL, *ostarget = ( char* ) NULL;
 
@@ -55,31 +42,37 @@ int main ( int argc, char **argv, char **envp )
         char *dist,
              *ver,
              *lang;
-    } imginfo = { UNKN,
-                  NULL,
-                  NULL,
-                  NULL
-                };
+    } imginfo = { UNKN, NULL, NULL, NULL };
+    /* End of variable declaration */
     
-    /*
-    switch ( chkargs() )
+    /* Check the arguments. */
+    switch ( chkargs ( argc, argv ) )
     {
         case 0:
             // run 
             break;
         case 1:
-            // help
+            help_message();
+            return 0;
+        case 2:
+            // startup
+            puts ( "Active startup." );
             break;
+        case 3:
+            // unknown argument
+            printf ( "Unknown command: %s\n", argv[1] );
+            help_message();
+            return 1;
         default:
+            break;
             // wtf?
     }
-    */
-    
+
     /* TODO:
      * chkargs( ... );
      * switch ( xxx );
      * ...
      */
-    help_message();
+    
     return 1;
 }
