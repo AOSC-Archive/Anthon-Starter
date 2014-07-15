@@ -40,7 +40,7 @@ int chkargs ( int argc, char **argv )
         { "no-verify", no_argument, NULL, NO_VERIFY },
         { "no-extract", no_argument, NULL, NO_EXTRACT },
         { "help", no_argument, NULL, 'h' },
-        {  0, 0, 0, 0},
+        { 0, 0, 0, 0 },
     };
 
     /* These are for getopt() */
@@ -48,17 +48,17 @@ int chkargs ( int argc, char **argv )
     extern int optind, opterr, optopt;
 
     /* Debug information, will remove when release. */
-    printf("\n========== Debug Information ==========");
-    printf("\nCompile Time: %s %s\nGCC Version: %s\n", __DATE__, __TIME__, __VERSION__);
-    printf("%i Parameters detected.\n", argc-1);
-    for( i = 0; i<argc; i++)
-        printf("%s is argv[%i]\n", argv[i], i);
+    printf( "\n========== Debug Information ==========" );
+    printf( "\nCompile Time: %s %s\nGCC Version: %s\n", __DATE__, __TIME__, __VERSION__);
+    printf( "%i Parameters detected.\n", argc-1 );
+    for( i = 0; i<argc; i++ )
+        printf( "argv[%i] : %s\n", i, argv[i] );
     printf("=======================================\n");
     
     /* argv[1] is command */
 
     if ( argc < 2 )
-        return 3;
+        return 4;
 
     if ( strcmp ( argv[1], "install" ) == 0 )
     {
@@ -86,14 +86,21 @@ int chkargs ( int argc, char **argv )
                     break;
                 case 'h':
                     return 1;
+                case NO_VERIFY:
+                    puts ( "Will not verify image file" );
+                    break;
+                case NO_EXTRACT:
+                    puts ( "Will not extract files" );
+                    break;
                 case '?':
                     puts ( "Unknown switch." );
-                    break;
+                    return 4;
                 case ':':
                     puts ( "Not enouth arguments" );
-                    break;
+                    return 4;
             }
         }
+        return 3;
     }
 
     if ( strcmp ( argv[1], "help" ) == 0 )
@@ -103,5 +110,5 @@ int chkargs ( int argc, char **argv )
         return 2;
 
     /* Whatever... return unknown. */
-    return 3;
+    return 4;
 }

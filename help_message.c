@@ -29,19 +29,26 @@ int help_message ( void )
 Anthon-Starter 0.2.0 Development Preview\n\
 Copyright (C) 2014 Anthon Open Source Community\n\
 \n\
-Usage: ast <command> <image_file> <install_route> [<switches>...]\n\
+Usage: ast <command> [<switches>...]\n\
 \n\
 <Commands>\n\
   install            Install the specify AOSC OS to your computer\n\
   help               Show this help\n\
+  startup            Active startup status\n\
 \n\
 <Switches>\n\
-  --no-verify        Do not verify the image file\n\
-  --loader=          Set the installation method of boot loader\n\
-                     Available parameters:\n\
-                       edit_present: Edit the present NT loader (default)\n\
-                       write_mbr: Edit the MBR\n\
-  --reboot           Automatically reboot the system\n\
+  --live=, -l        Set the location of ISO image\n\
+  --form=, -f        Set the installation method of boot loader\n\
+                       Available parameters:\n\
+                         edit: Edit the present NT loader (default)\n\
+                         mbr: Edit the MBR\n\
+                         gpt: Edit the ESP\n\
+                         nodeploy: DO NOT deploy boot loader\n\
+  --pause, -p        Automatically pause after operation\n\
+  --reboot, -r       Automatically reboot the system\n\
+  --no-verify        DO NOT verify the files (Not recommend)\n\
+  --no-extract       DO NOT extract the files (Not recommend)\n\
+  --help, -h         Show help messages\n\
 \n\
 For any more information, please visit https://anthonos.org/\n\
 Report bugs to https://bugs.anthonos.org/\n"

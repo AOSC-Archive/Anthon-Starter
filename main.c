@@ -59,6 +59,9 @@ int main ( int argc, char **argv )
             puts ( "Active startup." );
             break;
         case 3:
+            // Debug use
+            return 0;
+        case 4:
             // unknown argument
             printf ( "Unknown command: %s\n", argv[1] );
             help_message();
