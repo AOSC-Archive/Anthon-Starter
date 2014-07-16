@@ -33,7 +33,6 @@ int chkargs ( int argc, char **argv,
               int will_pause, int will_reboot, int will_verify, int will_extract
             )
 {
-    int i = 0;
     char opttmp = '\0';
 
     struct option longopts[] = {
@@ -52,15 +51,6 @@ int chkargs ( int argc, char **argv,
 
     /* These are for getopt_long() */
     extern char *optarg;
-    extern int optind, opterr, optopt;
-
-    /* Debug information, will remove when release. */
-    printf( "\n========== Debug Information ==========" );
-    printf( "\nCompile Time: %s %s\nGCC Version: %s\n", __DATE__, __TIME__, __VERSION__);
-    printf( "%i Parameters detected.\n", argc-1 );
-    for( i = 0; i<argc; i++ )
-        printf( "argv[%i] : %s\n", i, argv[i] );
-    printf("=======================================\n");
     
     /* argv[1] is command */
 
@@ -77,11 +67,10 @@ int chkargs ( int argc, char **argv,
                     osimage = malloc ( strlen ( optarg ) + 1 );
                     strcpy ( osimage, optarg );
                     /* Check if the image file exists. */
-                    if ( access ( osimage, R_OK ) == 0 )
-                        printf ( "The iso image exists and it is %s\n", osimage );
-                    else
+                    if ( access ( osimage, R_OK ) != 0 )
                     {
-                        printf ( "  *** [E] The ISO image %s is not avaliable.\n          You may not have sufficient privileges, or it doesn't exist.\n", osimage );
+                        /* printf ( "\n  \033[0;31;1m*** [E] ISO image %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", osimage ); */
+                        printf ( "\n  *** [E] ISO image %s is not avaliable.\n          You may not have sufficient privileges, or it doesn\'t exist.\n", osimage );
                         return 0;
                     }
                     break;
@@ -89,26 +78,28 @@ int chkargs ( int argc, char **argv,
                 case 'o': /* --output, -o */
                     ostarget = malloc ( strlen ( optarg ) + 1 );
                     strcpy ( ostarget, optarg );
-                    printf ( "live.squashfs will be put into %s\n", ostarget );
+                    /* Check if the install route exists. */
+                    if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
+                    {
+                        /* printf ( "\n  \033[0;31;1m*** [E] The install route %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget ); */
+                        printf ( "\n  *** [E] The install route %s is not avaliable.\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget );
+                        return 0;
+                    }
                     break;
                 
                 case 'v': /* --verbose, -v */
-                    puts ( "Verbose mode enabled" );
                     verbose_mode = 1;
                     break;
                     
                 case 'q': /* --quiet, -q */
-                    puts ( "Quiet mode enabled" );
                     quiet_mode = 1;
                     break;
                     
                 case 'p': /* --pause, -p */
-                    puts ( "Will pause after operation" );
                     will_pause = 1;
                     break;
                     
                 case 'r': /* --reboot, -r */
-                    puts ( "Will automatically reboot" );
                     will_reboot = 1;
                     break;
                     
@@ -127,24 +118,20 @@ int chkargs ( int argc, char **argv,
                         puts ( "Wrong formula." );
                         return 0;
                     }
-                    printf ( "You've set the install formula: %s\n", optarg );
                     break;
                     
                 case 'h': /* --help, -h */
                     return 1;
                     
                 case NO_VERIFY: /* --no-verify */
-                    puts ( "Will not verify image file" );
                     will_verify = 0;
                     break;
                     
                 case NO_EXTRACT: /* --no-extract */
-                    puts ( "Will not extract files" );
                     will_extract = 0;
                     break;
                     
                 case '?': /* Unknown switch */
-                    puts ( "Unknown switch." );
                     return 4;
                     
                 /* It seems that GNU getopt_long() hasn't got this.
@@ -153,6 +140,12 @@ int chkargs ( int argc, char **argv,
                     return 4;
                 */
             }
+        }
+        /* Well... What if user forget to set osimage and ostarget? */
+        if ( ( osimage == NULL ) || ( ostarget == NULL ) )
+        {
+            puts ( "\nIt seems that you forget to set image file and install route!" );
+            return 0;
         }
         return 2;
     }

@@ -42,6 +42,11 @@ int main ( int argc, char **argv )
     } imginfo = { UNKN, NULL, NULL, NULL };
     /* End of variable declaration */
     
+    puts (
+"\n\
+Anthon-Starter 0.2.0 Development Preview\n\
+Copyright (C) 2014 Anthon Open Source Community"
+         );
     /* Check the arguments. */
     switch ( chkargs ( argc, argv,
                        osimage, ostarget,
@@ -50,27 +55,27 @@ int main ( int argc, char **argv )
                      ) )
     {
         case 0:
-            // It works! (Or chkargs() just want main to return 1.)
-            break;
+            /* It works! (Or chkargs() just want main to return 1. AHHH what I'm doing...) */
+            return 1;
         case 1:
-            // Need help
+            /* Need help */
             help_message();
             return 0;
         case 2:
-            // Start running
-            puts ( "Now run." );
+            /* Start running */
+            /* printf ( "\033[0;32;1mDone. Now run.\033[0m\n" ); */
+            printf ( "Done. Now run.\n" );
+            /* run (); */
             return 0;
         case 3:
-            // startup
+            /* startup */
             puts ( "Active startup." );
+            /* startup */
             break;
         case 4:
-            // unknown argument
+            /* unknown argument */
             help_message();
             return 1;
-        default:
-            break;
-            // wtf?
     }
 
     /* TODO:

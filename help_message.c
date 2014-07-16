@@ -26,9 +26,6 @@ int help_message ( void )
 {
     puts (
 "\n\
-Anthon-Starter 0.2.0 Development Preview\n\
-Copyright (C) 2014 Anthon Open Source Community\n\
-\n\
 Usage: ast <command> [<switches>...]\n\
 \n\
 <Commands>\n\

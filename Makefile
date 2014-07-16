@@ -5,16 +5,16 @@ EXENAME = anthon-starter
 CC = gcc
 # RES = windres
 
-CFLAGS = -O2 -Wall
+CFLAGS = -O0 -g -Wall
 LDFLAGS =
 SRCDIR =
 DESTDIR =
 
 all:
-	$(CC) $(CCFLAGS) -o $(EXENAME).exe main.c chkargs.c help_message.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(EXENAME).exe main.c chkargs.c run.c help_message.c
 
 resource:
 # 	$(RES) -i ast.rc -o $(DESTDIR)ast_rc.o
 
 clean:
-	rm -f $(SRCDIR)*.o $(EXENAME).exe
+	rm -f $(EXENAME).exe
