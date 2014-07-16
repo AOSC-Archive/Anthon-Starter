@@ -23,7 +23,11 @@
 /*
  * chkargs: Check the arguments which is passed to Anthon-Starter.
  */
-int chkargs ( int argc, char **argv );
+int chkargs ( int argc, char **argv,
+              char *osimage, char *ostarget,
+              int instform, int verbose_mode, int quiet_mode,
+              int will_pause, int will_reboot, int will_verify, int will_extract
+            );
 
 /*
  * run: Including

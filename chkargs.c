@@ -19,19 +19,26 @@
  */
 
 # include <stdio.h>
+# include <unistd.h>
 # include <stdlib.h>
+# include <string.h>
 # include <getopt.h>
 
 # include "funcs.h"
 # include "defs.h"
 
-int chkargs ( int argc, char **argv )
+int chkargs ( int argc, char **argv,
+              char *osimage, char *ostarget,
+              int instform, int verbose_mode, int quiet_mode,
+              int will_pause, int will_reboot, int will_verify, int will_extract
+            )
 {
     int i = 0;
     char opttmp = '\0';
-    
+
     struct option longopts[] = {
         { "live", required_argument, NULL, 'l' },
+        { "output", required_argument, NULL, 'o' },
         { "verbose", no_argument, NULL, 'v' },
         { "quiet", no_argument, NULL, 'q' },
         { "pause", no_argument, NULL, 'p' },
@@ -43,7 +50,7 @@ int chkargs ( int argc, char **argv )
         { 0, 0, 0, 0 },
     };
 
-    /* These are for getopt() */
+    /* These are for getopt_long() */
     extern char *optarg;
     extern int optind, opterr, optopt;
 
@@ -62,52 +69,99 @@ int chkargs ( int argc, char **argv )
 
     if ( strcmp ( argv[1], "install" ) == 0 )
     {
-        while ( ( opttmp = getopt_long ( argc, argv, "l:vqprfh", longopts, NULL ) ) != -1 )
+        while ( ( opttmp = getopt_long ( argc, argv, "l:o:vqprf:h", longopts, NULL ) ) != -1 )
         {
             switch ( opttmp )
             {
-                case 'l':
-                    printf ( "The iso image is at %s\n", optarg );
+                case 'l': /* --live=, -l */
+                    osimage = malloc ( strlen ( optarg ) + 1 );
+                    strcpy ( osimage, optarg );
+                    /* Check if the image file exists. */
+                    if ( access ( osimage, R_OK ) == 0 )
+                        printf ( "The iso image exists and it is %s\n", osimage );
+                    else
+                    {
+                        printf ( "  *** [E] The ISO image %s is not avaliable.\n          You may not have sufficient privileges, or it doesn't exist.\n", osimage );
+                        return 0;
+                    }
                     break;
-                case 'v':
+                
+                case 'o': /* --output, -o */
+                    ostarget = malloc ( strlen ( optarg ) + 1 );
+                    strcpy ( ostarget, optarg );
+                    printf ( "live.squashfs will be put into %s\n", ostarget );
+                    break;
+                
+                case 'v': /* --verbose, -v */
                     puts ( "Verbose mode enabled" );
+                    verbose_mode = 1;
                     break;
-                case 'q':
+                    
+                case 'q': /* --quiet, -q */
                     puts ( "Quiet mode enabled" );
+                    quiet_mode = 1;
                     break;
-                case 'p':
+                    
+                case 'p': /* --pause, -p */
                     puts ( "Will pause after operation" );
+                    will_pause = 1;
                     break;
-                case 'r':
+                    
+                case 'r': /* --reboot, -r */
                     puts ( "Will automatically reboot" );
+                    will_reboot = 1;
                     break;
-                case 'f':
+                    
+                case 'f': /* --form=, -f */
+                    /* Set the install formula */
+                    if ( strcmp ( optarg, "edit" ) == 0 )
+                        instform = EDIT_PRESENT;
+                    else if ( strcmp ( optarg, "mbr" ) == 0 )
+                             instform = EDIT_MBR;
+                    else if ( strcmp ( optarg, "gpt" ) == 0 )
+                             instform = EDIT_ESP;
+                    else if ( strcmp ( optarg, "nodeploy" ) == 0 )
+                             instform = EDIT_DONOT;
+                    else
+                    {
+                        puts ( "Wrong formula." );
+                        return 0;
+                    }
                     printf ( "You've set the install formula: %s\n", optarg );
                     break;
-                case 'h':
+                    
+                case 'h': /* --help, -h */
                     return 1;
-                case NO_VERIFY:
+                    
+                case NO_VERIFY: /* --no-verify */
                     puts ( "Will not verify image file" );
+                    will_verify = 0;
                     break;
-                case NO_EXTRACT:
+                    
+                case NO_EXTRACT: /* --no-extract */
                     puts ( "Will not extract files" );
+                    will_extract = 0;
                     break;
-                case '?':
+                    
+                case '?': /* Unknown switch */
                     puts ( "Unknown switch." );
                     return 4;
+                    
+                /* It seems that GNU getopt_long() hasn't got this.
                 case ':':
                     puts ( "Not enouth arguments" );
                     return 4;
+                */
             }
         }
-        return 3;
+        return 2;
     }
 
     if ( strcmp ( argv[1], "help" ) == 0 )
         return 1;
     
     if ( strcmp ( argv[1], "startup" ) == 0 )
-        return 2;
+        return 3;
 
     /* Whatever... return unknown. */
     return 4;

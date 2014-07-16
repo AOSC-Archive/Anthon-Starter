@@ -19,11 +19,6 @@
  */
 
 # include <stdio.h>
-/* In MinGW io.h is directory put in root directory.
- * For I'm working with Linux now so it is in directory "sys". Will change when returning to Windows (w)
- * # include <io.h>
- */
-# include <sys/io.h>
 # include <stdlib.h>
 # include <string.h>
 
@@ -33,7 +28,9 @@
 int main ( int argc, char **argv )
 {
     /* Declare variables and initialize them. */
-    int loader = LOADER_UNKNOWN, instform = EDIT_PRESENT, ptable = PTABLE_UNKNOWN;
+    int loader = LOADER_UNKNOWN, instform = EDIT_PRESENT, ptable = PTABLE_UNKNOWN,
+        verbose_mode = 0, quiet_mode = 0,
+        will_pause = 0, will_reboot = 0, will_verify = 1, will_extract = 1;
     char *osimage = ( char* ) NULL, *ostarget = ( char* ) NULL;
 
     struct img
@@ -46,24 +43,29 @@ int main ( int argc, char **argv )
     /* End of variable declaration */
     
     /* Check the arguments. */
-    switch ( chkargs ( argc, argv ) )
+    switch ( chkargs ( argc, argv,
+                       osimage, ostarget,
+                       instform, verbose_mode, quiet_mode,
+                       will_pause, will_reboot, will_verify, will_extract
+                     ) )
     {
         case 0:
-            // run 
+            // It works! (Or chkargs() just want main to return 1.)
             break;
         case 1:
+            // Need help
             help_message();
             return 0;
         case 2:
+            // Start running
+            puts ( "Now run." );
+            return 0;
+        case 3:
             // startup
             puts ( "Active startup." );
             break;
-        case 3:
-            // Debug use
-            return 0;
         case 4:
             // unknown argument
-            printf ( "Unknown command: %s\n", argv[1] );
             help_message();
             return 1;
         default:
