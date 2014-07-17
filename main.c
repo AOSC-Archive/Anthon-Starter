@@ -71,12 +71,5 @@ int main ( int argc, char **argv )
             help_message();
             return 1;
     }
-
-    /* TODO:
-     * chkargs( ... );
-     * switch ( xxx );
-     * ...
-     */
-    
     return 1;
 }
