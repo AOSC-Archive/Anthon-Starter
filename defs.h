@@ -18,8 +18,12 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Yes or no */
+# define NO 0
+# define YES 1
+
 /* Partition table */
-# define PTABLE_UNKNOWN 0
+# define PTABLE_UNKNOWN 4
 # define PTABLE_MBR 5
 # define PTABLE_GPT 6
 

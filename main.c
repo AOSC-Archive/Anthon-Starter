@@ -28,9 +28,9 @@
 int main ( int argc, char **argv )
 {
     /* Declare variables and initialize them. */
-    int loader = LOADER_UNKNOWN, instform = EDIT_PRESENT, ptable = PTABLE_UNKNOWN,
-        verbose_mode = 0, quiet_mode = 0,
-        will_pause = 0, will_reboot = 0, will_verify = 1, will_extract = 1;
+    int instform = EDIT_PRESENT,
+        verbose_mode = NO, quiet_mode = NO,
+        will_pause = NO, will_reboot = NO, will_verify = YES, will_extract = YES;
     char *osimage = ( char* ) NULL, *ostarget = ( char* ) NULL;
 
     struct img
@@ -65,7 +65,9 @@ Copyright (C) 2014 Anthon Open Source Community"
             /* Start running */
             /* printf ( "\033[0;32;1mDone. Now run.\033[0m\n" ); */
             printf ( "Done. Now run.\n" );
-            /* run (); */
+            run ( osimage, ostarget,
+                  instform, verbose_mode, quiet_mode,
+                  will_pause, will_reboot, will_verify, will_extract );
             return 0;
         case 3:
             /* startup */

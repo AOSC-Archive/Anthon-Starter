@@ -30,8 +30,7 @@
 int chkargs ( int argc, char **argv,
               char *osimage, char *ostarget,
               int instform, int verbose_mode, int quiet_mode,
-              int will_pause, int will_reboot, int will_verify, int will_extract
-            )
+              int will_pause, int will_reboot, int will_verify, int will_extract )
 {
     char opttmp = '\0';
 
@@ -88,19 +87,19 @@ int chkargs ( int argc, char **argv,
                     break;
                 
                 case 'v': /* --verbose, -v */
-                    verbose_mode = 1;
+                    verbose_mode = YES;
                     break;
                     
                 case 'q': /* --quiet, -q */
-                    quiet_mode = 1;
+                    quiet_mode = YES;
                     break;
                     
                 case 'p': /* --pause, -p */
-                    will_pause = 1;
+                    will_pause = YES;
                     break;
                     
                 case 'r': /* --reboot, -r */
-                    will_reboot = 1;
+                    will_reboot = YES;
                     break;
                     
                 case 'f': /* --form=, -f */
@@ -124,11 +123,11 @@ int chkargs ( int argc, char **argv,
                     return 1;
                     
                 case NO_VERIFY: /* --no-verify */
-                    will_verify = 0;
+                    will_verify = NO;
                     break;
                     
                 case NO_EXTRACT: /* --no-extract */
-                    will_extract = 0;
+                    will_extract = NO;
                     break;
                     
                 case '?': /* Unknown switch */

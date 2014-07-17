@@ -26,8 +26,7 @@
 int chkargs ( int argc, char **argv,
               char *osimage, char *ostarget,
               int instform, int verbose_mode, int quiet_mode,
-              int will_pause, int will_reboot, int will_verify, int will_extract
-            );
+              int will_pause, int will_reboot, int will_verify, int will_extract );
 
 /*
  * run: Including
@@ -40,7 +39,9 @@ int chkargs ( int argc, char **argv,
  *        - before_reboot
  *      That means, it invokes the functions that run.
  */
-int run ();
+int run ( char *osimage, char *ostarget,
+          int instform, int verbose_mode, int quiet_mode,
+          int will_pause, int will_reboot, int will_verify, int will_extract );
 
 /*
  * init: Initialize Anthon-Starter.
@@ -50,7 +51,7 @@ int init ();
 /*
  * getsysinfo: Get the system info, such as system drive, CPU architecture, etc.
  */
-int getsysinfo ( char **envp );
+int getsysinfo ();
 
 /*
  * backup: Backup the important files before we do everything.

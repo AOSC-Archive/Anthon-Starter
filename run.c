@@ -18,3 +18,43 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+# include <stdio.h>
+
+# include "funcs.h"
+# include "defs.h"
+
+int run ( char *osimage, char *ostarget,
+          int instform, int verbose_mode, int quiet_mode,
+          int will_pause, int will_reboot, int will_verify, int will_extract )
+{
+    /* Set variables */
+    int loader = LOADER_UNKNOWN, ptable = PTABLE_UNKNOWN;
+    /* End of setting variables */
+    
+    /* Initialize the program: checking if resource files work.
+     * NOTICE: init() will invoke exit(1) if it detected something wrong.
+     */
+    init ();
+    
+    /* Get the info of the system, including system drive, memory, CPU architecture, etc. */
+    getsysinfo ( loader, ptable );
+    
+    /* Before doing anything, backup the important files.
+     * Variables are set in getsysinfo().
+     */
+    backup ( loader, ptable );
+    
+    /* Extract files from ISO image. */
+    extract ( will_extract, osimage, ostarget );
+    
+    /* Verify the files */
+    verify ( will_verify, ostarget );
+    
+    /* Deploy boot loader.
+     * This is a danger operation, so must be careful.
+     */
+    deploy ( loader, ptable );
+    
+    /* It seems has finished ^o^ */
+    return 0;
+}
