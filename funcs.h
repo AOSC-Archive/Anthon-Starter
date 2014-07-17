@@ -19,13 +19,25 @@
  */
 
 /* int main ( int argc, char **argv ); */
+# include <stdio.h>
+# include <stdlib.h>
+
+# include "defs.h"
+
+typedef struct
+{
+    int os;
+    char *dist,
+         *ver,
+         *lang;
+} img;
 
 /*
  * chkargs: Check the arguments which is passed to Anthon-Starter.
  */
 int chkargs ( int argc, char **argv,
               char *osimage, char *ostarget,
-              struct img *imginfo, int instform, int verbose_mode, int quiet_mode,
+              img *imginfo, int instform, int verbose_mode, int quiet_mode,
               int will_pause, int will_reboot, int will_verify, int will_extract );
 
 /*
@@ -40,7 +52,7 @@ int chkargs ( int argc, char **argv,
  *      That means, it invokes the functions that run.
  */
 int run ( char *osimage, char *ostarget,
-          struct img *imginfo, int instform, int verbose_mode, int quiet_mode,
+          img *imginfo, int instform, int verbose_mode, int quiet_mode,
           int will_pause, int will_reboot, int will_verify, int will_extract );
 
 /*

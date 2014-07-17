@@ -23,5 +23,8 @@
 
 int getsysinfo ( int loader, int ptable )
 {
+    printf ( "( 2 of 6 ) Getting system info... ");
+    
+    printf ( "Done.\n" );
     return 0;
 }

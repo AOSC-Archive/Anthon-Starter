@@ -29,7 +29,7 @@
 
 int chkargs ( int argc, char **argv,
               char *osimage, char *ostarget,
-              struct img *imginfo, int instform, int verbose_mode, int quiet_mode,
+              img *imginfo, int instform, int verbose_mode, int quiet_mode,
               int will_pause, int will_reboot, int will_verify, int will_extract )
 {
     char opttmp = '\0';

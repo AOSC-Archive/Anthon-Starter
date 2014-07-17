@@ -23,5 +23,8 @@
 
 int init ( void )
 {
+    printf ( "( 1 of 6 ) Initializing... " );
+    
+    printf ( " Done.\n" );
     return 0;
 }

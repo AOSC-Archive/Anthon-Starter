@@ -23,5 +23,8 @@
 
 int verify ( int will_verify, char *ostarget )
 {
+    printf ( "( 5 of 6 ) Verifying the files... " );
+    
+    printf ( "Done.\n" );
     return 0;
 }

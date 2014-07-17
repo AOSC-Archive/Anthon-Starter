@@ -25,14 +25,6 @@
 # include "funcs.h" /* Dunction prototypes */
 # include "defs.h" /* Definitions */
 
-    struct img
-    {
-        int os;
-        char *dist,
-             *ver,
-             *lang;
-    } imginfo = { UNKN, NULL, NULL, NULL };
-
 int main ( int argc, char **argv )
 {
     /* Declare variables and initialize them. */
@@ -41,17 +33,17 @@ int main ( int argc, char **argv )
         will_pause = 0, will_reboot = 0, will_verify = 1, will_extract = 1;
     char *osimage = ( char* ) NULL, *ostarget = ( char* ) NULL;
     
+    img *imginfo = ( img * ) malloc ( sizeof ( img ) );
+    memset ( imginfo, 0, sizeof ( img ) );
+    
     /* End of variable declaration */
     
-    puts (
-"\n\
-Anthon-Starter 0.2.0 Development Preview\n\
-Copyright (C) 2014 Anthon Open Source Community"
-         );
+    puts ( "Anthon-Starter 0.2.0 Development Preview\nCopyright (C) 2014 Anthon Open Source Community\n" );
+    
     /* Check the arguments. */
     switch ( chkargs ( argc, argv,
                        osimage, ostarget,
-                       &imginfo, instform, verbose_mode, quiet_mode,
+                       imginfo, instform, verbose_mode, quiet_mode,
                        will_pause, will_reboot, will_verify, will_extract) )
     {
         case 0:
@@ -64,9 +56,9 @@ Copyright (C) 2014 Anthon Open Source Community"
         case 2:
             /* Start running */
             /* printf ( "\033[0;32;1mDone. Now run.\033[0m\n" ); */
-            printf ( "Done. Now run.\n" );
+            puts ( "Parameters and image checking done." );
             run ( osimage, ostarget,
-                  p_imginfo, instform, verbose_mode, quiet_mode,
+                  imginfo, instform, verbose_mode, quiet_mode,
                   will_pause, will_reboot, will_verify, will_extract );
             return 0;
         case 3:
