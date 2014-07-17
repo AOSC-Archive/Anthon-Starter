@@ -29,7 +29,7 @@
 
 int chkargs ( int argc, char **argv,
               char *osimage, char *ostarget,
-              int instform, int verbose_mode, int quiet_mode,
+              struct img *imginfo, int instform, int verbose_mode, int quiet_mode,
               int will_pause, int will_reboot, int will_verify, int will_extract )
 {
     char opttmp = '\0';
@@ -72,6 +72,9 @@ int chkargs ( int argc, char **argv,
                         printf ( "\n  *** [E] ISO image %s is not avaliable.\n          You may not have sufficient privileges, or it doesn\'t exist.\n", osimage );
                         return 0;
                     }
+                    
+                    /* TODO: Extract md5sum.ast to check the image file is from AOSC, and store those inside into struct imginfo. */
+                    
                     break;
                 
                 case 'o': /* --output, -o */
@@ -87,19 +90,19 @@ int chkargs ( int argc, char **argv,
                     break;
                 
                 case 'v': /* --verbose, -v */
-                    verbose_mode = YES;
+                    verbose_mode = 1;
                     break;
                     
                 case 'q': /* --quiet, -q */
-                    quiet_mode = YES;
+                    quiet_mode = 1;
                     break;
                     
                 case 'p': /* --pause, -p */
-                    will_pause = YES;
+                    will_pause = 1;
                     break;
                     
                 case 'r': /* --reboot, -r */
-                    will_reboot = YES;
+                    will_reboot = 1;
                     break;
                     
                 case 'f': /* --form=, -f */
@@ -123,11 +126,11 @@ int chkargs ( int argc, char **argv,
                     return 1;
                     
                 case NO_VERIFY: /* --no-verify */
-                    will_verify = NO;
+                    will_verify = 0;
                     break;
                     
                 case NO_EXTRACT: /* --no-extract */
-                    will_extract = NO;
+                    will_extract = 0;
                     break;
                     
                 case '?': /* Unknown switch */

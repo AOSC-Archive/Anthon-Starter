@@ -18,29 +18,10 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Partition table */
-# define PTABLE_UNKNOWN 4
-# define PTABLE_MBR 5
-# define PTABLE_GPT 6
+# include "funcs.h"
+# include "defs.h"
 
-/* Boot loader (OS) type */
-# define LOADER_UNKNOWN 7
-# define LOADER_NTLDR 8
-# define LOADER_BCD 9
-
-/* Installation formula */
-# define EDIT_PRESENT 10
-# define EDIT_MBR 11
-# define EDIT_ESP 12
-# define EDIT_DONOT 13
-
-/* */
-# define NO_VERIFY 15
-# define NO_EXTRACT 16
-
-/* Identification numbers for different distributions */
-# define ANOS 25
-# define ANCP 26
-# define ICNL 27
-# define SPIN 28
-# define UNKN 29
+int verify ( int will_verify, char *ostarget )
+{
+    return 0;
+}

@@ -25,7 +25,7 @@
  */
 int chkargs ( int argc, char **argv,
               char *osimage, char *ostarget,
-              int instform, int verbose_mode, int quiet_mode,
+              struct img *imginfo, int instform, int verbose_mode, int quiet_mode,
               int will_pause, int will_reboot, int will_verify, int will_extract );
 
 /*
@@ -40,43 +40,38 @@ int chkargs ( int argc, char **argv,
  *      That means, it invokes the functions that run.
  */
 int run ( char *osimage, char *ostarget,
-          int instform, int verbose_mode, int quiet_mode,
+          struct img *imginfo, int instform, int verbose_mode, int quiet_mode,
           int will_pause, int will_reboot, int will_verify, int will_extract );
 
 /*
  * init: Initialize Anthon-Starter.
  */
-int init ();
+int init ( void );
 
 /*
  * getsysinfo: Get the system info, such as system drive, CPU architecture, etc.
  */
-int getsysinfo ();
+int getsysinfo ( int loader, int ptable );
 
 /*
  * backup: Backup the important files before we do everything.
  */
-int backup ();
+int backup ( int loader, int ptable );
 
 /*
  * extract: Extract necessary files to the specified destination, usually from the passed arguments.
  */
-int extract ();
+int extract ( int will_extract, char *osimage, char *ostarget );
 
 /*
  * verify: Verify the files that was extracted just now to ensure validity.
  */
-int verify ();
+int verify ( int will_verify, char *ostarget );
 
 /*
  * deploy: Deploy the boot loader.
  */
-int deploy ();
-
-/*
- * before_reboot: Release startup utility and do something necessary...
- */
-int before_reboot ();
+int deploy ( int loader, int ptable );
 
 /*
  * help_message: Show help messages.

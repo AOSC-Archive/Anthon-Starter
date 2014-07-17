@@ -18,13 +18,11 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-# include <stdio.h>
-
 # include "funcs.h"
 # include "defs.h"
 
 int run ( char *osimage, char *ostarget,
-          int instform, int verbose_mode, int quiet_mode,
+          struct img *imginfo, int instform, int verbose_mode, int quiet_mode,
           int will_pause, int will_reboot, int will_verify, int will_extract )
 {
     /* Set variables */

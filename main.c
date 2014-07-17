@@ -25,14 +25,6 @@
 # include "funcs.h" /* Dunction prototypes */
 # include "defs.h" /* Definitions */
 
-int main ( int argc, char **argv )
-{
-    /* Declare variables and initialize them. */
-    int instform = EDIT_PRESENT,
-        verbose_mode = NO, quiet_mode = NO,
-        will_pause = NO, will_reboot = NO, will_verify = YES, will_extract = YES;
-    char *osimage = ( char* ) NULL, *ostarget = ( char* ) NULL;
-
     struct img
     {
         int os;
@@ -40,6 +32,15 @@ int main ( int argc, char **argv )
              *ver,
              *lang;
     } imginfo = { UNKN, NULL, NULL, NULL };
+
+int main ( int argc, char **argv )
+{
+    /* Declare variables and initialize them. */
+    int instform = EDIT_PRESENT,
+        verbose_mode = 0, quiet_mode = 0,
+        will_pause = 0, will_reboot = 0, will_verify = 1, will_extract = 1;
+    char *osimage = ( char* ) NULL, *ostarget = ( char* ) NULL;
+    
     /* End of variable declaration */
     
     puts (
@@ -50,9 +51,8 @@ Copyright (C) 2014 Anthon Open Source Community"
     /* Check the arguments. */
     switch ( chkargs ( argc, argv,
                        osimage, ostarget,
-                       instform, verbose_mode, quiet_mode,
-                       will_pause, will_reboot, will_verify, will_extract
-                     ) )
+                       &imginfo, instform, verbose_mode, quiet_mode,
+                       will_pause, will_reboot, will_verify, will_extract) )
     {
         case 0:
             /* It works! (Or chkargs() just want main to return 1. AHHH what I'm doing...) */
@@ -66,7 +66,7 @@ Copyright (C) 2014 Anthon Open Source Community"
             /* printf ( "\033[0;32;1mDone. Now run.\033[0m\n" ); */
             printf ( "Done. Now run.\n" );
             run ( osimage, ostarget,
-                  instform, verbose_mode, quiet_mode,
+                  p_imginfo, instform, verbose_mode, quiet_mode,
                   will_pause, will_reboot, will_verify, will_extract );
             return 0;
         case 3:

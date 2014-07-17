@@ -11,19 +11,10 @@ Anthon-Starter is distributed in the hope that it will be useful, but WITHOUT AN
 
 You should have received a copy of the GNU Lesser General Public License along with Anthon-Starter. If not, see <http://www.gnu.org/licenses/>.
 
-Function Division
+Developers
 ====
-  - main                -> Junde Yi
-  - chkargs             -> Junde Yi
-  - run                 -> 
-  - getsysinfo          -> 
-  - init                -> Minhui Du
-  - backup              -> 
-  - extract             -> 
-  - verify              -> 
-  - deploy              -> 
-  - before_reboot       -> 
-  - startup             -> 
-  - help_message        -> 
-
-For details, see TODO.
+  * Junde Yi <lmy441900@gmail.com>
+  * Zixing Liu <liushuyu011@gmail.com>
+  * Nino <campermsn@gmail.com>
+  * Minhui Du <>
+  * Haoming Xu <18929292333@163.com>

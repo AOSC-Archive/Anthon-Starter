@@ -10,8 +10,10 @@ LDFLAGS =
 SRCDIR =
 DESTDIR =
 
+FILES = main.c chkargs.c run.c init.c getsysinfo.c backup.c extract.c verify.c deploy.c help_message.c
+
 all:
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(EXENAME).exe main.c chkargs.c run.c help_message.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(EXENAME).exe $(FILES)
 
 resource:
 # 	$(RES) -i ast.rc -o $(DESTDIR)ast_rc.o
