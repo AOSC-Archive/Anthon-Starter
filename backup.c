@@ -23,7 +23,7 @@
 
 int backup ( int loader, int ptable )
 {
-    printf ( "( 3 of 6 ) Backup important files... " );
+    printf ( "( 3 of 6 ) Backup important files...  " );
     
     printf ( "Done.\n" );
     return 0;

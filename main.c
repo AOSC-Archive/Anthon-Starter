@@ -51,7 +51,7 @@ int main ( int argc, char **argv )
             return 1;
         case 1:
             /* Need help */
-            help_message();
+            help_message( argv[0] );
             return 0;
         case 2:
             /* Start running */
@@ -68,7 +68,7 @@ int main ( int argc, char **argv )
             break;
         case 4:
             /* unknown argument */
-            help_message();
+            help_message( argv[0] );
             return 1;
     }
     return 1;

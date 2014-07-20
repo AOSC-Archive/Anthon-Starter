@@ -23,7 +23,18 @@
 
 int getsysinfo ( int loader, int ptable )
 {
-    printf ( "( 2 of 6 ) Getting system info... ");
+    printf ( "( 2 of 6 ) Getting system info...  ");
+    
+    /* TODO:
+     * 1. Get the following info from system:
+     *    - System drive ( char *systemdrive )
+     *    - Partition table ( char *ptable )
+     *    - Loader type ( int loader {7, 8, 9} )
+     *    - ...
+     * 2. Free space of drive C:
+     * 3. CPU architecture ( May use WinAPI )
+     * 4. Memory size ( May use WinAPI )
+     */
     
     printf ( "Done.\n" );
     return 0;

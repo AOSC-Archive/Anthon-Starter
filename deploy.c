@@ -23,7 +23,7 @@
 
 int deploy ( int loader, int ptable )
 {
-    printf ( "( 6 of 6 ) Deploying boot loader... " );
+    printf ( "( 6 of 6 ) Deploying boot loader...  " );
     
     printf ( "Done.\n" );
     return 0;

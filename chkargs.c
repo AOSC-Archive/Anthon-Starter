@@ -70,7 +70,7 @@ int chkargs ( int argc, char **argv,
                     {
                         /* printf ( "\n  \033[0;31;1m*** [E] ISO image %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", osimage ); */
                         printf ( "\n  *** [E] ISO image %s is not avaliable.\n          You may not have sufficient privileges, or it doesn\'t exist.\n", osimage );
-                        return 0;
+                        return 0; /* main() returns 1 */
                     }
                     
                     /* TODO: Extract md5sum.ast to check the image file is from AOSC, and store those inside into struct imginfo. */
@@ -85,7 +85,7 @@ int chkargs ( int argc, char **argv,
                     {
                         /* printf ( "\n  \033[0;31;1m*** [E] The install route %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget ); */
                         printf ( "\n  *** [E] The install route %s is not avaliable.\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget );
-                        return 0;
+                        return 0; /* main() returns 1 */
                     }
                     break;
                 
@@ -149,14 +149,14 @@ int chkargs ( int argc, char **argv,
             puts ( "\nIt seems that you forget to set image file and install route!" );
             return 0;
         }
-        return 2;
+        return 2; /* after getopt_long(), main() invokes run() */
     }
 
     if ( strcmp ( argv[1], "help" ) == 0 )
-        return 1;
+        return 1; /* main() invokes help_message() */
     
     if ( strcmp ( argv[1], "startup" ) == 0 )
-        return 3;
+        return 3; /* main() invokes startup() */
 
     /* Whatever... return unknown. */
     return 4;

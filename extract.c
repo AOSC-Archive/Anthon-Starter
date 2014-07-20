@@ -23,7 +23,7 @@
 
 int extract ( int will_extract, char *osimage, char *ostarget )
 {
-    printf ( "( 4 of 6 ) Extracting files... " );
+    printf ( "( 4 of 6 ) Extracting files...  " );
     
     printf ( "Done.\n" );
     return 0;

@@ -22,11 +22,11 @@
 
 # include "funcs.h"
 
-int help_message ( void )
+int help_message ( char *progname ) /* "progname" is argv[0] */
 {
-    puts (
+    printf (
 "\n\
-Usage: ast <command> [<switches>...]\n\
+Usage: %s <Command> [<Switches>...]\n\
 \n\
 <Commands>\n\
   install            Install the specify AOSC OS to your computer\n\
@@ -48,7 +48,6 @@ Usage: ast <command> [<switches>...]\n\
   --help, -h         Show help messages\n\
 \n\
 For any more information, please visit https://anthonos.org/\n\
-Report bugs to https://bugs.anthonos.org/\n"
-         );
+Report bugs to https://bugs.anthonos.org/\n", progname );
       return 0;
 }

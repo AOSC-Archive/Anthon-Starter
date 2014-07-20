@@ -88,7 +88,7 @@ int deploy ( int loader, int ptable );
 /*
  * help_message: Show help messages.
  */
-int help_message ( void );
+int help_message ( char *progname );
 
 /*
  * startup: For startup use.
