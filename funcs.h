@@ -21,6 +21,7 @@
 /* int main ( int argc, char **argv ); */
 # include <stdio.h>
 # include <stdlib.h>
+# include <windows.h>
 
 # include "defs.h"
 
@@ -63,7 +64,7 @@ int init ( void );
 /*
  * getsysinfo: Get the system info, such as system drive, CPU architecture, etc.
  */
-int getsysinfo ( int loader, int ptable );
+int getsysinfo ( int loader, int ptable, char *systemdrive );
 
 /*
  * backup: Backup the important files before we do everything.
@@ -94,3 +95,8 @@ int help_message ( char *progname );
  * startup: For startup use.
  */
 int startup ();
+
+/*
+ * clrprint: Output colourful texts, only for Windows.
+ */
+void clrprint ( char* str, WORD color );

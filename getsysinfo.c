@@ -18,24 +18,64 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <windows.h>
+
 # include "funcs.h"
 # include "defs.h"
 
-int getsysinfo ( int loader, int ptable )
+int getsysinfo ( int loader, int ptable, char *systemdrive )
 {
+    ULARGE_INTEGER sysdrive_space; /* Free space on system drive */
+    //SYSTEM_INFO sysInfo; /* For CPU architecture */
+    MEMORYSTATUS meminfo; /* For memory info */
+    char *tmp = NULL; /* Temp use */
+    
     printf ( "( 2 of 6 ) Getting system info...  ");
     
-    /* TODO:
-     * 1. Get the following info from system:
-     *    - System drive ( char *systemdrive )
-     *    - Partition table ( char *ptable )
-     *    - Loader type ( int loader {7, 8, 9} )
-     *    - ...
-     * 2. Free space of drive C:
-     * 3. CPU architecture ( May use WinAPI )
-     * 4. Memory size ( May use WinAPI )
+    /* Get system drive
+     * NOTICE: I think there can't be AB:\ or such kind of volume...
+     */
+    systemdrive = malloc ( 4 );
+    sprintf ( systemdrive, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
+    
+    /* Get partition table.
+     * But I don't know how to do it...
      */
     
-    printf ( "Done.\n" );
+    /* Get loader type.
+     * If detected NTLDR: Windows 2k/XP
+     * If detected BOOTMGR: Windows Vista+
+     */
+    tmp = malloc ( strlen ( systemdrive ) + strlen ( "NTLDR" ) + 1 );
+    sprintf ( tmp, "%s%c%s%c", systemdrive, '\\', "NTLDR", '\0' );
+    if ( access ( tmp, R_OK ) == 0 )
+        loader = LOADER_NTLDR;
+    else
+    {
+        tmp = realloc ( tmp, strlen ( systemdrive ) + strlen ( "\\Windows\\boot\\" ) + 1 );
+        sprintf ( tmp, "%s%s%c", systemdrive, "\\Windows\\boot\\", '\0' );
+        if ( access ( tmp, R_OK ) == 0 )
+            loader = LOADER_BCD;
+        else
+            loader = LOADER_UNKNOWN;
+    }
+    /* printf ( "%i  ", loader ); */
+    
+    /* Detect free spaces on system drive, use WinAPI */
+    GetDiskFreeSpaceEx ( systemdrive, &sysdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
+    if ( sysdrive_space.QuadPart < 95368709120 ) /* 5 GiB */
+        clrprint ( "\n  [WARNING] You may have no enough free space on your system drive.  ", 14 );
+    
+    /* TODO: Detect CPU architecture, use WinAPI */
+    
+    /* Detect memory size, use WinAPI */
+    GlobalMemoryStatus ( &meminfo );
+    if ( meminfo.dwTotalPhys < 1610612736 ) /* 1.5 GiB */
+        clrprint ( "\n  [WARNING] You may have no enough free space on your RAM.  ", 14 );
+    
+    clrprint ( "Done.\n", 10 );
     return 0;
 }

@@ -18,13 +18,25 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/* Note: This function is based on Heroin's "colourful console"
+ * ( http://www.oschina.net/code/snippet_48783_329 ).
+ * Thanks to his code.
+ */
+
+# include <stdio.h>
+# include <windows.h>
+
 # include "funcs.h"
 # include "defs.h"
 
-int verify ( int will_verify, char *ostarget )
+void clrprint ( char* str, WORD color )
 {
-    printf ( "( 5 of 6 ) Verifying the files...  " );
-    
-    clrprint ( "Done.\n", 10 );
-    return 0;
+    WORD colorOld;
+    HANDLE handle = GetStdHandle ( STD_OUTPUT_HANDLE );
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo ( handle, &csbi );
+    colorOld = csbi.wAttributes;
+    SetConsoleTextAttribute ( handle, color );
+    printf ( str );
+    SetConsoleTextAttribute ( handle, colorOld );
 }

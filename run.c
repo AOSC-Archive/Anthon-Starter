@@ -30,6 +30,7 @@ int run ( char *osimage, char *ostarget,
 {
     /* Set variables */
     int loader = LOADER_UNKNOWN, ptable = PTABLE_UNKNOWN;
+    char *systemdrive = NULL;
     /* End of setting variables */
     
     /* Initialize the program: checking if resource files work.
@@ -38,7 +39,7 @@ int run ( char *osimage, char *ostarget,
     init ();
     
     /* Get the info of the system, including system drive, memory, CPU architecture, etc. */
-    getsysinfo ( loader, ptable );
+    getsysinfo ( loader, ptable, systemdrive );
     
     /* Before doing anything, backup the important files.
      * Variables are set in getsysinfo().
