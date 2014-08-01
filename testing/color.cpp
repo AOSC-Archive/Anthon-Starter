@@ -11,18 +11,11 @@ void cprintf(char* str, WORD color, ...);
 int main() {
     char *str = ( char * ) malloc ( 512 );
     scanf ( "%s", str );
-    cprintf(str, 10);
-    cprintf(str, 9);
-    cprintf(str, 12);
-    cprintf(str, 11);
-    cprintf(str, 13);
-    cprintf(str, 10);
-    cprintf(str, 15);
-    cprintf(str, 2);
-    cprintf(str, 5);
-    cprintf(str, 8);
-    cprintf(str, 14);
-    cprintf(str, 4);
+    for ( int i = 0; i <= 15; i++ )
+    {
+        cprintf(str, i);
+        printf ("\n");
+    }
     return 0;
 }
  

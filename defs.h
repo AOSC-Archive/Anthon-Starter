@@ -44,3 +44,5 @@
 # define ICNL 27
 # define SPIN 28
 # define UNKN 29
+
+# define CMD_BUF 512

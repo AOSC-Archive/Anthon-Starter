@@ -32,7 +32,8 @@ int chkargs ( int argc, char **argv,
               img *imginfo, int instform, int verbose_mode, int quiet_mode,
               int will_pause, int will_reboot, int will_verify, int will_extract )
 {
-    char opttmp = '\0';
+    char *tmp = NULL, *temp = getenv ( "TEMP" );
+    FILE *sum;
 
     struct option longopts[] = {
         { "live", required_argument, NULL, 'l' },
@@ -50,6 +51,7 @@ int chkargs ( int argc, char **argv,
 
     /* These are for getopt_long() */
     extern char *optarg;
+    char opttmp = '\0';
     
     /* argv[1] is command */
 
@@ -68,12 +70,30 @@ int chkargs ( int argc, char **argv,
                     /* Check if the image file exists. */
                     if ( access ( osimage, R_OK ) != 0 )
                     {
-                        /* printf ( "\n  \033[0;31;1m*** [E] ISO image %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", osimage ); */
-                        printf ( "\n  *** [E] ISO image %s is not avaliable.\n          You may not have sufficient privileges, or it doesn\'t exist.\n", osimage );
+                        clrprint ( "\n  *** [ERROR] The ISO image is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n", 12 );
                         return 0; /* main() returns 1 */
                     }
                     
                     /* TODO: Extract md5sum.ast to check the image file is from AOSC, and store those inside into struct imginfo. */
+                    if ( access ( "src\\7z.exe", X_OK ) == 0 )
+                    {
+                        tmp = malloc ( CMD_BUF ); /* FIXME: I hope that "osimage" won't be longer than 512 bytes... */
+                        sprintf ( tmp, "%s %s %s%s %s%c", "src\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
+                        system ( tmp ); /* Extract md5sum.ast to %TEMP% */
+                        
+                        sprintf ( tmp, "%s%s", temp, "\\md5sum.ast" );
+                        if ( ( sum = fopen ( tmp, "rt" ) ) != NULL ) /* Open md5sum.ast as text, read only */
+                        {
+                            /* TODO: Read it. */
+                            fgets ( tmp, 10, sum );
+                            fclose ( sum );
+                        }
+                        else
+                        {
+                            clrprint ( "  [ERROR] This ISO image is not supported.", 12 );
+                            return 0; /* main() returns 1 */
+                        }
+                    }
                     
                     break;
                 
@@ -84,7 +104,7 @@ int chkargs ( int argc, char **argv,
                     if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
                     {
                         /* printf ( "\n  \033[0;31;1m*** [E] The install route %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget ); */
-                        printf ( "\n  *** [E] The install route %s is not avaliable.\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget );
+                        clrprint ( "\n  *** [ERROR] The install route is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n", 12 );
                         return 0; /* main() returns 1 */
                     }
                     break;

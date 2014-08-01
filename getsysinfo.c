@@ -62,11 +62,10 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
         else
             loader = LOADER_UNKNOWN;
     }
-    /* printf ( "%i  ", loader ); */
     
     /* Detect free spaces on system drive, use WinAPI */
     GetDiskFreeSpaceEx ( systemdrive, &sysdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
-    if ( sysdrive_space.QuadPart < 95368709120 ) /* 5 GiB */
+    if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
         clrprint ( "\n  [WARNING] You may have no enough free space on your system drive.  ", 14 );
     
     /* TODO: Detect CPU architecture, use WinAPI */

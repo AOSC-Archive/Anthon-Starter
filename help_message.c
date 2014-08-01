@@ -29,9 +29,10 @@ int help_message ( char *progname ) /* "progname" is argv[0] */
 Usage: %s <Command> [<Switches>...]\n\
 \n\
 <Commands>\n\
-  install            Install the specify AOSC OS to your computer\n\
+  install            Install the specified AOSC OS Live environment\
+                       to your computer\n\
   help               Show this help\n\
-  startup            Active startup status\n\
+  startup            Active startup (to clean up trashes)\n\
 \n\
 <Switches>\n\
   --live=, -l        Set the location of ISO image\n\
@@ -47,7 +48,6 @@ Usage: %s <Command> [<Switches>...]\n\
   --no-extract       DO NOT extract the files (Not recommend)\n\
   --help, -h         Show help messages\n\
 \n\
-For any more information, please visit https://anthonos.org/\n\
 Report bugs to https://bugs.anthonos.org/\n", progname );
       return 0;
 }
