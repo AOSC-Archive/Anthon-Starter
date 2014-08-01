@@ -2,17 +2,17 @@
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
  * Copyright (C) 2014 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
- * 
+ *
  * Anthon-Starter is licensed under GNU LGPL: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * Anthon-Starter is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with Anthon-Starter. If not, see
  * <http://www.gnu.org/licenses/>.
@@ -33,7 +33,7 @@ int chkargs ( int argc, char **argv,
               int will_pause, int will_reboot, int will_verify, int will_extract )
 {
     char *tmp = NULL, *temp = getenv ( "TEMP" );
-    FILE *sum;
+    FILE *sum = NULL;
 
     struct option longopts[] = {
         { "live", required_argument, NULL, 'l' },
@@ -52,7 +52,7 @@ int chkargs ( int argc, char **argv,
     /* These are for getopt_long() */
     extern char *optarg;
     char opttmp = '\0';
-    
+
     /* argv[1] is command */
 
     if ( argc < 2 )
@@ -73,14 +73,14 @@ int chkargs ( int argc, char **argv,
                         clrprint ( "\n  *** [ERROR] The ISO image is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n", 12 );
                         return 0; /* main() returns 1 */
                     }
-                    
+
                     /* TODO: Extract md5sum.ast to check the image file is from AOSC, and store those inside into struct imginfo. */
                     if ( access ( "src\\7z.exe", X_OK ) == 0 )
                     {
                         tmp = malloc ( CMD_BUF ); /* FIXME: I hope that "osimage" won't be longer than 512 bytes... */
                         sprintf ( tmp, "%s %s %s%s %s%c", "src\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
                         system ( tmp ); /* Extract md5sum.ast to %TEMP% */
-                        
+
                         sprintf ( tmp, "%s%s", temp, "\\md5sum.ast" );
                         if ( ( sum = fopen ( tmp, "rt" ) ) != NULL ) /* Open md5sum.ast as text, read only */
                         {
@@ -90,13 +90,17 @@ int chkargs ( int argc, char **argv,
                         }
                         else
                         {
-                            clrprint ( "  [ERROR] This ISO image is not supported.", 12 );
+                            clrprint ( "  *** [ERROR] This ISO image is not supported.", 12 );
                             return 0; /* main() returns 1 */
                         }
                     }
-                    
+                    else
+                    {
+                        clrprint ( "  *** [ERROR] Cannot find 7-Zip executable. Program exits.", 12 );
+                        return 0; /* main() returns 1 */
+                    }
                     break;
-                
+
                 case 'o': /* --output, -o */
                     ostarget = malloc ( strlen ( optarg ) + 1 );
                     strcpy ( ostarget, optarg );
@@ -108,23 +112,23 @@ int chkargs ( int argc, char **argv,
                         return 0; /* main() returns 1 */
                     }
                     break;
-                
+
                 case 'v': /* --verbose, -v */
                     verbose_mode = 1;
                     break;
-                    
+
                 case 'q': /* --quiet, -q */
                     quiet_mode = 1;
                     break;
-                    
+
                 case 'p': /* --pause, -p */
                     will_pause = 1;
                     break;
-                    
+
                 case 'r': /* --reboot, -r */
                     will_reboot = 1;
                     break;
-                    
+
                 case 'f': /* --form=, -f */
                     /* Set the install formula */
                     if ( strcmp ( optarg, "edit" ) == 0 )
@@ -141,21 +145,21 @@ int chkargs ( int argc, char **argv,
                         return 0;
                     }
                     break;
-                    
+
                 case 'h': /* --help, -h */
                     return 1;
-                    
+
                 case NO_VERIFY: /* --no-verify */
                     will_verify = 0;
                     break;
-                    
+
                 case NO_EXTRACT: /* --no-extract */
                     will_extract = 0;
                     break;
-                    
+
                 case '?': /* Unknown switch */
                     return 4;
-                    
+
                 /* It seems that GNU getopt_long() hasn't got this.
                 case ':':
                     puts ( "Not enouth arguments" );
@@ -174,7 +178,7 @@ int chkargs ( int argc, char **argv,
 
     if ( strcmp ( argv[1], "help" ) == 0 )
         return 1; /* main() invokes help_message() */
-    
+
     if ( strcmp ( argv[1], "startup" ) == 0 )
         return 3; /* main() invokes startup() */
 

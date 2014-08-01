@@ -68,7 +68,11 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
         clrprint ( "\n  [WARNING] You may have no enough free space on your system drive.  ", 14 );
     
-    /* TODO: Detect CPU architecture, use WinAPI */
+    /* TODO: Detect CPU architecture, use WinAPI
+     * NOTICE: Except CPUID, we can only detect whether system is x86_32 or x86_64, or even WOW64.
+     *   So either make a function to use CPUID to detect CPU architecture, or use WinAPI to
+     *   detect system architecture.
+     */
     
     /* Detect memory size, use WinAPI */
     GlobalMemoryStatus ( &meminfo );
