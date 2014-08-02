@@ -38,6 +38,16 @@ int main ( int argc, char **argv )
     
     /* End of variable declaration */
     
+    /* It's just, just, have fun. */
+    if ( argv[1] == NULL )
+    {
+        MessageBox ( NULL, "Sorry we haven't finished GUI design yet.\nPlease feel free using CLI :)", "Anthon-Starter 0.2", MB_ICONINFORMATION|MB_OK );
+        return 1;
+    }
+    
+    
+    
+    
     puts ( "Anthon-Starter 0.2.0 Development Preview\nCopyright (C) 2014 Anthon Open Source Community\n" );
     
     /* Check the arguments. */
