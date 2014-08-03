@@ -29,11 +29,11 @@
 int getsysinfo ( int loader, int ptable, char *systemdrive )
 {
     ULARGE_INTEGER sysdrive_space; /* Free space on system drive */
-    //SYSTEM_INFO sysInfo; /* For CPU architecture */
+    SYSTEM_INFO sysinfo;
     MEMORYSTATUS meminfo; /* For memory info */
     char *tmp = NULL; /* Temp use */
 
-    printf ( "( 2 of 6 ) Getting system info...  ");
+    printf ( "( 2 of 6 ) Getting system info...  " );
 
     /* Get system drive
      * NOTICE: I think there can't be AB:\ or such kind of volume...
@@ -68,11 +68,36 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
         clrprint ( "\n  [WARNING] You may have no enough free space on your system drive.  ", 14 );
 
-    /* TODO: Detect CPU architecture, use WinAPI
-     * NOTICE: Except CPUID, we can only detect whether system is x86_32 or x86_64, or even WOW64.
-     *   So either make a function to use CPUID to detect CPU architecture, or use WinAPI to
-     *   detect system architecture.
+    /* Detect CPU architecture, use WinAPI
+     * NOTICE: A VERY SPECIAL THANKS to Daming Yang ( @Lion ). F**king MinGW!
      */
+    typedef void ( WINAPI *PGNSI ) ( LPSYSTEM_INFO );
+    /* Well... The library of MinGW does not contain many new WinAPIs, such as GetNativeSystemInfo(). */
+    PGNSI pGNSI = ( PGNSI ) GetProcAddress ( GetModuleHandle ( TEXT ( "kernel32.dll" ) ), "GetNativeSystemInfo" );
+    if ( pGNSI != NULL ) /* Get the pointer to "GetNativeSystemInfo" */
+    {
+        pGNSI ( &sysinfo ); /* If it has, invoke GetNativeSystemInfo */
+    }
+    else
+    {
+        GetSystemInfo ( &sysinfo ); /* If not, invoke GetSystemInfo */
+    }
+    /* Now judge the valve. */
+    switch ( sysinfo.wProcessorArchitecture )
+    {
+        case PROCESSOR_ARCHITECTURE_AMD64:
+        {
+            /* x86-64. It's okay. */
+            /* printf ( "x86_64 architecture" ); */
+            break;
+        }
+        default:
+        {
+            clrprint ( "  [WARNING] Your CPU may not support x86_64, but AOSC OSes do.", 14 );
+            break;
+        }
+    }
+    /* w */
 
     /* Detect memory size, use WinAPI */
     GlobalMemoryStatus ( &meminfo );

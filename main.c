@@ -22,7 +22,7 @@
 # include <stdlib.h>
 # include <string.h>
 
-# include "funcs.h" /* Dunction prototypes */
+# include "funcs.h" /* Function prototypes */
 # include "defs.h" /* Definitions */
 
 int main ( int argc, char **argv )
