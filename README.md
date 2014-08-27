@@ -3,6 +3,8 @@ Anthon-Starter 0.2.0
 
 Installation helper for AOSC OSes, written with C.
 
+Homepage:[http://ast.projects.anthonos.org](http://ast.projects.anthonos.org)
+
 License
 ====
 Anthon-Starter is licensed under GNU LGPL: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
