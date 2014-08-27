@@ -1,7 +1,9 @@
+### Things to Do in 0.2.0
 1.D1 Variables that included in function run() ---- Junde Yi
 2.H  Use "p = getenv ( "SystemDrive" );" to get system drive. ---- Junde Yi
 3.D1 chkargs ---- Junde Yi
 4.H  Color output for prompting message ---- Junde Yi
+5.>  MD5 check-sum ---- LZX
 
 
 Status
