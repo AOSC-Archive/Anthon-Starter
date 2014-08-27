@@ -2,20 +2,19 @@
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
  * Copyright (C) 2014 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
- *
- * Anthon-Starter is licensed under GNU LGPL: you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- *
- * Anthon-Starter is distributed in the hope that it will be useful,
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Anthon-Starter. If not, see
- * <http://www.gnu.org/licenses/>.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 # include <stdio.h>
@@ -75,10 +74,10 @@ int chkargs ( int argc, char **argv,
                     }
 
                     /* TODO: Extract md5sum.ast to check the image file is from AOSC, and store those inside into struct imginfo. */
-                    if ( access ( "src\\7z.exe", X_OK ) == 0 )
+                    if ( access ( "res\\7z.exe", X_OK ) == 0 )
                     {
                         tmp = malloc ( CMD_BUF ); /* FIXME: I hope that "osimage" won't be longer than 512 bytes... */
-                        sprintf ( tmp, "%s %s %s%s %s%c", "src\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
+                        sprintf ( tmp, "%s %s %s%s %s%c", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
                         system ( tmp ); /* Extract md5sum.ast to %TEMP% */
 
                         sprintf ( tmp, "%s%s", temp, "\\md5sum.ast" );
