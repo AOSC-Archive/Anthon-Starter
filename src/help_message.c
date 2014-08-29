@@ -24,8 +24,7 @@
 int help_message ( char *progname ) /* "progname" is argv[0] */
 {
     printf (
-"\n\
-Usage: %s <Command> [<Switches>...]\n\
+"Usage: %s <Command> [<Switches>...]\n\
 \n\
 <Commands>\n\
   install            Install the specified AOSC OS Live environment\
