@@ -37,11 +37,5 @@
 # define NO_VERIFY 15
 # define NO_EXTRACT 16
 
-/* Identification numbers for different distributions */
-# define ANOS 25
-# define ANCP 26
-# define ICNL 27
-# define SPIN 28
-# define UNKN 29
-
 # define CMD_BUF 512
+# define MD5SUM_LENGTH 33
