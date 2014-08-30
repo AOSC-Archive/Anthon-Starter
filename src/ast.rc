@@ -32,8 +32,8 @@
 //
 // Icon resources
 //
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-100          ICON           ".\\res\\ast.ico"
+// LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+// 100          ICON           ".\\res\\ast.ico"
 
 
 
