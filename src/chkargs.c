@@ -35,17 +35,17 @@ int chkargs ( int argc, char **argv,
     FILE *sum = NULL;
 
     struct option longopts[] = {
-        { "live",       required_argument, NULL, 'l'        },
-        { "output",     required_argument, NULL, 'o'        },
-        { "verbose",    no_argument,       NULL, 'v'        },
-        { "quiet",      no_argument,       NULL, 'q'        },
-        { "pause",      no_argument,       NULL, 'p'        },
-        { "reboot",     no_argument,       NULL, 'r'        },
-        { "form",       required_argument, NULL, 'f'        },
-        { "no-verify",  no_argument,       NULL, NO_VERIFY  },
-        { "no-extract", no_argument,       NULL, NO_EXTRACT },
-        { "help",       no_argument,       NULL, 'h'        },
-        { 0,            0,                 0,    0          }  };
+        { "live"       , required_argument , NULL, 'l'        },
+        { "output"     , required_argument , NULL, 'o'        },
+        { "verbose"    , no_argument       , NULL, 'v'        },
+        { "quiet"      , no_argument       , NULL, 'q'        },
+        { "pause"      , no_argument       , NULL, 'p'        },
+        { "reboot"     , no_argument       , NULL, 'r'        },
+        { "form"       , required_argument , NULL, 'f'        },
+        { "no-verify"  , no_argument       , NULL, NO_VERIFY  },
+        { "no-extract" , no_argument       , NULL, NO_EXTRACT },
+        { "help"       , no_argument       , NULL, 'h'        },
+        { 0            , 0                 , 0   , 0          }  };
 
     /* These are for getopt_long() */
     extern char *optarg;
