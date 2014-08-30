@@ -47,7 +47,7 @@ int main ( int argc, char **argv )
     }
 
 
-
+	init();
 
     puts ( "Anthon-Starter 0.2.0 Development Preview\nCopyright (C) 2014 Anthon Open Source Community\n" );
 
