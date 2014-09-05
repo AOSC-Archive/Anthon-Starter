@@ -1,3 +1,5 @@
 *.exe
 *.dll
 *.o
+*.tar.bz2
+*.ico
