@@ -1,0 +1,27 @@
+language: c
+compiler:
+  - gcc
+  - clang
+
+env:
+  global:
+   # The next declration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: ""
+   
+addons:
+  coverity_scan:
+    project:
+      name: "AOSC-Dev/Anthon-Starter"
+      description: "Build submitted via Travis CI with coverity_scan"
+    notification_email: liushuyu_011@163.com
+  # build_command_prepend: "./configure"
+    build_command: "make -j4"
+    branch_pattern: 0.2.0-devel
+  # build_script_url: ""
+    
+    
+script:
+  - make -j2   
+ # - if [ "${COVERITY_SCAN}" = '1' ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
+ #build_script_url
