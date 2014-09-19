@@ -24,6 +24,6 @@ addons:
     
     
 script:
-  - make -j2   
+  - make -j2 -e CC=i586-mingw32msvc-gcc.exe AR=i586-mingw32msvc-ar.exe RAKLIB=i586-mingw32msvc-ranlib.exe LD=i586-mingw32msvc-ld.exe RES=i586-mingw32msvc-windres    
  # - if [ "${COVERITY_SCAN}" = '1' ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
  #build_script_url
