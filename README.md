@@ -22,6 +22,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## Code Status
+Travis-CI build test: [![Build Status](https://travis-ci.org/AOSC-Dev/Anthon-Starter.svg?branch=0.2.0-devel)](https://travis-ci.org/AOSC-Dev/Anthon-Starter)
 Coverity test: [![https://scan.coverity.com/projects/2952](https://scan.coverity.com/projects/2952/badge.svg)](https://scan.coverity.com/projects/2952)
 
 ## Build
