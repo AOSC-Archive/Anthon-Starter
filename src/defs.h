@@ -34,8 +34,8 @@
 # define EDIT_DONOT 5
 
 /* */
-# define NO_VERIFY 1
-# define NO_EXTRACT 1
+# define NO_VERIFY 15
+# define NO_EXTRACT 16
 
 # define CMD_BUF 512
 # define MD5SUM_LENGTH 33
