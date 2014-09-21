@@ -1,7 +1,7 @@
 # Things to Do in 0.2.0
 1.  **D1** Variables that included in function run() ---- Junde Yi
 2.  **DD** Use "p = getenv ( "SystemDrive" );" to get system drive. ---- Junde Yi
-3.  **D1** chkargs ---- Junde Yi
+3.  **D2** chkargs ---- Junde Yi
 4.  **DD** Color output for prompting message ---- Junde Yi
 5.  **D1** MD5 check-sum ---- LZX
 6.  **DD** Value passing mistake ---- Junde Yi
@@ -9,9 +9,9 @@
 8.  **F**  Hang up the null pointers to prevent memory leaks ---- Junde Yi
 9.  **H**  panic() and oops() functions when error occured ---- Junde Yi
 10. **H**  Iterative includings ---- Junde Yi
-11. **H**  Fix the CLI to make it looks like a backend more ---- Junde Yi
-12. **ST** src/init.c So much warning! ---> @duminhui
-13. **H**  src/clrprint.c -> clrprintf (using va_args) ---- Junde Yi
+11. **DD** Fix the CLI to make it looks like a backend more ---- Junde Yi
+12. **ST** src/init.c So much warning! ---> @duminhui ---- FIXED by Junde Yi (deleted)
+13. **DD**  src/clrprint.c -> clrprintf (using va_args) ---- Junde Yi
 
 
 ## Status

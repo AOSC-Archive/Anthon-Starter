@@ -20,22 +20,31 @@
 /* Note: This function is based on Heroin's "colourful console"
  * ( http://www.oschina.net/code/snippet_48783_329 ).
  * Thanks to his code.
+ * 
+ * Color definitions are in defs.h
  */
 
 # include <stdio.h>
+# include <stdarg.h>
 # include <windows.h>
 
 # include "funcs.h"
 # include "defs.h"
 
-void clrprint ( char* str, WORD color )
+void clrprintf ( WORD color, char* format, ... )
 {
+    va_list args;
+    va_start ( args, format );
+    
     WORD colorOld;
     HANDLE handle = GetStdHandle ( STD_OUTPUT_HANDLE );
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo ( handle, &csbi );
     colorOld = csbi.wAttributes;
     SetConsoleTextAttribute ( handle, color );
-    printf ( str );
+    
+    vprintf ( format, args );
+    
+    va_end ( args );
     SetConsoleTextAttribute ( handle, colorOld );
 }

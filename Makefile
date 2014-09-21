@@ -1,6 +1,6 @@
 # Makefile for Anthon-Starter 0.2.0
 
-EXENAME = anthon-starter
+EXENAME = ast
 
 CC = gcc
 RES = windres
@@ -14,7 +14,7 @@ SRCDIR = src/
 BUILDIR = build/
 DESTDIR = 
 
-COMP = rc.o main.o chkargs.o clrprint.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o
+COMP = rc.o main.o chkargs.o clrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o
 
 all: $(COMP) link
 
@@ -27,8 +27,8 @@ main.o:
 chkargs.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)chkargs.o $(SRCDIR)chkargs.c
 
-clrprint.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)clrprint.o $(SRCDIR)clrprint.c
+clrprintf.o:
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)clrprintf.o $(SRCDIR)clrprintf.c
 
 run.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)run.o $(SRCDIR)run.c

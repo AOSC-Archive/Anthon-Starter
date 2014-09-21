@@ -99,6 +99,6 @@ int help_message ( char *progname );
 int startup ();
 
 /*
- * clrprint: Output colourful texts, only for Windows.
+ * clrprintf: Output colourful texts, only for Windows.
  */
-void clrprint ( char* str, WORD color );
+void clrprintf ( WORD color, char* format, ... );

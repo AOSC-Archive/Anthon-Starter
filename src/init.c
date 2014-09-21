@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-# include <windows.h>
+
 # include "funcs.h"
 # include "defs.h"
 
@@ -25,41 +25,5 @@
 int init ( void )
 {
 	
-	getSystemDrive();
-	getAllSytemDrives();
-	
-	//TODO:get loader version NT5/NT6
     return 0;
 }
-
-void getSystemDrive(void)
-{
-	TCHAR systemDirectory[MAX_PATH];
-	GetSystemDirectory(systemDirectory, MAX_PATH);
-	
-    clrprint ( "[I]", 11 );
-	printf(" SystemDirectory:\t%s\n", systemDirectory);
-    
-	return 0;
-}
-
-void getAllSytemDrives(void)
-{
-	TCHAR szBuf[100];  
-    memset(szBuf,0,100);  
-  
-    GetLogicalDriveStrings(sizeof(szBuf)/sizeof(TCHAR),szBuf);  
-	
-    clrprint ( "[I]", 11 );
-	printf(" System Drives: ");
-	
-	TCHAR * s;
-    for (s= szBuf;  *s;  s+=strlen(s)+1){  
-        LPCTSTR sDrivePath = s;  
-        printf("\t%s", sDrivePath);  
-    }  
-	printf("\n");
-    
-	return 0;
-}
-

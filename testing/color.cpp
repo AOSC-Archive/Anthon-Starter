@@ -11,7 +11,7 @@ void cprintf(char* str, WORD color, ...);
 int main() {
     char *str = ( char * ) malloc ( 512 );
     scanf ( "%s", str );
-    for ( int i = 0; i <= 15*15; i++ )
+    for ( int i = 0; i <= 500; i++ )
     {
         cprintf(str, i);
         printf ("\n");

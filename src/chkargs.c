@@ -68,7 +68,7 @@ int chkargs ( int argc, char **argv,
                     /* Check if the image file exists. */
                     if ( access ( osimage, R_OK ) != 0 )
                     {
-                        clrprint ( "[E] The ISO image is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n", 12 );
+                        clrprintf ( RED, "[E] The ISO image is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n" );
                         free ( tmp );
                         tmp = NULL;
                         return 0; /* main() returns 1 */
@@ -78,10 +78,10 @@ int chkargs ( int argc, char **argv,
                     if ( access ( "res\\7z.exe", X_OK ) == 0 )
                     {
                         tmp = malloc ( CMD_BUF ); /* FIXME: I hope that "osimage" won't be longer than 512 bytes... */
-                        sprintf ( tmp, "%s %s %s%s %s%c", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
+                        snprintf ( tmp, CMD_BUF, "%s %s %s%s %s%c", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
                         system ( tmp ); /* Extract md5sum.ast to %TEMP% */
 
-                        sprintf ( tmp, "%s%s", temp, "\\md5sum.ast" );
+                        snprintf ( tmp, CMD_BUF, "%s%s", temp, "\\md5sum.ast" );
                         if ( ( sum = fopen ( tmp, "rt" ) ) != NULL ) /* Open md5sum.ast as text, read only */
                         {
                             /* Memory allocation first */
@@ -104,7 +104,7 @@ int chkargs ( int argc, char **argv,
                         }
                         else
                         {
-                            clrprint ( "[E]", 12 );
+                            clrprintf ( RED, "[E]" );
                             puts ( " This ISO image is not supported." );
                             free ( tmp );
                             tmp = NULL;
@@ -113,7 +113,7 @@ int chkargs ( int argc, char **argv,
                     }
                     else
                     {
-                        clrprint ( "[E]", 12 );
+                        clrprintf ( RED, "[E]" );
                         puts ( " Cannot find 7-Zip executable. Program exits." );
                         return 0; /* main() returns 1 */
                     }
@@ -126,7 +126,7 @@ int chkargs ( int argc, char **argv,
                     if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
                     {
                         /* printf ( "\n  \033[0;31;1m*** [E] The install route %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget ); */
-                        clrprint ( "[E]", 12 );
+                        clrprintf ( RED, "[E]" );
                         puts ( " The install route is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist." );
                         return 0; /* main() returns 1 */
                     }
@@ -189,7 +189,7 @@ int chkargs ( int argc, char **argv,
         /* Well... What if user forget to set osimage and ostarget? */
         if ( ( osimage == NULL ) || ( ostarget == NULL ) )
         {
-            clrprint ( "[E]", 11 );
+            clrprintf ( CYAN, "[E]" );
             puts ( "It seems that you forget to set the image file and the install route!" );
             return 0;
         }

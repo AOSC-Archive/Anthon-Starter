@@ -56,7 +56,7 @@ int run ( char *osimage, char *ostarget,
      */
     deploy ( loader, ptable );
     
-    clrprint ( "[S]", 10 );
+    clrprintf ( GREEN, "[S]" );
     puts ( " Operation finished ^o^" );
     return 0;
 }

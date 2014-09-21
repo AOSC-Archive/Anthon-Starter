@@ -36,7 +36,7 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
      * NOTICE: I think there can't be AB:\ or such kind of volume...
      */
     systemdrive = malloc ( 4 );
-    sprintf ( systemdrive, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
+    snprintf ( systemdrive, 4, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
 
     /* Get partition table.
      * But I don't know how to do it...
@@ -46,14 +46,14 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
      * If detected NTLDR: Windows 2k/XP
      * If detected BOOTMGR: Windows Vista+
      */
-    tmp = malloc ( strlen ( systemdrive ) + strlen ( "NTLDR" ) + 1 );
-    sprintf ( tmp, "%s%c%s%c", systemdrive, '\\', "NTLDR", '\0' );
+    tmp = malloc ( CMD_BUF );
+    snprintf ( tmp, CMD_BUF, "%s%c%s%c", systemdrive, '\\', "NTLDR", '\0' );
     if ( access ( tmp, R_OK ) == 0 )
         loader = LOADER_NTLDR;
     else
     {
         tmp = realloc ( tmp, strlen ( systemdrive ) + strlen ( "\\Windows\\boot\\" ) + 1 );
-        sprintf ( tmp, "%s%s%c", systemdrive, "\\Windows\\boot\\", '\0' );
+        snprintf ( tmp, CMD_BUF, "%s%s%c", systemdrive, "\\Windows\\boot\\", '\0' );
         if ( access ( tmp, R_OK ) == 0 )
             loader = LOADER_BCD;
         else
@@ -62,11 +62,11 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
 
     /* Detect free spaces on system drive, use WinAPI */
     GetDiskFreeSpaceEx ( systemdrive, &sysdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
-    clrprint ( "[I]", 11 );
+    clrprintf ( CYAN, "[I]" );
     printf ( " Free space on %s: %lu bytes\n", systemdrive, ( unsigned long ) sysdrive_space.QuadPart );
     if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
     {
-        clrprint ( "[W]", 14 );
+        clrprintf ( YELLOW, "[W]" );
         puts ( " You may have no enough free space on your system drive." );
     }
 
@@ -89,7 +89,7 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     {
         case PROCESSOR_ARCHITECTURE_AMD64:
         {
-            clrprint ( "[I]", 11 );
+            clrprintf ( CYAN, "[I]" );
             printf ( " wProcessorArchitecture = %d\n", ( int ) sysinfo.wProcessorArchitecture );
             /* x86-64. It's okay. */
             /* printf ( "x86_64 architecture" ); */
@@ -97,7 +97,7 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
         }
         default:
         {
-            clrprint ( "[W]", 14 );
+            clrprintf ( YELLOW, "[W]" );
             puts ( " Your CPU may not support x86_64, but AOSC OSes do." );
             break;
         }
@@ -106,11 +106,11 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
 
     /* Detect memory size, use WinAPI */
     GlobalMemoryStatus ( &meminfo );
-    clrprint ( "[I]", 11 );
+    clrprintf ( CYAN, "[I]" );
     printf ( " RAM size: %lu bytes\n", ( unsigned long ) meminfo.dwTotalPhys );
     if ( meminfo.dwTotalPhys < 1610612736 ) /* 1.5 GiB */
     {
-        clrprint ( "[W]", 14 );
+        clrprintf ( YELLOW, "[W]" );
         puts ( " You may have no enough free space on your RAM." );
     }
     
