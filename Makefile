@@ -55,6 +55,8 @@ help_message.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)help_message.o $(SRCDIR)help_message.c
 
 link:
+	@echo Well wait 1 seconds for file saving ...
+	@sleep 1
 	$(CC) $(LDFLAGS) -o $(DESTDIR)$(EXENAME).exe $(BUILDIR)*.o
 
 clean:
