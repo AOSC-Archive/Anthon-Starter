@@ -24,13 +24,11 @@
 
 int init ( void )
 {
-    printf ( "( 1 of 6 ) Initializing...  " );
 	
 	getSystemDrive();
 	getAllSytemDrives();
 	
 	//TODO:get loader version NT5/NT6
-	clrprint ( "Done.\n", 10 );
     return 0;
 }
 
@@ -39,7 +37,8 @@ void getSystemDrive(void)
 	TCHAR systemDirectory[MAX_PATH];
 	GetSystemDirectory(systemDirectory, MAX_PATH);
 	
-	printf("SystemDirectory:\t%s\n", systemDirectory);
+    clrprint ( "[I]", 11 );
+	printf(" SystemDirectory:\t%s\n", systemDirectory);
     
 	return 0;
 }
@@ -51,7 +50,8 @@ void getAllSytemDrives(void)
   
     GetLogicalDriveStrings(sizeof(szBuf)/sizeof(TCHAR),szBuf);  
 	
-	printf("System Drives: ");
+    clrprint ( "[I]", 11 );
+	printf(" System Drives: ");
 	
 	TCHAR * s;
     for (s= szBuf;  *s;  s+=strlen(s)+1){  
@@ -59,7 +59,7 @@ void getAllSytemDrives(void)
         printf("\t%s", sDrivePath);  
     }  
 	printf("\n");
-	
+    
 	return 0;
 }
 

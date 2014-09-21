@@ -32,8 +32,6 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     MEMORYSTATUS meminfo; /* For memory info */
     char *tmp = NULL; /* Temp use */
 
-    printf ( "( 2 of 6 ) Getting system info...  " );
-
     /* Get system drive
      * NOTICE: I think there can't be AB:\ or such kind of volume...
      */
@@ -64,8 +62,13 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
 
     /* Detect free spaces on system drive, use WinAPI */
     GetDiskFreeSpaceEx ( systemdrive, &sysdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
+    clrprint ( "[I]", 11 );
+    printf ( " Free space on %s: %lu bytes\n", systemdrive, ( unsigned long ) sysdrive_space.QuadPart );
     if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
-        clrprint ( "\n  [WARNING] You may have no enough free space on your system drive.  ", 14 );
+    {
+        clrprint ( "[W]", 14 );
+        puts ( " You may have no enough free space on your system drive." );
+    }
 
     /* Detect CPU architecture, use WinAPI
      * NOTICE: A VERY SPECIAL THANKS to Daming Yang ( @Lion ). F**king MinGW!
@@ -86,13 +89,16 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     {
         case PROCESSOR_ARCHITECTURE_AMD64:
         {
+            clrprint ( "[I]", 11 );
+            printf ( " wProcessorArchitecture = %d\n", ( int ) sysinfo.wProcessorArchitecture );
             /* x86-64. It's okay. */
             /* printf ( "x86_64 architecture" ); */
             break;
         }
         default:
         {
-            clrprint ( "  [WARNING] Your CPU may not support x86_64, but AOSC OSes do.", 14 );
+            clrprint ( "[W]", 14 );
+            puts ( " Your CPU may not support x86_64, but AOSC OSes do." );
             break;
         }
     }
@@ -100,9 +106,17 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
 
     /* Detect memory size, use WinAPI */
     GlobalMemoryStatus ( &meminfo );
+    clrprint ( "[I]", 11 );
+    printf ( " RAM size: %lu bytes\n", ( unsigned long ) meminfo.dwTotalPhys );
     if ( meminfo.dwTotalPhys < 1610612736 ) /* 1.5 GiB */
-        clrprint ( "\n  [WARNING] You may have no enough free space on your RAM.  ", 14 );
-
-    clrprint ( "Done.\n", 10 );
+    {
+        clrprint ( "[W]", 14 );
+        puts ( " You may have no enough free space on your RAM." );
+    }
+    
+    /* Free the memory */
+    free ( tmp );
+    tmp = NULL;
+    
     return 0;
 }

@@ -55,8 +55,6 @@ help_message.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)help_message.o $(SRCDIR)help_message.c
 
 link:
-	@sleep 5
-	# The statement above is to sleep.
 	$(CC) $(LDFLAGS) -o $(DESTDIR)$(EXENAME).exe $(BUILDIR)*.o
 
 clean:

@@ -1,11 +1,17 @@
 # Things to Do in 0.2.0
-1. **D1** Variables that included in function run() ---- Junde Yi
-2. **DD** Use "p = getenv ( "SystemDrive" );" to get system drive. ---- Junde Yi
-3. **D1** chkargs ---- Junde Yi
-4. **D2** Color output for prompting message ---- Junde Yi
-5. **D1**  MD5 check-sum ---- LZX
-6. **F**  Value passing mistake ---- Junde Yi
-7. **>**  Backup work started ---- LZX
+1.  **D1** Variables that included in function run() ---- Junde Yi
+2.  **DD** Use "p = getenv ( "SystemDrive" );" to get system drive. ---- Junde Yi
+3.  **D1** chkargs ---- Junde Yi
+4.  **DD** Color output for prompting message ---- Junde Yi
+5.  **D1** MD5 check-sum ---- LZX
+6.  **DD** Value passing mistake ---- Junde Yi
+7.  **>**  Backup work started ---- LZX
+8.  **F**  Hang up the null pointers to prevent memory leaks ---- Junde Yi
+9.  **H**  panic() and oops() functions when error occured ---- Junde Yi
+10. **H**  Iterative includings ---- Junde Yi
+11. **H**  Fix the CLI to make it looks like a backend more ---- Junde Yi
+12. **ST** src/init.c So much warning! ---> @duminhui
+13. **H**  src/clrprint.c -> clrprintf (using va_args) ---- Junde Yi
 
 
 ## Status
@@ -14,16 +20,15 @@
 * F     (Bug) Fixing
 * D1    Stage 1 done (an architecture)
 * D2    Stage 2 done (co-operation with other functions)
-* D3    Stage 3 done (bug fixes)
 * DD    Completely done
 * ST    oh ShiT it does not work! (Maybe a bug) ---> [Assign someone]
 
 **Signature is necessary.**
 
 ## Function Division
-  - [ ] main                -> Junde Yi
+  - [X] main                -> Junde Yi
   - [X] chkargs             -> Junde Yi
-  - [ ] run                 -> Junde Yi 
+  - [ ] run                 -> Junde Yi
   - [ ] getsysinfo          -> 
   - [ ] init                -> Minhui Du
   - [ ] backup              -> Zixing Liu
@@ -33,4 +38,6 @@
   - [ ] startup             -> 
   - [X] help_message        -> Junde Yi
   - [ ] md5sum              -> Zixing Liu
+  - [ ] panic               -> Junde Yi
+  - [ ] oops                -> Junde Yi
 

@@ -22,8 +22,5 @@
 
 int backup ( int loader, int ptable )
 {
-    printf ( "( 3 of 6 ) Backup important files...  " );
-    
-    clrprint ( "Done.\n", 10 );
     return 0;
 }

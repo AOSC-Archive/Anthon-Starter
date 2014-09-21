@@ -23,19 +23,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## Code Status
 Travis-CI build test: [![Build Status](https://travis-ci.org/AOSC-Dev/Anthon-Starter.svg?branch=0.2.0-devel)](https://travis-ci.org/AOSC-Dev/Anthon-Starter)
+
 Coverity test: [![https://scan.coverity.com/projects/2952](https://scan.coverity.com/projects/2952/badge.svg)](https://scan.coverity.com/projects/2952)
 
 ## Build
 
 To build Anthon-Starter, you need:
 
-  * Microsoft Windows
   * MinGW (x86-32)
-  * Msys 1.0
 
-MinGW's path and Msys's path must be in the %PATH% environment variable.
+MinGW's path must be in the %PATH% environment variable.
 
-**NOTICE: At present we have no enough source codes to let you compile it easily. We are sorry for that, and we will fix it soon.**
+**NOTICE: If you're using MinGW on GNU/Linux, remember to change the compiler to mingw32 compilers.**
 
 ## Developers
 

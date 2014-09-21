@@ -50,7 +50,7 @@ int chkargs ( int argc, char **argv,
     /* These are for getopt_long() */
     extern char *optarg;
     char opttmp = '\0';
-
+    
     /* argv[1] is command */
 
     if ( argc < 2 )
@@ -68,7 +68,9 @@ int chkargs ( int argc, char **argv,
                     /* Check if the image file exists. */
                     if ( access ( osimage, R_OK ) != 0 )
                     {
-                        clrprint ( "\n  *** [ERROR] The ISO image is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n", 12 );
+                        clrprint ( "[E] The ISO image is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n", 12 );
+                        free ( tmp );
+                        tmp = NULL;
                         return 0; /* main() returns 1 */
                     }
 
@@ -97,16 +99,22 @@ int chkargs ( int argc, char **argv,
                             fclose ( sum );
                             sum = NULL;
                             remove ( tmp ); /* tmp = %temp%\md5sum.ast */
+                            free ( tmp );
+                            tmp = NULL;
                         }
                         else
                         {
-                            clrprint ( "  *** [ERROR] This ISO image is not supported.", 12 );
+                            clrprint ( "[E]", 12 );
+                            puts ( " This ISO image is not supported." );
+                            free ( tmp );
+                            tmp = NULL;
                             return 0; /* main() returns 1 */
                         }
                     }
                     else
                     {
-                        clrprint ( "  *** [ERROR] Cannot find 7-Zip executable. Program exits.", 12 );
+                        clrprint ( "[E]", 12 );
+                        puts ( " Cannot find 7-Zip executable. Program exits." );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -118,7 +126,8 @@ int chkargs ( int argc, char **argv,
                     if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
                     {
                         /* printf ( "\n  \033[0;31;1m*** [E] The install route %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget ); */
-                        clrprint ( "\n  *** [ERROR] The install route is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n", 12 );
+                        clrprint ( "[E]", 12 );
+                        puts ( " The install route is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist." );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -180,7 +189,8 @@ int chkargs ( int argc, char **argv,
         /* Well... What if user forget to set osimage and ostarget? */
         if ( ( osimage == NULL ) || ( ostarget == NULL ) )
         {
-            puts ( "\nIt seems that you forget to set the image file and the install route!" );
+            clrprint ( "[E]", 11 );
+            puts ( "It seems that you forget to set the image file and the install route!" );
             return 0;
         }
         return 2; /* after getopt_long(), main() invokes run() */

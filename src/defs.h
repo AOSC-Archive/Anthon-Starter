@@ -18,24 +18,24 @@
  */
 
 /* Partition table */
-# define PTABLE_UNKNOWN 4
-# define PTABLE_MBR 5
-# define PTABLE_GPT 6
+# define PTABLE_UNKNOWN 7
+# define PTABLE_MBR 1
+# define PTABLE_GPT 2
 
 /* Boot loader (OS) type */
 # define LOADER_UNKNOWN 7
-# define LOADER_NTLDR 8
-# define LOADER_BCD 9
+# define LOADER_NTLDR 1
+# define LOADER_BCD 2
 
 /* Installation formula */
-# define EDIT_PRESENT 10
-# define EDIT_MBR 11
-# define EDIT_ESP 12
-# define EDIT_DONOT 13
+# define EDIT_PRESENT 1
+# define EDIT_MBR 2
+# define EDIT_ESP 3
+# define EDIT_DONOT 5
 
 /* */
-# define NO_VERIFY 15
-# define NO_EXTRACT 16
+# define NO_VERIFY 1
+# define NO_EXTRACT 1
 
 # define CMD_BUF 512
 # define MD5SUM_LENGTH 33

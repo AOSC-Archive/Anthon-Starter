@@ -33,13 +33,9 @@ int main ( int argc, char **argv )
     char *osimage = ( char* ) NULL, *ostarget = ( char* ) NULL;
 
     img imginfo = { 0, NULL, NULL, NULL, NULL, NULL, NULL };
-    /*
-    ( img * ) malloc ( sizeof ( img ) );
-    memset ( imginfo, 0, sizeof ( img ) );
-    */
     /* End of variable declaration */
 
-    /* It's just, just, have fun. */
+    /* It's just, just, having fun. */
     if ( argv[1] == NULL )
     {
         MessageBox ( NULL, "Sorry we haven't finished GUI design yet.\nPlease feel free using CLI :)", "Anthon-Starter 0.2", MB_ICONINFORMATION|MB_OK );
@@ -47,7 +43,7 @@ int main ( int argc, char **argv )
     }
 
 
-	init();
+	/* init(); */
 
     puts ( "Anthon-Starter 0.2.0 Development Preview\nCopyright (C) 2014 Anthon Open Source Community\n" );
 
@@ -65,10 +61,9 @@ int main ( int argc, char **argv )
             help_message( argv[0] );
             return 0;
         case 2:
-            printf ("os: %d\ndist: %s\nver: %s\nlang: %s\nvml: %s\nini: %s\nliv: %s\n", imginfo.os, imginfo.dist, imginfo.ver, imginfo.lang, imginfo.vmlinuz_chksum, imginfo.initrd_chksum, imginfo.livesq_chksum );
+            clrprint ( "[I]", 11 );
+            printf (" Image info:\n      os    : %d\n      dist  : %s\n      ver   : %s\n      lang  : %s\n      vmlchk: %s\n      inichk: %s\n      livchk: %s\n", imginfo.os, imginfo.dist, imginfo.ver, imginfo.lang, imginfo.vmlinuz_chksum, imginfo.initrd_chksum, imginfo.livesq_chksum );
             /* Start running */
-            /* printf ( "\033[0;32;1mDone. Now run.\033[0m\n" ); */
-            puts ( "Parameters and image checking done." );
             run ( osimage, ostarget,
                   &imginfo, instform, verbose_mode, quiet_mode,
                   will_pause, will_reboot, will_verify, will_extract );
