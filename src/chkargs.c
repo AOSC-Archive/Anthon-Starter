@@ -116,6 +116,8 @@ int chkargs ( int argc, char **argv,
                     {
                         clrprintf ( RED, "[E]" );
                         puts ( " Cannot find 7-Zip executable. Program exits." );
+                        free ( osimage );
+                        osimage = NULL;
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -192,6 +194,8 @@ int chkargs ( int argc, char **argv,
         {
             clrprintf ( RED, "[E]" );
             puts ( " It seems that you forget to set the image file and the install route!" );
+            free ( ostarget );
+            ostarget = NULL;
             return 0;
         }
         return 2; /* after getopt_long(), main() invokes run() */

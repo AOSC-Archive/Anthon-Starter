@@ -25,7 +25,7 @@
 # include "funcs.h"
 # include "defs.h"
 
-int getsysinfo ( int loader, int ptable, char *systemdrive )
+int getsysinfo ( int *loader, int ptable, char *systemdrive )
 {
     ULARGE_INTEGER sysdrive_space; /* Free space on system drive */
     SYSTEM_INFO sysinfo;
@@ -39,7 +39,7 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     snprintf ( systemdrive, 4, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
 
     /* Get partition table.
-     * But I don't know how to do it...
+     * TODO: But I don't know how to do it...
      */
 
     /* Get loader type.
@@ -49,15 +49,15 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     tmp = malloc ( CMD_BUF );
     snprintf ( tmp, CMD_BUF, "%s%c%s%c", systemdrive, '\\', "NTLDR", '\0' );
     if ( access ( tmp, R_OK ) == 0 )
-        loader = LOADER_NTLDR;
+        *loader = LOADER_NTLDR;
     else
     {
         tmp = realloc ( tmp, strlen ( systemdrive ) + strlen ( "\\Windows\\boot\\" ) + 1 );
         snprintf ( tmp, CMD_BUF, "%s%s%c", systemdrive, "\\Windows\\boot\\", '\0' );
         if ( access ( tmp, R_OK ) == 0 )
-            loader = LOADER_BCD;
+            *loader = LOADER_BCD;
         else
-            loader = LOADER_UNKNOWN;
+            *loader = LOADER_UNKNOWN;
     }
 
     /* Detect free spaces on system drive, use WinAPI */
@@ -117,6 +117,8 @@ int getsysinfo ( int loader, int ptable, char *systemdrive )
     /* Free the memory */
     free ( tmp );
     tmp = NULL;
+    free ( systemdrive );
+    systemdrive = NULL;
     
     return 0;
 }
