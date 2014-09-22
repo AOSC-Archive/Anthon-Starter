@@ -68,7 +68,8 @@ int chkargs ( int argc, char **argv,
                     /* Check if the image file exists. */
                     if ( access ( osimage, R_OK ) != 0 )
                     {
-                        clrprintf ( RED, "[E] The ISO image is not avaliable.\n              You may not have sufficient privileges, or it doesn\'t exist.\n" );
+                        clrprintf ( RED, "[E]" );
+                        puts ( " The ISO image is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
                         free ( tmp );
                         tmp = NULL;
                         return 0; /* main() returns 1 */
@@ -189,8 +190,8 @@ int chkargs ( int argc, char **argv,
         /* Well... What if user forget to set osimage and ostarget? */
         if ( ( osimage == NULL ) || ( ostarget == NULL ) )
         {
-            clrprintf ( CYAN, "[E]" );
-            puts ( "It seems that you forget to set the image file and the install route!" );
+            clrprintf ( RED, "[E]" );
+            puts ( " It seems that you forget to set the image file and the install route!" );
             return 0;
         }
         return 2; /* after getopt_long(), main() invokes run() */
