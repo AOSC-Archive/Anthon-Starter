@@ -20,7 +20,7 @@ addons:
   # build_command_prepend: "./configure"
     build_command: "make -j4 -e CC=i586-mingw32msvc-gcc LD=i586-mingw32msvc-ld RES=i586-mingw32msvc-windres"
     branch_pattern: 0.2.0-devel
-  # build_script_url: ""
+    build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
     
     
 script:
