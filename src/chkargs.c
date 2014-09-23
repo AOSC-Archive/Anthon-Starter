@@ -70,8 +70,8 @@ int chkargs ( int argc, char **argv,
                     {
                         clrprintf ( RED, "[E]" );
                         puts ( " The ISO image is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
-                        free ( tmp );
-                        tmp = NULL;
+                        take ( tmp );
+                        take ( osimage );
                         return 0; /* main() returns 1 */
                     }
 
@@ -98,17 +98,16 @@ int chkargs ( int argc, char **argv,
                                           imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum );
 
                             fclose ( sum );
-                            sum = NULL;
+                            sum = NULL; /* FILE *sum */
+                            /* FIXME: Untested return valve of remove() */
                             remove ( tmp ); /* tmp = %temp%\md5sum.ast */
-                            free ( tmp );
-                            tmp = NULL;
+                            take ( tmp );
                         }
                         else
                         {
                             clrprintf ( RED, "[E]" );
                             puts ( " This ISO image is not supported." );
-                            free ( tmp );
-                            tmp = NULL;
+                            take ( tmp );
                             return 0; /* main() returns 1 */
                         }
                     }
@@ -116,8 +115,7 @@ int chkargs ( int argc, char **argv,
                     {
                         clrprintf ( RED, "[E]" );
                         puts ( " Cannot find 7-Zip executable. Program exits." );
-                        free ( osimage );
-                        osimage = NULL;
+                        take ( osimage );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -194,15 +192,17 @@ int chkargs ( int argc, char **argv,
         {
             clrprintf ( RED, "[E]" );
             puts ( " It seems that you forget to set the image file and the install route!" );
-            free ( ostarget );
-            ostarget = NULL;
+            take ( ostarget );
             return 0;
         }
         return 2; /* after getopt_long(), main() invokes run() */
     }
 
     if ( strcmp ( argv[1], "help" ) == 0 )
+    {
+        take ( ostarget );
         return 1; /* main() invokes help_message() */
+    }
 
     if ( strcmp ( argv[1], "startup" ) == 0 )
         return 3; /* main() invokes startup() */

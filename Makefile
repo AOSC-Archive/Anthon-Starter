@@ -14,7 +14,7 @@ SRCDIR = src/
 BUILDIR = build/
 DESTDIR = 
 
-COMP = rc.o main.o chkargs.o clrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o
+COMP = rc.o main.o chkargs.o clrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o take.o md5sum.o
 
 all: $(COMP) link
 
@@ -53,6 +53,12 @@ deploy.o:
 
 help_message.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)help_message.o $(SRCDIR)help_message.c
+
+take.o:
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)take.o $(SRCDIR)take.c
+
+md5sum.o:
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)md5sum.o $(SRCDIR)md5sum.c
 
 link:
 	@echo Well wait 1 seconds for file saving ...

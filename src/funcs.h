@@ -102,3 +102,13 @@ int startup ();
  * clrprintf: Output colourful texts, only for Windows.
  */
 void clrprintf ( WORD color, char* format, ... );
+
+/*
+ * take: To take specify pointer's memory easily.
+ */
+int take ( void *ptr );
+
+/*
+ * md5sum: To verify specify file's md5 sum.
+ */
+int md5sum ( char *rtn, char *file );
