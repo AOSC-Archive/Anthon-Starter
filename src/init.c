@@ -18,8 +18,7 @@
  */
 
 
-# include "funcs.h"
-# include "defs.h"
+# include "ast.h"
 
 
 int init ( void )

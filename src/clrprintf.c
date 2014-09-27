@@ -24,12 +24,7 @@
  * Color definitions are in defs.h
  */
 
-# include <stdio.h>
-# include <stdarg.h>
-# include <windows.h>
-
-# include "funcs.h"
-# include "defs.h"
+# include "ast.h"
 
 void clrprintf ( WORD color, char* format, ... )
 {

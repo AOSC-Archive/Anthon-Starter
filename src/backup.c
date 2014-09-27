@@ -17,8 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-# include "funcs.h"
-# include "defs.h"
+# include "ast.h"
 
 int backup ( int loader, int ptable )
 {

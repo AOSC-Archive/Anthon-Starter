@@ -18,11 +18,6 @@
  */
 
 /* int main ( int argc, char **argv ); */
-# include <stdio.h>
-# include <stdlib.h>
-# include <windows.h>
-
-# include "defs.h"
 
 typedef struct
 {

@@ -17,9 +17,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-# include "ast.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <stdarg.h>
+# include <string.h>
+# include <unistd.h>
+# include <getopt.h>
+# include <windows.h>
 
-int md5sum ( char *rtn, char *file )
-{
-    return 0;
-}
+# include "funcs.h"
+# include "defs.h"
