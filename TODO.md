@@ -3,7 +3,7 @@
 2.  **DD** Use "p = getenv ( "SystemDrive" );" to get system drive. ---- Junde Yi
 3.  **D2** chkargs ---- Junde Yi
 4.  **DD** Color output for prompting message ---- Junde Yi
-5.  **D1** MD5 check-sum ---- LZX
+5.  **F** MD5 check-sum: Bug fix is currently in progress ---- LZX
 6.  **DD** Value passing mistake ---- Junde Yi
 7.  **>**  Backup work started ---- LZX
 8.  **F**  Hang up the null pointers to prevent memory leaks ---- Junde Yi
