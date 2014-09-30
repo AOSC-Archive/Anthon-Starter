@@ -165,8 +165,6 @@ int chkargs ( int argc, char **argv,
                     break;
 
                 case 'h': /* --help, -h */
-                    if ( osimage != NULL ) take ( osimage );
-                    if ( ostarget != NULL ) take ( ostarget );
                     return 1;
 
                 case NO_VERIFY: /* --no-verify */
@@ -197,7 +195,6 @@ int chkargs ( int argc, char **argv,
             if ( ostarget != NULL ) take ( ostarget );
             return 0;
         }
-        take ( osimage );
         take ( ostarget );
         return 2; /* after getopt_long(), main() invokes run() */
     }
