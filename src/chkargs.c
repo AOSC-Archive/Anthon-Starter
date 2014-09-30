@@ -158,7 +158,7 @@ int chkargs ( int argc, char **argv,
                     break;
 
                 case 'h': /* --help, -h */
-                    take ( ostarget );
+                    if ( ostarget != NULL ) take ( ostarget );
                     return 1;
 
                 case NO_VERIFY: /* --no-verify */
@@ -170,8 +170,8 @@ int chkargs ( int argc, char **argv,
                     break;
 
                 case '?': /* Unknown switch */
-                    take ( osimage );
-                    take ( ostarget );
+                    if ( osimage != NULL ) take ( osimage );
+                    if ( osimage != NULL ) take ( ostarget );
                     return 4;
 
                 /* It seems that GNU getopt_long() hasn't got this.
@@ -185,7 +185,8 @@ int chkargs ( int argc, char **argv,
         if ( ( osimage == NULL ) || ( ostarget == NULL ) )
         {
             notify ( FAIL, "It seems that you forget to set the image file and the install route!\n" );
-            take ( ostarget );
+            if ( osimage != NULL ) take ( osimage );
+            if ( ostarget != NULL ) take ( ostarget );
             return 0;
         }
         take ( osimage );
@@ -195,7 +196,8 @@ int chkargs ( int argc, char **argv,
 
     if ( strcmp ( argv[1], "help" ) == 0 )
     {
-        take ( ostarget );
+        if ( osimage != NULL ) take ( osimage );
+        if ( ostarget != NULL ) take ( ostarget );
         return 1; /* main() invokes help_message() */
     }
 
