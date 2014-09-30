@@ -62,7 +62,8 @@ int chkargs ( int argc, char **argv,
                     if ( access ( osimage, R_OK ) != 0 )
                     {
                         notify ( FAIL, "The ISO image is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
-                        take ( osimage );
+                        if ( osimage != NULL ) take ( osimage );
+                        if ( ostarget != NULL ) take ( ostarget );
                         return 0; /* main() returns 1 */
                     }
 
@@ -101,13 +102,16 @@ int chkargs ( int argc, char **argv,
                         {
                             notify ( FAIL, "This ISO image is not supported.\n" );
                             take ( tmp );
+                            if ( osimage != NULL ) take ( osimage );
+                            if ( ostarget != NULL ) take ( ostarget );
                             return 0; /* main() returns 1 */
                         }
                     }
                     else
                     {
                         notify ( FAIL, "Cannot find 7-Zip executable. Program exits.\n" );
-                        take ( osimage );
+                        if ( osimage != NULL ) take ( osimage );
+                        if ( ostarget != NULL ) take ( ostarget );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -118,8 +122,9 @@ int chkargs ( int argc, char **argv,
                     /* Check if the install route exists. */
                     if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
                     {
-                        /* printf ( "\n  \033[0;31;1m*** [E] The install route %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget ); */
                         notify ( FAIL, "The install route is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
+                        if ( osimage != NULL ) take ( osimage );
+                        if ( ostarget != NULL ) take ( ostarget );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -153,11 +158,14 @@ int chkargs ( int argc, char **argv,
                     else
                     {
                         puts ( "Wrong formula." );
+                        if ( osimage != NULL ) take ( osimage );
+                        if ( ostarget != NULL ) take ( ostarget );
                         return 0;
                     }
                     break;
 
                 case 'h': /* --help, -h */
+                    if ( osimage != NULL ) take ( osimage );
                     if ( ostarget != NULL ) take ( ostarget );
                     return 1;
 
