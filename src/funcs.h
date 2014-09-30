@@ -99,6 +99,11 @@ int startup ();
 void clrprintf ( WORD color, char* format, ... );
 
 /*
+ * notify: Using clrprintf() and vprintf() to output messages easily.
+ */
+void notify ( int TNotice, char *format, ... );
+
+/*
  * take: To take specify pointer's memory easily.
  */
 int take ( void *ptr );

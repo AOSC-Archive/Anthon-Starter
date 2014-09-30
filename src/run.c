@@ -25,7 +25,7 @@ int run ( char *osimage, char *ostarget,
 {
     /* Set variables */
     int loader = LOADER_UNKNOWN, ptable = PTABLE_UNKNOWN;
-    char *systemdrive = NULL;
+    char *systemdrive = malloc ( 4 );
     /* End of setting variables */
     
     /* Initialize the program: checking if resource files work.
@@ -52,7 +52,7 @@ int run ( char *osimage, char *ostarget,
      */
     deploy ( loader, ptable );
     
-    clrprintf ( GREEN, "[S]" );
-    puts ( " Operation finished ^o^" );
+    notify ( SUCC, "Operation finished ^o^" );
+    take ( systemdrive );
     return 0;
 }

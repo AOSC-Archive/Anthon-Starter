@@ -40,7 +40,7 @@
 # define CMD_BUF 512
 # define MD5SUM_LENGTH 33
 
-/* For clrprintf */
+/* For clrprintf() */
 # define BLACK       0
 # define DARK_BLUE   1
 # define DARK_GREEN  2
@@ -57,3 +57,9 @@
 # define PURPLE      13
 # define YELLOW      14
 # define WHITE       15
+
+/* For notify() */
+# define SUCC 0
+# define INFO 1
+# define WARN 2
+# define FAIL 3

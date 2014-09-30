@@ -61,8 +61,7 @@ int chkargs ( int argc, char **argv,
                     /* Check if the image file exists. */
                     if ( access ( osimage, R_OK ) != 0 )
                     {
-                        clrprintf ( RED, "[E]" );
-                        puts ( " The ISO image is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
+                        notify ( FAIL, "The ISO image is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
                         take ( osimage );
                         return 0; /* main() returns 1 */
                     }
@@ -97,16 +96,14 @@ int chkargs ( int argc, char **argv,
                         }
                         else
                         {
-                            clrprintf ( RED, "[E]" );
-                            puts ( " This ISO image is not supported." );
+                            notify ( FAIL, "This ISO image is not supported.\n" );
                             take ( tmp );
                             return 0; /* main() returns 1 */
                         }
                     }
                     else
                     {
-                        clrprintf ( RED, "[E]" );
-                        puts ( " Cannot find 7-Zip executable. Program exits." );
+                        notify ( FAIL, "Cannot find 7-Zip executable. Program exits.\n" );
                         take ( osimage );
                         return 0; /* main() returns 1 */
                     }
@@ -119,8 +116,7 @@ int chkargs ( int argc, char **argv,
                     if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
                     {
                         /* printf ( "\n  \033[0;31;1m*** [E] The install route %s is not avaliable.\033[0m\n          You may not have sufficient privileges, or it doesn\'t exist.\n", ostarget ); */
-                        clrprintf ( RED, "[E]" );
-                        puts ( " The install route is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist." );
+                        notify ( FAIL, "The install route is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -182,8 +178,7 @@ int chkargs ( int argc, char **argv,
         /* Well... What if user forget to set osimage and ostarget? */
         if ( ( osimage == NULL ) || ( ostarget == NULL ) )
         {
-            clrprintf ( RED, "[E]" );
-            puts ( " It seems that you forget to set the image file and the install route!" );
+            notify ( FAIL, "It seems that you forget to set the image file and the install route!\n" );
             take ( ostarget );
             return 0;
         }

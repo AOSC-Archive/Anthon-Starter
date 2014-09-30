@@ -29,7 +29,6 @@ int getsysinfo ( int *loader, int ptable, char *systemdrive )
     /* Get system drive
      * NOTICE: I think there can't be AB:\ or such kind of volume...
      */
-    systemdrive = malloc ( 4 );
     snprintf ( systemdrive, 4, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
 
     /* Get partition table.
@@ -53,19 +52,31 @@ int getsysinfo ( int *loader, int ptable, char *systemdrive )
         else
             *loader = LOADER_UNKNOWN;
     }
+    /* Print it */
+    switch ( *loader )
+    {
+        case LOADER_NTLDR:
+            notify ( INFO, "Loader type: NTLDR ( Windows 2K/NT/XP )" );
+            break;
+        case LOADER_BCD:
+            notify ( INFO, "Loader type: Bootmgr ( Windows Vista/7/8 )" );
+            break;
+        case LOADER_UNKNOWN:
+            notify ( INFO, "Loader type: Unknown" );
+            notify ( WARN, "Unknown loader type may cause unknown errors!" );
+            break;
+    }
 
     /* Detect free spaces on system drive, use WinAPI */
     GetDiskFreeSpaceEx ( systemdrive, &sysdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
-    clrprintf ( CYAN, "[I]" );
-    printf ( " Free space on %s: %lu bytes\n", systemdrive, ( unsigned long ) sysdrive_space.QuadPart );
+    notify ( INFO, "Free space on %s: %I64d bytes", systemdrive, sysdrive_space.QuadPart );
     if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
     {
-        clrprintf ( YELLOW, "[W]" );
-        puts ( " You may have no enough free space on your system drive." );
+        notify ( WARN, "You may have no enough free space on your system drive." );
     }
 
     /* Detect CPU architecture, use WinAPI
-     * NOTICE: A VERY SPECIAL THANKS to Daming Yang ( @Lion ). F**king MinGW!
+     * NOTICE: A VERY SPECIAL THANKS to Daming Yang ( @Lion ).
      */
     typedef void ( WINAPI *PGNSI ) ( LPSYSTEM_INFO );
     /* Well... The library of MinGW does not contain many new WinAPIs, such as GetNativeSystemInfo(). */
@@ -82,37 +93,24 @@ int getsysinfo ( int *loader, int ptable, char *systemdrive )
     switch ( sysinfo.wProcessorArchitecture )
     {
         case PROCESSOR_ARCHITECTURE_AMD64:
-        {
-            clrprintf ( CYAN, "[I]" );
-            printf ( " wProcessorArchitecture = %d\n", ( int ) sysinfo.wProcessorArchitecture );
+            notify ( INFO, "wProcessorArchitecture = %d", ( int ) sysinfo.wProcessorArchitecture );
             /* x86-64. It's okay. */
             /* printf ( "x86_64 architecture" ); */
             break;
-        }
         default:
-        {
-            clrprintf ( YELLOW, "[W]" );
-            puts ( " Your CPU may not support x86_64, but AOSC OSes do." );
+            notify ( WARN, "Your CPU may not support x86_64, but AOSC OSes do." );
             break;
-        }
     }
     /* w */
 
     /* Detect memory size, use WinAPI */
     GlobalMemoryStatus ( &meminfo );
-    clrprintf ( CYAN, "[I]" );
-    printf ( " RAM size: %lu bytes\n", ( unsigned long ) meminfo.dwTotalPhys );
+    notify ( INFO, "RAM size: %I64d bytes", meminfo.dwTotalPhys );
     if ( meminfo.dwTotalPhys < 1610612736 ) /* 1.5 GiB */
-    {
-        clrprintf ( YELLOW, "[W]" );
-        puts ( " You may have no enough free space on your RAM." );
-    }
+        notify ( WARN, "You may have no enough free space on your RAM." );
     
     /* Free the memory */
-    free ( tmp );
-    tmp = NULL;
-    free ( systemdrive );
-    systemdrive = NULL;
+    take ( tmp );
     
     return 0;
 }
