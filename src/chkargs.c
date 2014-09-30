@@ -89,19 +89,12 @@ int chkargs ( int argc, char **argv,
                                                imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum ) != 7 )
                             {
                                 notify ( FAIL, "Failed to read md5sum.ast! Program exits." );
-                                /* Oh oh I repeat it... */
-                                take ( tmp );
-                                take ( osimage );
-                                fclose ( sum );
-                                sum = NULL;
-                                if ( remove ( tmp ) == -1 )
-                                    perror ( "Failed to remove the file" );
+                                exit ( 1 );
                             }
 
                             fclose ( sum );
                             sum = NULL; /* FILE *sum */
-                            if ( remove ( tmp ) == -1 ) /* tmp = %temp%\md5sum.ast */
-                                perror ( "Failed to remove the file" );
+                            /* FIXME: Not deleting the file extracted. */
                             take ( tmp );
                         }
                         else
@@ -176,6 +169,8 @@ int chkargs ( int argc, char **argv,
                     break;
 
                 case '?': /* Unknown switch */
+                    take ( osimage );
+                    take ( ostarget );
                     return 4;
 
                 /* It seems that GNU getopt_long() hasn't got this.
@@ -192,7 +187,6 @@ int chkargs ( int argc, char **argv,
             take ( ostarget );
             return 0;
         }
-        take ( osimage );
         take ( ostarget );
         return 2; /* after getopt_long(), main() invokes run() */
     }
