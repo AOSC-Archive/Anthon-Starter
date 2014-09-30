@@ -84,14 +84,24 @@ int chkargs ( int argc, char **argv,
                             imginfo -> initrd_chksum  = malloc ( MD5SUM_LENGTH );
                             imginfo -> livesq_chksum  = malloc ( MD5SUM_LENGTH );
 
-                            fscanf ( sum, "%*[^\n] %*s os%d %s %s %s %32s %*s %32s %*s %32s",
-                                          &(imginfo->os), imginfo->dist, imginfo->ver, imginfo->lang,
-                                          imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum );
+                            if ( fscanf ( sum, "%*[^\n] %*s os%1d %4s %512s %5s %32s %*s %32s %*s %32s",
+                                               &(imginfo->os), imginfo->dist, imginfo->ver, imginfo->lang,
+                                               imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum ) != 7 )
+                            {
+                                notify ( FAIL, "Failed to read md5sum.ast! Program exits." );
+                                /* Oh oh I repeat it... */
+                                take ( tmp );
+                                take ( osimage );
+                                fclose ( sum );
+                                sum = NULL;
+                                if ( remove ( tmp ) == -1 )
+                                    perror ( "Failed to remove the file" );
+                            }
 
                             fclose ( sum );
                             sum = NULL; /* FILE *sum */
-                            /* FIXME: Untested return valve of remove() */
-                            remove ( tmp ); /* tmp = %temp%\md5sum.ast */
+                            if ( remove ( tmp ) == -1 ) /* tmp = %temp%\md5sum.ast */
+                                perror ( "Failed to remove the file" );
                             take ( tmp );
                         }
                         else
@@ -182,6 +192,8 @@ int chkargs ( int argc, char **argv,
             take ( ostarget );
             return 0;
         }
+        take ( osimage );
+        take ( ostarget );
         return 2; /* after getopt_long(), main() invokes run() */
     }
 
