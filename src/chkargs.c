@@ -62,15 +62,13 @@ int chkargs ( int argc, char **argv,
                     if ( access ( osimage, R_OK ) != 0 )
                     {
                         notify ( FAIL, "The ISO image is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
-                        if ( osimage != NULL ) take ( osimage );
-                        if ( ostarget != NULL ) take ( ostarget );
                         return 0; /* main() returns 1 */
                     }
 
                     /* TODO: Extract md5sum.ast to check the image file is from AOSC, and store those inside into struct imginfo. */
                     if ( access ( "res\\7z.exe", X_OK ) == 0 )
                     {
-                        tmp = malloc ( CMD_BUF ); /* FIXME: I hope that "osimage" won't be longer than 512 bytes... */
+                        tmp = malloc ( 64 + strlen ( osimage ) ); /* I can't be bothered to allocate accurate memory. */
                         snprintf ( tmp, CMD_BUF, "%s %s %s%s %s%c", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
                         system ( tmp ); /* Extract md5sum.ast to %TEMP% */
 
@@ -102,16 +100,12 @@ int chkargs ( int argc, char **argv,
                         {
                             notify ( FAIL, "This ISO image is not supported.\n" );
                             take ( tmp );
-                            if ( osimage != NULL ) take ( osimage );
-                            if ( ostarget != NULL ) take ( ostarget );
                             return 0; /* main() returns 1 */
                         }
                     }
                     else
                     {
                         notify ( FAIL, "Cannot find 7-Zip executable. Program exits.\n" );
-                        if ( osimage != NULL ) take ( osimage );
-                        if ( ostarget != NULL ) take ( ostarget );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -123,8 +117,6 @@ int chkargs ( int argc, char **argv,
                     if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
                     {
                         notify ( FAIL, "The install route is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
-                        if ( osimage != NULL ) take ( osimage );
-                        if ( ostarget != NULL ) take ( ostarget );
                         return 0; /* main() returns 1 */
                     }
                     break;
@@ -158,8 +150,6 @@ int chkargs ( int argc, char **argv,
                     else
                     {
                         puts ( "Wrong formula." );
-                        if ( osimage != NULL ) take ( osimage );
-                        if ( ostarget != NULL ) take ( ostarget );
                         return 0;
                     }
                     break;
@@ -176,8 +166,6 @@ int chkargs ( int argc, char **argv,
                     break;
 
                 case '?': /* Unknown switch */
-                    if ( osimage != NULL ) take ( osimage );
-                    if ( osimage != NULL ) take ( ostarget );
                     return 4;
 
                 /* It seems that GNU getopt_long() hasn't got this.
@@ -191,8 +179,6 @@ int chkargs ( int argc, char **argv,
         if ( ( osimage == NULL ) || ( ostarget == NULL ) )
         {
             notify ( FAIL, "It seems that you forget to set the image file and the install route!\n" );
-            if ( osimage != NULL ) take ( osimage );
-            if ( ostarget != NULL ) take ( ostarget );
             return 0;
         }
         take ( ostarget );
@@ -200,11 +186,7 @@ int chkargs ( int argc, char **argv,
     }
 
     if ( strcmp ( argv[1], "help" ) == 0 )
-    {
-        if ( osimage != NULL ) take ( osimage );
-        if ( ostarget != NULL ) take ( ostarget );
         return 1; /* main() invokes help_message() */
-    }
 
     if ( strcmp ( argv[1], "startup" ) == 0 )
         return 3; /* main() invokes startup() */
