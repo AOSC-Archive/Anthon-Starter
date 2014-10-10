@@ -56,8 +56,6 @@ int main ( int argc, char **argv )
             help_message( argv[0] );
             return 0;
         case 2:
-            clrprintf ( CYAN, "[I]" );
-            printf (" Image info:\n      os    : %d\n      dist  : %s\n      ver   : %s\n      lang  : %s\n      vmlchk: %s\n      inichk: %s\n      livchk: %s\n", imginfo.os, imginfo.dist, imginfo.ver, imginfo.lang, imginfo.vmlinuz_chksum, imginfo.initrd_chksum, imginfo.livesq_chksum );
             /* Start running */
             run ( osimage, ostarget,
                   &imginfo, instform, verbose_mode, quiet_mode,

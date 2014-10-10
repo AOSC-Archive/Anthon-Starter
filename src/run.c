@@ -31,7 +31,7 @@ int run ( char *osimage, char *ostarget,
     /* Initialize the program: checking if resource files work.
      * NOTICE: init() will invoke exit(1) if it detected something wrong.
      */
-    init ();
+    init ( imginfo, osimage, ostarget );
     
     /* Get the info of the system, including system drive, memory, CPU architecture, etc. */
     getsysinfo ( &loader, ptable, systemdrive );

@@ -56,7 +56,7 @@ int run ( char *osimage, char *ostarget,
 /*
  * init: Initialize Anthon-Starter.
  */
-int init ( void );
+int init ( img *imginfo, char *osimage, char *ostarget );
 
 /*
  * getsysinfo: Get the system info, such as system drive, CPU architecture, etc.
