@@ -34,7 +34,7 @@ typedef struct
  * chkargs: Check the arguments which is passed to Anthon-Starter.
  */
 int chkargs ( int argc, char **argv,
-              char *osimage, char *ostarget,
+              char **p_osimg_tgt, /* Including "osimage" and "ostarget" */
               img *imginfo, int *instform, int *verbose_mode, int *quiet_mode,
               int *will_pause, int *will_reboot, int *will_verify, int *will_extract );
 

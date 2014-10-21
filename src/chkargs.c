@@ -20,7 +20,7 @@
 # include "ast.h"
 
 int chkargs ( int argc, char **argv,
-              char *osimage, char *ostarget,
+              char **p_osimg_tgt, /* Including "osimage" and "ostarget" */
               img *imginfo, int *instform, int *verbose_mode, int *quiet_mode,
               int *will_pause, int *will_reboot, int *will_verify, int *will_extract )
 {
@@ -54,10 +54,10 @@ int chkargs ( int argc, char **argv,
             switch ( opttmp )
             {
                 case 'l': /* --live=, -l */
-                    osimage = malloc ( strlen ( optarg ) + 1 );
-                    strcpy ( osimage, optarg );
+                    p_osimg_tgt[0] = malloc ( strlen ( optarg ) + 1 ); /* p_osimg_tgt[0] -> osimage */
+                    strcpy ( p_osimg_tgt[0], optarg );
                     /* Check if the image file exists. */
-                    if ( access ( osimage, R_OK ) != 0 )
+                    if ( access ( p_osimg_tgt[0], R_OK ) != 0 )
                     {
                         notify ( FAIL, "The ISO image is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
                         return 0; /* main() returns 1 */
@@ -65,10 +65,10 @@ int chkargs ( int argc, char **argv,
                     break;
 
                 case 'o': /* --output, -o */
-                    ostarget = malloc ( strlen ( optarg ) + 1 );
-                    strcpy ( ostarget, optarg );
+                    p_osimg_tgt[1] = malloc ( strlen ( optarg ) + 1 ); /* p_osimg_tgt[1] -> ostarget */
+                    strcpy ( p_osimg_tgt[1], optarg );
                     /* Check if the install route exists. */
-                    if ( access ( ostarget, ( W_OK + R_OK ) ) != 0 )
+                    if ( access ( p_osimg_tgt[1], ( W_OK + R_OK ) ) != 0 )
                     {
                         notify ( FAIL, "The install route is not avaliable.\n    You may not have sufficient privileges, or it doesn\'t exist.\n" );
                         return 0; /* main() returns 1 */
@@ -124,18 +124,17 @@ int chkargs ( int argc, char **argv,
 
                 /* It seems that GNU getopt_long() hasn't got this.
                 case ':':
-                    puts ( "Not enouth arguments" );
+                    puts ( "Not enough arguments" );
                     return 4;
                 */
             }
         }
-        /* Well... What if user forget to set osimage and ostarget? */
-        if ( ( osimage == NULL ) || ( ostarget == NULL ) )
+        /* Well... What if user forget to set p_osimg_tgt[0] (osimage) and p_osimg_tgt[1] (ostarget)? */
+        if ( ( p_osimg_tgt[0] == NULL ) || ( p_osimg_tgt[1] == NULL ) )
         {
             notify ( FAIL, "It seems that you forget to set the image file and the install route!\n" );
             return 0;
         }
-        take ( ostarget );
         return 2; /* after getopt_long(), main() invokes run() */
     }
 

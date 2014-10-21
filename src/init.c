@@ -44,8 +44,8 @@ int init ( img *imginfo, char *osimage, char *ostarget )
             imginfo -> livesq_chksum  = malloc ( MD5SUM_LENGTH );
 
             if ( fscanf ( sum, "%*[^\n] %*s os%1d %4s %512s %5s %32s %*s %32s %*s %32s",
-               &(imginfo->os), imginfo->dist, imginfo->ver, imginfo->lang,
-               imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum ) != 7 )
+                                &(imginfo->os), imginfo->dist, imginfo->ver, imginfo->lang, /* FIXME: Some image files do not include "lang" field, and this will make mistakes in md5sum fields. */
+                                imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum ) != 7 )
             {
                 notify ( FAIL, "Failed to read md5sum.ast! Program exits." );
                 exit ( 1 );
