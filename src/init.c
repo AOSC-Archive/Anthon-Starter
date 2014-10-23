@@ -45,7 +45,18 @@ int init ( img *imginfo, char *osimage, char *ostarget )
 
             if ( fscanf ( sum, "%*[^\n] %*s os%1d %4s %512s %5s %32s %*s %32s %*s %32s",
                                 &(imginfo->os), imginfo->dist, imginfo->ver, imginfo->lang, /* FIXME: Some image files do not include "lang" field, and this will make mistakes in md5sum fields. */
-                                imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum ) != 7 )
+                                imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum ) == 7 )
+            {
+                /* Examine the correction of the image information */
+                if ( ( imginfo->os != 0 ) || ( strlen ( imginfo->dist ) != 4 ) || ( strlen ( imginfo->ver ) != 0 ) ||
+                     ( strlen ( imginfo->lang ) != 0 ) || ( strlen ( imginfo->vmlinuz_chksum ) != 32 ) ||
+                     ( strlen ( imginfo->initrd_chksum ) != 32 ) || ( strlen ( imginfo->livesq_chksum ) != 32 ) )
+                {
+                    notify ( FAIL, "Error when reading md5sum.ast: It may not a supported AOSC OS.\n    Please contact us to get help. Program exits." );
+                    exit ( 1 );
+                }
+            }
+            else
             {
                 notify ( FAIL, "Failed to read md5sum.ast! Program exits." );
                 exit ( 1 );
