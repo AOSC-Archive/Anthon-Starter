@@ -31,6 +31,9 @@ void oops ( int signo )
         case SIGTERM:
             puts ( "Program received SIGTERM. Exit." );
             exit ( 255 );
+        case SIGBREAK:
+            puts ( "Program received SIGBREAK. Exit." );
+            exit ( 255 );
         case SIGSEGV:
             printf ( "Program received SIGSEGV (Segmentation Fault)." );
             break;
