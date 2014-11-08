@@ -48,8 +48,8 @@ int init ( img *imginfo, char *osimage, char *ostarget )
                                 imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum ) == 7 )
             {
                 /* Examine the correction of the image information */
-                if ( ( imginfo->os != 0 ) || ( strlen ( imginfo->dist ) != 4 ) || ( strlen ( imginfo->ver ) != 0 ) ||
-                     ( strlen ( imginfo->lang ) != 0 ) || ( strlen ( imginfo->vmlinuz_chksum ) != 32 ) ||
+                if ( ( imginfo->os == 0 ) || ( strlen ( imginfo->dist ) != 4 ) || ( strlen ( imginfo->ver ) == 0 ) ||
+                     ( strlen ( imginfo->lang ) == 0 ) || ( strlen ( imginfo->vmlinuz_chksum ) != 32 ) ||
                      ( strlen ( imginfo->initrd_chksum ) != 32 ) || ( strlen ( imginfo->livesq_chksum ) != 32 ) )
                 {
                     notify ( FAIL, "Error when reading md5sum.ast: It may not a supported AOSC OS.\n    Please contact us to get help. Program exits." );

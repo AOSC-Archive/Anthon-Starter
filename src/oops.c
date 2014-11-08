@@ -17,15 +17,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdarg.h>
-# include <string.h>
-# include <unistd.h>
-# include <getopt.h>
-# include <signal.h>
-# include <time.h>
-# include <windows.h>
+# include "ast.h"
 
-# include "funcs.h"
-# include "defs.h"
+void oops ( int signo )
+{
+    time_t timer = time ( NULL );
+    printf ( "========== At %s", ctime ( &timer ) );
+    switch ( signo )
+    {
+        case SIGINT:
+            puts ( "Program received SIGINT. Exit." );
+            exit ( 255 );
+        case SIGTERM:
+            puts ( "Program received SIGTERM. Exit." );
+            exit ( 255 );
+        case SIGSEGV:
+            printf ( "Program received SIGSEGV (Segmentation Fault)." );
+            break;
+    }
+}

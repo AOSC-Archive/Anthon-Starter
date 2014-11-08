@@ -41,6 +41,10 @@ int main ( int argc, char **argv )
     img imginfo = { 0, NULL, NULL, NULL, NULL, NULL, NULL };
     /* End of variable declaration */
 
+    signal ( SIGINT, oops );
+    signal ( SIGTERM, oops );
+    signal ( SIGSEGV, oops );
+    
     /* It's just, just, having fun. */
     if ( argv[1] == NULL )
     {
@@ -65,7 +69,8 @@ int main ( int argc, char **argv )
             return 0;
         case 2:
             /* Start running */
-            run ( p_osimg_tgt[0], p_osimg_tgt[1],
+            while(1);
+            run ( p_osimg_tgt[0] /* osimage */, p_osimg_tgt[1] /* ostarget */,
                   &imginfo, instform, verbose_mode, quiet_mode,
                   will_pause, will_reboot, will_verify, will_extract );
             return 0;

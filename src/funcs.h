@@ -109,6 +109,11 @@ void notify ( int TNotice, char *format, ... );
 int take ( void *ptr );
 
 /*
+ * oops: 
+ */
+void oops ( int signo );
+
+/*
  * md5sum: To verify specify file's md5 sum.
  */
 int md5sum ( char *rtn, char *file );

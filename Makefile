@@ -14,7 +14,7 @@ SRCDIR = src/
 BUILDIR = build/
 DESTDIR = 
 
-COMP = rc.o main.o chkargs.o clrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o take.o md5sum.o notify.o
+COMP = rc.o main.o chkargs.o clrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o take.o oops.o md5sum.o notify.o
 
 all: $(COMP) link
 
@@ -56,6 +56,9 @@ help_message.o:
 
 take.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)take.o $(SRCDIR)take.c
+
+oops.o:
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)oops.o $(SRCDIR)oops.c
 
 md5sum.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)md5sum.o $(SRCDIR)md5sum.c
