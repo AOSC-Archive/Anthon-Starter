@@ -26,6 +26,7 @@
 # include <signal.h>
 # include <time.h>
 # include <windows.h>
+# include <tchar.h>
 
 # include "funcs.h"
 # include "defs.h"

@@ -19,21 +19,51 @@
 
 # include "ast.h"
 
-int getsysinfo ( int *loader, int ptable, char *systemdrive )
+int getsysinfo ( int *loader, int *ptable, char *systemdrive )
 {
     ULARGE_INTEGER sysdrive_space; /* Free space on system drive */
     SYSTEM_INFO sysinfo;
-    MEMORYSTATUSEX meminfo; /* For memory info */
-    char *tmp = NULL; /* Temp use */
+    MEMORYSTATUSEX meminfo;  /* For memory info */
+    char *tmp = NULL;      /* Temp use */
+    TCHAR szDevice[MAX_PATH] = _T("\\\\.\\PhysicalDrive0"); /* Device which stores the signature of GPT(?) */
+    HANDLE hDevice = NULL; /* Handle of szDevice */
+    BYTE efi[0x200] = {0}; /* Buffer for EFI PART signature (read 0x200 once is indispensable) */
+    DWORD dwBeRead = 0;    /* For ReadFile() to judge if it is invoked successfully */
 
     /* Get system drive
      * NOTICE: I think there can't be AB:\ or such kind of volume...
      */
     snprintf ( systemdrive, 4, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
 
-    /* Get partition table.
-     * TODO: But I don't know how to do it...
-     */
+    /* Get partition table. Wow. */
+    hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
+    if ( hDevice == INVALID_HANDLE_VALUE )
+    {
+        notify ( FAIL, "Fatal: Can\'t determine the partition table! (CreateFile)\n    Program exists." );
+        exit ( 1 );
+    }
+
+    SetFilePointer ( hDevice, 0x200, NULL, FILE_BEGIN );
+    BOOL bRet = ReadFile ( hDevice, &efi, 0x200, &dwBeRead, NULL );
+    if ( bRet && dwBeRead )
+    {
+        if ( ( efi[0] == 0x45 ) && ( efi[1] == 0x46 ) && ( efi[2] == 0x49 ) && ( efi[3] == 0x20 ) &&
+             ( efi[4] == 0x50 ) && ( efi[5] == 0x41 ) && ( efi[6] == 0x52 ) && ( efi[7] == 0x54 ) ) /* "EFI PART" */
+        {
+            *ptable = PTABLE_GPT;
+            notify ( INFO, "Partition table: GUID Partition Table (GPT)" );
+        }
+        else
+        {
+            *ptable = PTABLE_MBR;
+            notify ( INFO, "Partition table: Master Boot Record (MBR)" );
+        }
+    }
+    else
+    {
+        notify ( FAIL, "Fatal: Can\'t determine the partition table! (ReadFile)\n    Program exists." );
+    }
+    CloseHandle ( hDevice );
 
     /* Get loader type.
      * If detected NTLDR: Windows 2k/XP
@@ -112,6 +142,6 @@ int getsysinfo ( int *loader, int ptable, char *systemdrive )
     
     /* Free the memory */
     take ( tmp );
-    
+
     return 0;
 }
