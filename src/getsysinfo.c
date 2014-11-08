@@ -23,7 +23,7 @@ int getsysinfo ( int *loader, int ptable, char *systemdrive )
 {
     ULARGE_INTEGER sysdrive_space; /* Free space on system drive */
     SYSTEM_INFO sysinfo;
-    MEMORYSTATUS meminfo; /* For memory info */
+    MEMORYSTATUSEX meminfo; /* For memory info */
     char *tmp = NULL; /* Temp use */
 
     /* Get system drive
@@ -104,9 +104,10 @@ int getsysinfo ( int *loader, int ptable, char *systemdrive )
     /* w */
 
     /* Detect memory size, use WinAPI */
-    GlobalMemoryStatus ( &meminfo );
-    notify ( INFO, "RAM size: %I64d bytes", meminfo.dwTotalPhys );
-    if ( meminfo.dwTotalPhys < 1610612736 ) /* 1.5 GiB */
+    meminfo.dwLength = sizeof ( meminfo );
+    GlobalMemoryStatusEx ( &meminfo );
+    notify ( INFO, "RAM size: %I64d bytes", meminfo.ullTotalPhys );
+    if ( meminfo.ullTotalPhys < 1610612736 ) /* 1.5 GiB */
         notify ( WARN, "You may have no enough free space on your RAM." );
     
     /* Free the memory */
