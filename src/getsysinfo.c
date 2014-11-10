@@ -99,10 +99,10 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive )
 
     /* Detect free spaces on system drive, use WinAPI */
     GetDiskFreeSpaceEx ( systemdrive, &sysdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
-    notify ( INFO, "Free space on %s: %lld bytes", systemdrive, sysdrive_space.QuadPart );
+    notify ( INFO, "Free space on %s: %I64d bytes", systemdrive, sysdrive_space.QuadPart );
     if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
     {
-        notify ( WARN, "You may have no enough free space on your system drive." );
+        notify ( WARN, "You may have no enough free space on your system drive. (less than 5 GiB)" );
     }
 
     /* Detect CPU architecture, use WinAPI
@@ -138,7 +138,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive )
     GlobalMemoryStatusEx ( &meminfo );
     notify ( INFO, "RAM size: %I64d bytes", meminfo.ullTotalPhys );
     if ( meminfo.ullTotalPhys < 1610612736 ) /* 1.5 GiB */
-        notify ( WARN, "You may have no enough free space on your RAM." );
+        notify ( WARN, "You may have no enough free space on your RAM. (less than 1.5 GiB)" );
     
     /* Free the memory */
     take ( tmp );
