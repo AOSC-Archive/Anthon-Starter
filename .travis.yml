@@ -3,7 +3,7 @@ compiler:
   - gcc
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get -qq install gcc-mingw-w64
+  - sudo apt-get -qq install gcc-mingw-w64-i686
   - mkdir build
 env:
   global:
