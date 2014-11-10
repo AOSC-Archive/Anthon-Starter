@@ -17,7 +17,7 @@ addons:
       name: "AOSC-Dev/Anthon-Starter"
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
-    build_command_prepend: "cov-configure --template gcc --compiler /usr/bin/i686-w64-mingw32-gcc"
+    build_command_prepend: "cov-configure --template --comptype gcc --compiler /usr/bin/i686-w64-mingw32-gcc"
     build_command: "make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres"
     branch_pattern: 0.2.0-devel
     build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
@@ -28,9 +28,9 @@ notifications:
     channels:
       - "chat.freenode.net#anthon"
     template:
-      - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
-      - "Change view : %{compare_url}"
-      - "Build details : %{build_url}"
+      - "Hi, I am Travis-CI bot. I am here to announce that %{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
+      - "You can see what changed here: %{compare_url} , and also how I built it: %{build_url}."
+      - "Thanks for your attention! I am leaving!"
     
     
     
