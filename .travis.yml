@@ -3,7 +3,7 @@ compiler:
   - gcc
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get -qq install mingw32
+  - sudo apt-get -qq install gcc-mingw-w64
   - mkdir build
 env:
   global:
@@ -18,12 +18,24 @@ addons:
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
     build_command_prepend: "cov-configure --comptype gcc --compiler /usr/bin/i586-mingw32msvc-gcc"
-    build_command: "make -j4 -e CC=i586-mingw32msvc-gcc LD=i586-mingw32msvc-ld RES=i586-mingw32msvc-windres"
+    build_command: "make -j4 -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres"
     branch_pattern: 0.2.0-devel
     build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
     
     
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#anthon"
+    template:
+      - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
+      - "Change view : %{compare_url}"
+      - "Build details : %{build_url}"
+    use_notice: true
+    
+    
+    
 script:
-  - make -j2 -e CC=i586-mingw32msvc-gcc LD=i586-mingw32msvc-ld RES=i586-mingw32msvc-windres    
+  - make -j2 -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres    
  # - if [ "${COVERITY_SCAN}" = '1' ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
  #build_script_url
