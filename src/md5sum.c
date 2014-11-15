@@ -19,11 +19,8 @@
 
 # include "ast.h"
 # include <memory.h>		 /* for memcpy() */
-# include <windows.h>
 //optimized again by LZX
-#include <stdio.h>
 #include <ctype.h>
-#include <string.h>
 #ifdef _WIN32
 #include <fcntl.h>
 #include <io.h>
