@@ -14,9 +14,11 @@ SRCDIR = src/
 BUILDIR = build/
 DESTDIR = 
 
-COMP = rc.o main.o chkargs.o clrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o md5sum.o notify.o
+COMP = main.o chkargs.o clrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o md5sum.o notify.o
 
 all: $(COMP) link
+
+release: rc.o $(COMP) link
 
 rc.o:
 	$(RES) -i $(SRCDIR)ast.rc -o $(BUILDIR)rc.o
@@ -64,7 +66,7 @@ notify.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)notify.o $(SRCDIR)notify.c
 
 link:
-	@echo Well wait 1 seconds for file saving ...
+	@echo Well wait 1 second for file saving ...
 	@sleep 1
 	$(CC) $(LDFLAGS) -o $(DESTDIR)$(EXENAME).exe $(BUILDIR)*.o
 
