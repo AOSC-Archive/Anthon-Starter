@@ -110,7 +110,7 @@ void notify ( int TNotice, char *format, ... );
 # define take(ptr) if(ptr!=NULL){free(ptr);ptr=NULL;}
 
 /*
- * oops: 
+ * oops: Proceed with signals
  */
 void oops ( int signo );
 
