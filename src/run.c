@@ -42,17 +42,55 @@ int run ( char *osimage, char *ostarget,
     backup ( loader, ptable );
     
     /* Extract files from ISO image. */
-    extract ( will_extract, osimage, ostarget );
+    if ( will_extract )
+        extract ( will_extract, osimage, ostarget );
+    else
+        notify ( WARN, "Will not extract the files." );
     
     /* Verify the files */
-    verify ( will_verify, ostarget );
+    if ( will_verify )
+        verify ( will_verify, ostarget );
+    else
+    {
+        if ( will_extract )
+            notify ( WARN, "Will not verify the files." );
+        else
+            notify ( WARN, "Files are not extracted, skip verifying." );
+    }
     
     /* Deploy boot loader.
      * This is a danger operation, so must be careful.
      */
     deploy ( loader, ptable );
     
-    notify ( SUCC, "Operation finished ^o^" );
+    /* will_* */
+    if ( will_pause )
+    {
+        if ( will_reboot )
+        {
+            notify ( SUCC, "Operation finished ^o^\n    Press any key to reboot..." );
+            system ( "pause > nul" ); /* FIXME */
+            /* system ( "shutdown -r -t 00" ); */
+        }
+        else
+        {
+            notify ( SUCC, "Operation finished ^o^\n    Press any key to exit..." );
+            system ( "pause > nul" ); /* FIXME */
+        }
+    }
+    else
+    {
+        if ( will_reboot )
+        {
+            notify ( SUCC, "Operation finished ^o^\n    Now rebooting the system..." );
+            /* system ( "shutdown -r -t 00" ); */
+        }
+        else
+        {
+            notify ( SUCC, "Operation finished ^o^" );
+        }
+    }
+    
     take ( systemdrive );
     return 0;
 }
