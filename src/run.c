@@ -44,17 +44,17 @@ int run ( char *osimage, char *ostarget,
     /* Extract files from ISO image. */
     if ( will_extract )
         extract ( will_extract, osimage, ostarget );
-    else
+    else /* --no-extract */
         notify ( WARN, "Will not extract the files." );
     
     /* Verify the files */
     if ( will_verify )
         verify ( will_verify, ostarget );
-    else
+    else /* --no-verify */
     {
         if ( will_extract )
             notify ( WARN, "Will not verify the files." );
-        else
+        else /* --no-extract --no-verify */
             notify ( WARN, "Files are not extracted, skip verifying." );
     }
     
@@ -66,13 +66,13 @@ int run ( char *osimage, char *ostarget,
     /* will_* */
     if ( will_pause )
     {
-        if ( will_reboot )
+        if ( will_reboot ) /* --pause --reboot */
         {
             notify ( SUCC, "Operation finished ^o^\n    Press any key to reboot..." );
             system ( "pause > nul" ); /* FIXME */
             /* system ( "shutdown -r -t 00" ); */
         }
-        else
+        else /* --pause */
         {
             notify ( SUCC, "Operation finished ^o^\n    Press any key to exit..." );
             system ( "pause > nul" ); /* FIXME */
@@ -80,7 +80,7 @@ int run ( char *osimage, char *ostarget,
     }
     else
     {
-        if ( will_reboot )
+        if ( will_reboot ) /* --reboot */
         {
             notify ( SUCC, "Operation finished ^o^\n    Now rebooting the system..." );
             /* system ( "shutdown -r -t 00" ); */
