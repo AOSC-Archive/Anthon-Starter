@@ -221,11 +221,12 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 另外，若需要在 Linux 下通过交叉编译来构建安同开始程序，只需要：
 
-* mingw32
+* binutils-mingw-w64-i686
+* gcc-mingw-w64-i686
 
 就可以了。注意，现阶段安同开始程序未提供 [http://zh.wikipedia.org/wiki/Autoconf configure] 脚本，因此在执行 make 时需要手动调节这些变量：<code>$(CC)</code>，<code>$(LD)</code> 以及 <code>$(RES)</code>，否则将不能通过编译。也许可以这样：
 
- make CC=i586-mingw32msvc-gcc LD=i586-mingw32msvc-gcc RES=i586-mingw32msvc-windres
+ make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres
 
 来通过 mingw32 交叉编译安同开始程序。
 
