@@ -24,22 +24,23 @@ void notify ( int TNotice, char *format, ... )
     va_list args;
     va_start ( args, format );
     
-    switch ( TNotice )
+    switch ( TNotice ) /* TNotice is declared in ast.h */
     {
-        case SUCC:
+        case SUCC: /* Success */
             clrprintf ( GREEN, "[S] " );
             break;
-        case INFO:
+        case INFO: /* Information */
             clrprintf ( CYAN, "[I] " );
             break;
-        case WARN:
+        case WARN: /* Warning */
             clrprintf ( YELLOW, "[W] " );
             break;
-        case FAIL:
-            clrprintf ( RED, "[E] " );
+        case FAIL: /* Failure (Fatal error) */
+            clrprintf ( RED, "[E] " ); /* FIXME: Output to stderr */
             break;
     }
     
+    /* Print original messages */
     vprintf ( format, args );
     printf ( "\n" );
     

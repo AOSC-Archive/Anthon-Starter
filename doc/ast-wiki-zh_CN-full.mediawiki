@@ -1,4 +1,4 @@
-<!-- 最后修订：黎民雍 -->
+<!-- = 安同开始程序开发者手册 = -->
 
 == 概述 ==
 
@@ -6,7 +6,8 @@
 
 目前项目正在缓慢发展中。
 
-<!--概述 -->
+<!-- 概述 -->
+
 == 程序信息 ==
 
 * 平台：Microsoft(R) Windows(R)
@@ -24,6 +25,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 来下载最新版本的源代码。
 
 <!-- 程序信息 -->
+
 == 版本历史 & 计划 ==
 
 === 0.1.0 代系 ===
@@ -68,6 +70,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 '''也许并非 wubi 式。'''
 
 <!-- 版本历史 & 计划 -->
+
 == 程序架构 ==
 
 === 函数原型一览（funcs.h） ===
@@ -77,40 +80,45 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 ==== 检查参数 ====
 
  int chkargs ( int argc, char **argv,
-               char *osimage, char *ostarget,
+               char **p_osimg_tgt,
                img *imginfo, int *instform, int *verbose_mode, int *quiet_mode,
                int *will_pause, int *will_reboot, int *will_verify, int *will_extract );
 
 <code>chkargs</code> 将根据命令行参数中的各个开关定义变量，包括：
 
-* <code>osimage</code> 是一个指向映像文件路径的字串；
-* <code>ostarget</code> 是一个指向映像文件中的 <code>live.squashfs</code> 文件应该被解压的路径的字串；
-* <code>imginfo</code> 是一个 <code>img</code> 类型结构，它的定义为（funcs.h）：
+* <code>p_osimg_tgt</code> 是一个指向指针的指针，它用于允许 <code>chkargs</code> 修改其中包含的两个字串：
+
+** <code>osimage</code> 是一个指向映像文件路径的字串；
+** <code>ostarget</code> 是一个指向映像文件中的 <code>live.squashfs</code> 文件应该被解压的路径的字串；
+
+在其父函数 <code>main</code> 中，<code>p_osimg_tgt[0]</code> 暂时代表了 <code>osimage</code>，<code>p_osimg_tgt[1]</code> 则暂时代表 <code>ostarget</code>。当 <code>main</code> 函数调用 <code>run</code> 函数时，它们又会被传递为 <code>osimage</code> 和 <code>ostarget</code>。
+
+* <code>imginfo</code> 是一个 <code>img</code> 类型结构，它的定义（位于 <code>funcs.h</code>）为：
 
  typedef struct
  {
-     int os;			/* 表示 AOSC OS 代系 */
+     int os;                /* 表示 AOSC OS 代系 */
      char *dist,			/* AOSC OS 派生版本四字代号 */
-          *ver,			/* 此系统版本信息 */
-          *lang,			/* 此系统的语言 */
-          *vmlinuz_chksum,	/* 此映像文件中 vmlinuz 文件的 MD5 校验码值 */
-          *initrd_chksum,	/* 此映像文件中 initrd 文件的 MD5 校验码值 */
-          *livesq_chksum;	/* 此映像文件中 live.squashfs 文件的 MD5 校验码值 */
+          *ver,             /* 此系统版本信息 */
+          *lang,            /* 此系统的语言 */
+          *vmlinuz_chksum,  /* 此映像文件中 vmlinuz 文件的 MD5 校验码值 */
+          *initrd_chksum,   /* 此映像文件中 initrd 文件的 MD5 校验码值 */
+          *livesq_chksum;   /* 此映像文件中 live.squashfs 文件的 MD5 校验码值 */
  } img;
 
-* <code>instform</code> 用整数来代表将要使用什么方法来部署启动，它的定义为（defs.h）：
+* <code>instform</code> 用整数来代表将要使用什么方法来部署启动，它的定义（位于defs.h）为：
 
- # define EDIT_PRESENT 1
- # define EDIT_MBR 2
- # define EDIT_ESP 3
- # define EDIT_DONOT 5
+ # define EDIT_PRESENT 1    /* 修改现有引导器 */
+ # define EDIT_MBR 2        /* 修改主引导记录（MBR）*/
+ # define EDIT_ESP 3        /* 修改 GUID 分区表的引导分区 */
+ # define EDIT_DONOT 5      /* 不做任何修改 */
 
 * <code>verbose_mode</code> 用整数 0 或 1 表示是否输出尽可能'''多'''的信息；
 * <code>quiet_mode</code> 用整数 0 或 1 表示是否输出尽可能'''少'''的信息；
 * <code>will_pause</code> 用整数 0 或 1 表示是否在操作完成后暂停，不管是成功或者是失败；
 * <code>will_reboot</code> 用整数 0 或 1 表示是否在操作完成后自动执行重启；
-* <code>will_verify</code> 用整数 15 表示是否校验文件正确性；
-* <code>will_extract</code> 用整数 16 表示是否解压文件；
+* <code>will_verify</code> 用整数 0 或 1 表示是否校验文件正确性；
+* <code>will_extract</code> 用整数 0 或 1 表示是否解压文件；
 
 ==== 运行程序 ====
 
@@ -120,14 +128,18 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
            img *imginfo, int instform, int verbose_mode, int quiet_mode,
            int will_pause, int will_reboot, int will_verify, int will_extract );
 
-来包括所有正式执行工作的函数。
+来包括所有正式执行工作的函数，包括：
+
+*
+*
+*
 
 ==== 初始化 ====
 
 初始化安同开始程序，包括：
 
 * 检查自身完整性；
-* 检查指向的映像文件正确性；
+* 检查指向的映像文件正确性。
 
  int init ( img *imginfo, char *osimage, char *ostarget );
 
@@ -205,6 +217,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
                                    |-> help_message() --> 退出
 
 <!-- 程序架构 -->
+
 == 进入开发 ==
 
 === 从源码构建 ===
@@ -217,18 +230,20 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 * msys
 * git （可选，用于 clone 代码仓库）
 
-为了保证程序的便携性，我们不采用 [http://zh.wikipedia.org/wiki/Cygwin Cygwin] 环境，因为那需要第三方 [http://zh.wikipedia.org/wiki/POSIX POSIX] 兼容库，体积比较庞大。
+为了保证程序的便携性，我们不采用 [http://zh.wikipedia.org/wiki/Cygwin Cygwin] 环境，因为那需要第三方 [http://zh.wikipedia.org/wiki/POSIX POSIX] 兼容库，体积比较庞大。当然，若您使用的是 Cygwin 的 mingw 实现，也没关系。
 
-另外，若需要在 Linux 下通过交叉编译来构建安同开始程序，只需要：
+另外，若需要在 Linux 下通过交叉编译来构建安同开始程序，需要：
 
 * binutils-mingw-w64-i686
 * gcc-mingw-w64-i686
 
-就可以了。注意，现阶段安同开始程序未提供 [http://zh.wikipedia.org/wiki/Autoconf configure] 脚本，因此在执行 make 时需要手动调节这些变量：<code>$(CC)</code>，<code>$(LD)</code> 以及 <code>$(RES)</code>，否则将不能通过编译。也许可以这样：
+注意，安同开始程序使用了 <code>GlobalMemoryStatusEx</code> 函数，这个函数在 Linux 下（貌似）只能使用 mingw64 来编译，Windows 平台则无此问题。
+
+现阶段安同开始程序未提供 [http://zh.wikipedia.org/wiki/Autoconf configure] 脚本，因此在执行 make 时需要手动调节这些变量：<code>$(CC)</code>，<code>$(LD)</code> 以及 <code>$(RES)</code>，否则将不能通过编译。也许可以这样：
 
  make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres
 
-来通过 mingw32 交叉编译安同开始程序。
+来通过 mingw64 交叉编译安同开始程序。
 
 === 反馈 ===
 
@@ -257,6 +272,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 目前无法统计安同开始程序到底会使用哪些组件。
 
 <!-- 使用组件一览 -->
+
 == 小组人员 ==
 
 * 黎民雍 <lmy441900@gmail.com>
