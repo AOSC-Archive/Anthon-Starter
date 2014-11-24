@@ -26,7 +26,7 @@
 
 # include "ast.h"
 
-void clrprintf ( WORD color, char* format, ... )
+void fclrprintf ( FILE *stream, WORD color, char* format, ... )
 {
     va_list args;
     va_start ( args, format );
@@ -38,7 +38,11 @@ void clrprintf ( WORD color, char* format, ... )
     colorOld = csbi.wAttributes;
     SetConsoleTextAttribute ( handle, color );
     
-    vprintf ( format, args );
+    /* NOTICE:
+     *   When stdout is redirected, message will be output successfully,
+     *   but the colour won't appear.
+     */
+    vfprintf ( stream, format, args );
     
     va_end ( args );
     SetConsoleTextAttribute ( handle, colorOld );

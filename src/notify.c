@@ -36,12 +36,16 @@ void notify ( int TNotice, char *format, ... )
             clrprintf ( YELLOW, "[W] " );
             break;
         case FAIL: /* Failure (Fatal error) */
-            clrprintf ( RED, "[E] " ); /* FIXME: Output to stderr */
+            fclrprintf ( stderr, RED, "[E] " );
             break;
     }
     
     /* Print original messages */
-    vprintf ( format, args );
+    if ( TNotice == FAIL )
+        vfprintf ( stderr, format, args );
+    else
+        vprintf ( format, args );
+    
     printf ( "\n" );
     
     va_end ( args );

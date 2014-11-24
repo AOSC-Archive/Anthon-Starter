@@ -94,9 +94,14 @@ int help_message ( char *progname );
 int startup ();
 
 /*
- * clrprintf: Output colourful texts, only for Windows.
+ * fclrprintf: Output colourful texts to stream, only for Windows.
  */
-void clrprintf ( WORD color, char* format, ... );
+void fclrprintf ( FILE *stream, WORD color, char* format, ... );
+
+/*
+ * clrprintf: Output colourful texts to stdout, a macro of fclrprintf
+ */
+# define clrprintf(color,fmt,...) fclrprintf(stdout,color,fmt,##__VA_ARGS__)
 
 /*
  * notify: Using clrprintf() and vprintf() to output messages easily.
