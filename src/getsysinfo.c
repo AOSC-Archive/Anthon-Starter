@@ -106,7 +106,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive )
     }
 
     /* Detect CPU architecture, use WinAPI
-     * NOTICE: A VERY SPECIAL THANKS to Daming Yang ( @Lion ).
+     * NOTICE: A VERY SPECIAL THANKS to Daming Yang ( @LionNatsu ).
      */
     typedef void ( WINAPI *PGNSI ) ( LPSYSTEM_INFO );
     /* Well... The library of MinGW does not contain many new WinAPIs, such as GetNativeSystemInfo(). */
