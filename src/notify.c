@@ -26,25 +26,43 @@ void notify ( int TNotice, char *format, ... )
     
     switch ( TNotice ) /* TNotice is declared in ast.h */
     {
+        char tmp;
         case SUCC: /* Success */
             clrprintf ( GREEN, "[S] " );
+            vprintf ( format, args );
             break;
         case INFO: /* Information */
             clrprintf ( CYAN, "[I] " );
+            vprintf ( format, args );
             break;
         case WARN: /* Warning */
             clrprintf ( YELLOW, "[W] " );
+            vprintf ( format, args );
+            /* Pause to enquire user whether continue this operation or not. */
+            printf ( "\n    Continue? ([y]es/[n]o) " );
+            while ( 1 )
+            {
+                tmp = getch();
+                switch ( tmp )
+                {
+                    case 'Y':
+                    case 'y':
+                        printf ( "\n" );
+                        return; /* Exit the function */
+                    case 'N':
+                    case 'n':
+                        puts ( "\nAbort." );
+                        exit ( 255 ); /* User Terminated */
+                    default:
+                        break; /* Repeat */
+                }
+            }
             break;
         case FAIL: /* Failure (Fatal error) */
             fclrprintf ( stderr, RED, "[E] " );
+            vfprintf ( stderr, format, args );
             break;
     }
-    
-    /* Print original messages */
-    if ( TNotice == FAIL )
-        vfprintf ( stderr, format, args );
-    else
-        vprintf ( format, args );
     
     printf ( "\n" );
     

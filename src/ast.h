@@ -25,6 +25,7 @@
 # include <getopt.h>
 # include <signal.h>
 # include <time.h>
+# include <conio.h>
 # include <windows.h>
 # include <tchar.h>
 
