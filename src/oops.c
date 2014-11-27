@@ -22,7 +22,7 @@
 void oops ( int signo )
 {
     time_t timer = time ( NULL );
-    printf ( "========== At %s", ctime ( &timer ) );
+    printf ( "\n========== At %s", ctime ( &timer ) );
     switch ( signo )
     {
         case SIGINT:
