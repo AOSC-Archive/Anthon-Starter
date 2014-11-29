@@ -33,6 +33,7 @@ int chkargs ( int argc, char **argv,
         { "pause"      , no_argument       , NULL, 'p'        },
         { "reboot"     , no_argument       , NULL, 'r'        },
         { "form"       , required_argument , NULL, 'f'        },
+        { "yes"        , no_argument       , NULL, 'y'        },
         { "no-verify"  , no_argument       , NULL, NO_VERIFY  },
         { "no-extract" , no_argument       , NULL, NO_EXTRACT },
         { "help"       , no_argument       , NULL, 'h'        },
@@ -49,7 +50,7 @@ int chkargs ( int argc, char **argv,
 
     if ( strcmp ( argv[1], "install" ) == 0 )
     {
-        while ( ( opttmp = getopt_long ( argc, argv, "l:o:vqprf:h", longopts, NULL ) ) != -1 )
+        while ( ( opttmp = getopt_long ( argc, argv, "l:o:vqprf:yh", longopts, NULL ) ) != -1 )
         {
             switch ( opttmp )
             {
@@ -106,6 +107,10 @@ int chkargs ( int argc, char **argv,
                         puts ( "Wrong formula." );
                         return 0;
                     }
+                    break;
+                
+                case 'y': /* --yes, -y */
+                    always_yes = 1;
                     break;
 
                 case 'h': /* --help, -h */

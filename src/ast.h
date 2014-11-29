@@ -31,3 +31,6 @@
 
 # include "funcs.h"
 # include "defs.h"
+
+/* Global variables */
+int always_yes;

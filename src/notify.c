@@ -39,24 +39,29 @@ void notify ( int TNotice, char *format, ... )
             clrprintf ( YELLOW, "[W] " );
             vprintf ( format, args );
             /* Pause to enquire user whether continue this operation or not. */
-            printf ( "\n    Continue? ([y]es/[n]o) " );
-            while ( 1 )
+            if ( always_yes == 0 )
             {
-                tmp = getch();
-                switch ( tmp )
+                printf ( "\n    Continue? ([y]es/[n]o) " );
+                while ( 1 )
                 {
-                    case 'Y':
-                    case 'y':
-                        printf ( "\n" );
-                        return; /* Exit the function */
-                    case 'N':
-                    case 'n':
-                        puts ( "\nAbort." );
-                        exit ( 255 ); /* User Terminated */
-                    default:
-                        break; /* Repeat */
+                    tmp = getch();
+                    switch ( tmp )
+                    {
+                        case 'Y':
+                        case 'y':
+                            printf ( "\n" );
+                            return; /* Exit the function */
+                        case 'N':
+                        case 'n':
+                            puts ( "\nAbort." );
+                            exit ( 255 ); /* User Terminated */
+                        default:
+                            break; /* Repeat */
+                    }
                 }
             }
+            else
+                ; /* Nothing to do */
             break;
         case FAIL: /* Failure (Fatal error) */
             fclrprintf ( stderr, RED, "[E] " );

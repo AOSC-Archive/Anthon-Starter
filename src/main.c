@@ -39,6 +39,8 @@ int main ( int argc, char **argv )
     p_osimg_tgt[1] = NULL; /* ostarget */
 
     img imginfo = { 0, NULL, NULL, NULL, NULL, NULL, NULL };
+    
+    always_yes = 0;
     /* End of variable declaration */
 
     signal ( SIGINT, oops );
