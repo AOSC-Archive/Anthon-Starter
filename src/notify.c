@@ -55,6 +55,10 @@ void notify ( int TNotice, char *format, ... )
                         case 'n':
                             puts ( "\nAbort." );
                             exit ( 255 ); /* User Terminated */
+                        case '':
+                            /* SIGINT */
+                            raise ( SIGINT );
+                            break;
                         default:
                             break; /* Repeat */
                     }
