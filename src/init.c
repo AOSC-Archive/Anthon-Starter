@@ -65,8 +65,9 @@ int init ( img *imginfo, char *osimage, char *ostarget )
             notify ( INFO, "Image info:\n      os    : %d\n      dist  : %s\n      ver   : %s\n      lang  : %s\n      vmlchk: %s\n      inichk: %s\n      livchk: %s\n", imginfo->os, imginfo->dist, imginfo->ver, imginfo->lang, imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum );
 
             fclose ( sum );
+            /* FIXME: Coverity reports bug here? */
+            remove ( tmp ); /* Remove the md5sum file */
             sum = NULL; /* FILE *sum */
-            /* FIXME: Not deleting the file extracted. */
             take ( tmp );
         }
         else
