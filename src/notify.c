@@ -28,14 +28,20 @@ void notify ( int TNotice, char *format, ... )
     {
         char tmp;
         case SUCC: /* Success */
+            if ( quiet_mode )
+                return;
             clrprintf ( GREEN, "[S] " );
             vprintf ( format, args );
             break;
         case INFO: /* Information */
+            if ( quiet_mode )
+                return;
             clrprintf ( CYAN, "[I] " );
             vprintf ( format, args );
             break;
         case WARN: /* Warning */
+            if ( quiet_mode )
+                return;
             clrprintf ( YELLOW, "[W] " );
             vprintf ( format, args );
             /* Pause to enquire user whether continue this operation or not. */

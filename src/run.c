@@ -69,13 +69,16 @@ int run ( char *osimage, char *ostarget,
         if ( will_reboot ) /* --pause --reboot */
         {
             notify ( SUCC, "Operation finished ^o^\n    Press any key to reboot..." );
-            system ( "pause > nul" ); /* FIXME */
+            /* NOTICE: --quiet will disable this pause. */
+            if ( quiet_mode == 0 )
+                system ( "pause > nul" ); /* FIXME */
             /* system ( "shutdown -r -t 00" ); */
         }
         else /* --pause */
         {
             notify ( SUCC, "Operation finished ^o^\n    Press any key to exit..." );
-            system ( "pause > nul" ); /* FIXME */
+            if ( quiet_mode == 0 )
+                system ( "pause > nul" ); /* FIXME */
         }
     }
     else

@@ -33,4 +33,6 @@
 # include "defs.h"
 
 /* Global variables */
-int always_yes;
+int always_yes,
+    verbose_mode,
+    quiet_mode;
