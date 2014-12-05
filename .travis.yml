@@ -20,7 +20,7 @@ addons:
     build_command_prepend: "cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
     build_command: "make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres"
     branch_pattern: 0.2.0-devel
-    build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
+   # build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
     
     
 notifications:
