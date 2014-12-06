@@ -29,6 +29,28 @@
 # include <windows.h>
 # include <tchar.h>
 
+/* Struct contains image information:
+ *
+ * - Distribution
+ * - Version
+ * - Language
+ * - MD5 checksum for vmlinuz
+ * - MD5 checksum for initrd
+ * - MD5 checksum for live.squashfs
+ *
+ * NOTICE: Put this struct here is because it is needed in funcs.h (function declaration)
+ */
+typedef struct
+{
+    int os;
+    char *dist,
+         *ver,
+         *lang,
+         *vmlinuz_chksum,
+         *initrd_chksum,
+         *livesq_chksum;
+} img;
+
 # include "funcs.h"
 # include "defs.h"
 

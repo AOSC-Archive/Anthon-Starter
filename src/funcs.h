@@ -19,17 +19,6 @@
 
 /* int main ( int argc, char **argv ); */
 
-typedef struct
-{
-    int os;
-    char *dist,
-         *ver,
-         *lang,
-         *vmlinuz_chksum,
-         *initrd_chksum,
-         *livesq_chksum;
-} img;
-
 /*
  * chkargs: Check the arguments which is passed to Anthon-Starter.
  */
