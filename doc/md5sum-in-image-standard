@@ -1,0 +1,21 @@
+# NOTICE: This is an example of the "md5sum" file in the AOSC OS ISO images,
+#           which is used for Anthon-Starter to identify the validity of
+#           image files, and hold an compatible with coreutils/md5sum.
+
+# This following line is important: it points out the information of this
+#   image file, which helps Anthon-Starter to identify whether this image
+#   file is valid or not.
+# Format (not including quotation marks):
+#   "# ast-ident: [Generation] [Four-letter identify mark] [Live medium version]"
+# ast-ident: os3 live 20141207
+
+# MD5 Checksums , just an Example, and CANNOT:
+# - Change the sequence
+# - Using text mode to modify them (will cause unknown errors)
+# - Begin with sharp ("#")
+abcdefghijklmnopqrstuvwxyz123456 *boot/vmlinuz
+opqrstuvwxyzabcdefghijklmn987654 *boot/initrd
+ab1cd2ef3gh4ij5kl6mn7op8qr9st0uv *live/live.squashfs
+
+# Anything can be added if they're not begin with "# ast-ident:"
+# And should be compatible with coreutils/md5sum
