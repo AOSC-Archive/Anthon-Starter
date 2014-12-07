@@ -19,9 +19,9 @@
 
 # include "ast.h"
 
-int getsysinfo ( int *loader, int *ptable, char *systemdrive )
+int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
 {
-    ULARGE_INTEGER sysdrive_space; /* Free space on system drive */
+    ULARGE_INTEGER tgtdrive_space; /* Free space on target drive (ostarget) */
     SYSTEM_INFO sysinfo;
     MEMORYSTATUSEX meminfo;  /* For memory info */
     char *tmp = NULL;      /* Temp use */
@@ -97,10 +97,10 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive )
             break;
     }
 
-    /* Detect free spaces on system drive, use WinAPI */
-    GetDiskFreeSpaceEx ( systemdrive, &sysdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
-    notify ( INFO, "Free space on %s: %I64d bytes", systemdrive, sysdrive_space.QuadPart );
-    if ( sysdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
+    /* Detect free spaces on target drive, use WinAPI */
+    GetDiskFreeSpaceEx ( ostarget, &tgtdrive_space, ( PULARGE_INTEGER ) NULL, ( PULARGE_INTEGER ) NULL );
+    notify ( INFO, "Free space on %s: %I64d bytes", ostarget, tgtdrive_space.QuadPart );
+    if ( tgtdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
     {
         notify ( WARN, "You may have no enough free space on your system drive. (less than 5 GiB)" );
     }

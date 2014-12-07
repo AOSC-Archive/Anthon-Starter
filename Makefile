@@ -5,6 +5,9 @@ EXENAME = ast
 CC = gcc
 RES = windres
 
+# Seconds to wait the object files saved for -j option
+WAIT = 5
+
 # Release using
 # CFLAGS = -O2 -Wall -pipe
 # LDFLAGS = -flto
@@ -66,8 +69,8 @@ notify.o:
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)notify.o $(SRCDIR)notify.c
 
 link:
-	@echo Well wait 1 second for file saving ...
-	@sleep 1
+	@echo Waiting for files saved \($(WAIT)s\) ...
+	@sleep $(WAIT)
 	$(CC) $(LDFLAGS) -o $(DESTDIR)$(EXENAME).exe $(BUILDIR)*.o
 
 clean:

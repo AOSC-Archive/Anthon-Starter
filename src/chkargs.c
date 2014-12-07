@@ -134,11 +134,17 @@ int chkargs ( int argc, char **argv,
                 */
             }
         }
-        /* Well... What if user forget to set p_osimg_tgt[0] (osimage) and p_osimg_tgt[1] (ostarget)? */
-        if ( ( p_osimg_tgt[0] == NULL ) || ( p_osimg_tgt[1] == NULL ) )
+        /* Well... What if user forget to set p_osimg_tgt[0] (osimage)? */
+        if ( ( p_osimg_tgt[0] == NULL ) )
         {
-            notify ( FAIL, "It seems that you forget to set the image file and the install route!\n" );
+            notify ( FAIL, "It seems that you forget to set the image file!\n" );
             return 0;
+        }
+        /* If p_osimg_tgt[1] (ostarget) not set, default is %systemdrive%. */
+        if ( p_osimg_tgt[1] == NULL )
+        {
+            p_osimg_tgt[1] = malloc ( 4 ); /* C:\'\0' */
+            snprintf ( p_osimg_tgt[1], 4, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
         }
         return 2; /* after getopt_long(), main() invokes run() */
     }

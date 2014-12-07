@@ -34,7 +34,7 @@ int run ( char *osimage, char *ostarget,
     init ( imginfo, osimage, ostarget );
     
     /* Get the info of the system, including system drive, memory, CPU architecture, etc. */
-    getsysinfo ( &loader, &ptable, systemdrive );
+    getsysinfo ( &loader, &ptable, systemdrive, ostarget );
     
     /* Before doing anything, backup the important files.
      * Variables are set in getsysinfo().

@@ -50,7 +50,7 @@ int init ( img *imginfo, char *osimage, char *ostarget );
 /*
  * getsysinfo: Get the system info, such as system drive, CPU architecture, etc.
  */
-int getsysinfo ( int *loader, int *ptable, char *systemdrive );
+int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget );
 
 /*
  * backup: Backup the important files before we do everything.
