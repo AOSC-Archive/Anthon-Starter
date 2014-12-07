@@ -33,14 +33,16 @@
 # define EDIT_ESP 3
 # define EDIT_DONOT 5
 
-/* */
+/* For getopt_long() */
 # define NO_VERIFY 15
 # define NO_EXTRACT 16
 
+/* Command line buffer */
 # define CMD_BUF 512
+/* Length of MD5 checksum lines (including NUL) */
 # define MD5SUM_LENGTH 33
 
-/* For clrprintf() */
+/* For fclrprintf() */
 # define BLACK       0
 # define DARK_BLUE   1
 # define DARK_GREEN  2
