@@ -74,4 +74,4 @@ link:
 	$(CC) $(LDFLAGS) -o $(DESTDIR)$(EXENAME).exe $(BUILDIR)*.o
 
 clean:
-	@for i in $(COMP); do echo Cleaning $(BUILDIR)$$i; rm -f $(BUILDIR)$$i; done
+	@rm -f $(BUILDIR)/*.o
