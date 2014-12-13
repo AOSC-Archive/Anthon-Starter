@@ -6,13 +6,17 @@
 #   image file, which helps Anthon-Starter to identify whether this image
 #   file is valid or not.
 # Format (not including quotation marks):
-#   "# ast-ident: [Generation] [Four-letter identify mark] [Live medium version]"
-# ast-ident: os3 live 20141207
+#   "#ast-ident: [Generation] [Four-letter identify mark] [Live medium version]"
+# NOTICE: NO space between "#" and "ast-ident"!!
+#ast-ident: os3 live 20141207
 
 # MD5 Checksums , just an Example, and CANNOT:
 # - Change the sequence
 # - Using text mode to modify them (will cause unknown errors)
 # - Begin with sharp ("#")
+# - Remove the head tag "#md5sum" (or Anthon-Starter cannot find checksums)
+
+#md5sum
 abcdefghijklmnopqrstuvwxyz123456 *boot/vmlinuz
 opqrstuvwxyzabcdefghijklmn987654 *boot/initrd
 ab1cd2ef3gh4ij5kl6mn7op8qr9st0uv *live/live.squashfs
