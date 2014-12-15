@@ -58,7 +58,12 @@ int init ( img *imginfo, char *osimage, char *ostarget )
                 while ( feof ( sumf ) == 0 )
                 {
                     /* FIXME: A better reading method needed! */
-                    fscanf ( sumf, "%11s", ident );
+                    if ( fscanf ( sumf, "%11s", ident ) != 1 )
+                    {
+                        /* Something bad may happen when reading */
+                        notify ( FAIL, "Fatal error when reading md5sum: Cannot read successfully.\n    Program exits." );
+                        exit ( 2 ); /* FIXME: Return code standard? */
+                    }
                     if ( strcmp ( ident, "#ast-ident:" ) == 0 ) /* #ast-ident: os3 live yyyymmdd */
                     {
                         if ( fscanf ( sumf, " os%1d %4s %8s%*[^\n]", /* 1 Space left still after last fscanf(), and skip the whole line. */
@@ -188,7 +193,8 @@ int init ( img *imginfo, char *osimage, char *ostarget )
 
         fclose ( sumf );
         /* FIXME: Coverity reports bug here? */
-        remove ( tmp ); /* Remove the md5sum file */
+        if ( remove ( tmp ) != 0 ) /* Remove the md5sum file */
+            notify ( INFO, "%s can't be removed.", tmp ); /* Just notify, nothing can be done? */
         sumf = NULL;    /* FILE *sumf */
         take ( tmp );   /* Take the memory of buffer */
     } /* if ( access ( "res\\7z.exe", X_OK ) == 0 ) */
