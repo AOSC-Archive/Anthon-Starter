@@ -65,6 +65,7 @@ void notify ( int TNotice, char *format, ... )
                         case 'Y':
                         case 'y':
                             printf ( "\n" );
+                            va_end ( args );
                             return; /* Exit the function */
                         case 'N':
                         case 'n':
