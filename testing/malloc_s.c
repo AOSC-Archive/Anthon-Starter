@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* alloc_s: A safer memory allocation function, which depends on checking availability. */
+/* malloc_s: A safer memory allocation function, which depends on checking availability. */
 
 /* # include "ast.h" */
 # include <stdio.h>
@@ -30,7 +30,7 @@
 # define ALLOC_ALRD 2
 
 # define take(ptr) if(ptr!=NULL){free(ptr);ptr=NULL;}
-int alloc_s ( void *pointer, const size_t size, const int isclear );
+int malloc_s ( void *pointer, const size_t size, const int isclear );
 
 int main ( void )
 {
@@ -39,7 +39,7 @@ int main ( void )
     
     scanf("%d",&isclear);
     
-    switch ( alloc_s ( test, 100 * sizeof ( char ), isclear ) )
+    switch ( malloc_s ( test, 100 * sizeof ( char ), isclear ) )
     {
         case ALLOC_SUCC:
             puts("Succeeded");
@@ -56,7 +56,7 @@ int main ( void )
     return 0;
 }
 
-int alloc_s ( void *pointer, const size_t size, const int isclear )
+int malloc_s ( void *pointer, const size_t size, const int isclear )
 {
     if ( pointer == NULL )
     {
