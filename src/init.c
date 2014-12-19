@@ -21,12 +21,22 @@
 
 int init ( img *imginfo, char *osimage, char *ostarget )
 {
-    char *tmp = NULL, *temp = getenv ( "TEMP" );
-    FILE *sumf = NULL;
-    
     /* First check if 7-Zip exists :) */
     if ( access ( "res\\7z.exe", X_OK ) == 0 )
     {
+        char *tmp = NULL,                /* Temporary command line buffer. FIXME: If overflowed? */
+             *temp = getenv ( "TEMP" );  /* %temp%, which is one of the system environment variables. */
+        FILE *sumf = NULL;               /* Checksum file pointer */
+        
+        if ( temp == NULL )
+        {
+            /* Tainted data: %temp% not found. (WTF??)
+             * FIXME: Better solution?
+             */
+            notify ( FAIL, "Fatal error: environment variable %%temp%% not found. Program exits." );
+            exit ( 1 );
+        }
+        
         /* tmp: temporary command line buffer */
         tmp = malloc ( CMD_BUF ); /* FIXME: I can't be bothered to allocate accurate memory :P */
         
@@ -112,7 +122,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
                             }
                         }
                         else
-                            fscanf ( sumf, "%*[^\n]" ); /* Skip this line */
+                            fscanf ( sumf, "%*[^\n]" ); /* Skip this line. FIXME: Coverity reports bugs here! */
                     }
                 } /* while ( feof ( sumf ) == 0 ) */
                 take ( ident );
@@ -197,6 +207,8 @@ int init ( img *imginfo, char *osimage, char *ostarget )
             notify ( INFO, "%s can't be removed.", tmp ); /* Just notify, nothing can be done? */
         sumf = NULL;    /* FILE *sumf */
         take ( tmp );   /* Take the memory of buffer */
+        
+        take ( temp );  /* Take the memory of %temp% */
     } /* if ( access ( "res\\7z.exe", X_OK ) == 0 ) */
     else
     {
