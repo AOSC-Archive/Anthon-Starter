@@ -68,12 +68,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
                 while ( feof ( sumf ) == 0 )
                 {
                     /* FIXME: A better reading method needed! */
-                    if ( fscanf ( sumf, "%11s", ident ) != 1 )
-                    {
-                        /* Something bad may happen when reading */
-                        notify ( FAIL, "Fatal error when reading md5sum: Cannot read successfully.\n    Program exits." );
-                        exit ( 2 ); /* FIXME: Return code standard? */
-                    }
+                    fscanf ( sumf, "%11s", ident ); /* NOTICE: NO NEED to handle errors here. */
                     if ( strcmp ( ident, "#ast-ident:" ) == 0 ) /* #ast-ident: os3 live yyyymmdd */
                     {
                         if ( fscanf ( sumf, " os%1d %4s %8s%*[^\n]", /* 1 Space left still after last fscanf(), and skip the whole line. */

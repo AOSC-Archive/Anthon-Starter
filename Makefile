@@ -13,65 +13,70 @@ WAIT = 5
 # LDFLAGS = -flto
 CFLAGS = -O0 -g -Wall -pipe
 LDFLAGS = 
-SRCDIR = src/
-BUILDIR = build/
+SRCDIR = src
+BUILDIR = build
 DESTDIR = 
 
-COMP = main.o chkargs.o fclrprintf.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o md5sum.o notify.o
+.PHONY: all link clean
 
-all: $(COMP) link
+all: $(BUILDIR)/main.o ASSISTANCE link
 
-release: rc.o $(COMP) link
+# Main function block
+$(BUILDIR)/main.o: $(BUILDIR)/chkargs.o $(BUILDIR)/run.o $(BUILDIR)/help_message.o \
+        $(SRCDIR)/main.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/main.o $(SRCDIR)/main.c
 
-rc.o:
-	$(RES) -i $(SRCDIR)ast.rc -o $(BUILDIR)rc.o
+$(BUILDIR)/chkargs.o: $(SRCDIR)/chkargs.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/chkargs.o $(SRCDIR)/chkargs.c
 
-main.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)main.o $(SRCDIR)main.c
+$(BUILDIR)/help_message.o: $(SRCDIR)/help_message.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/help_message.o $(SRCDIR)/help_message.c
 
-chkargs.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)chkargs.o $(SRCDIR)chkargs.c
+$(BUILDIR)/run.o: $(BUILDIR)/init.o $(BUILDIR)/getsysinfo.o $(BUILDIR)/backup.o $(BUILDIR)/extract.o $(BUILDIR)/verify.o $(BUILDIR)/deploy.o \
+       $(SRCDIR)/run.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/run.o $(SRCDIR)/run.c
 
-fclrprintf.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)fclrprintf.o $(SRCDIR)fclrprintf.c
+# Run function block
+$(BUILDIR)/init.o: $(SRCDIR)/init.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/init.o $(SRCDIR)/init.c
 
-run.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)run.o $(SRCDIR)run.c
+$(BUILDIR)/getsysinfo.o: $(SRCDIR)/getsysinfo.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/getsysinfo.o $(SRCDIR)/getsysinfo.c
 
-init.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)init.o $(SRCDIR)init.c
+$(BUILDIR)/backup.o: $(SRCDIR)/backup.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/backup.o $(SRCDIR)/backup.c
 
-getsysinfo.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)getsysinfo.o $(SRCDIR)getsysinfo.c
+$(BUILDIR)/extract.o: $(SRCDIR)/extract.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/extract.o $(SRCDIR)/extract.c
 
-backup.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)backup.o $(SRCDIR)backup.c
+$(BUILDIR)/verify.o: $(SRCDIR)/verify.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/verify.o $(SRCDIR)/verify.c
 
-extract.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)extract.o $(SRCDIR)extract.c
+$(BUILDIR)/deploy.o: $(SRCDIR)/deploy.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/deploy.o $(SRCDIR)/deploy.c
 
-verify.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)verify.o $(SRCDIR)verify.c
+# Assistance function block
+ASSISTANCE: $(BUILDIR)/oops.o $(BUILDIR)/md5sum.o $(BUILDIR)/notify.o
 
-deploy.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)deploy.o $(SRCDIR)deploy.c
+$(BUILDIR)/oops.o: $(SRCDIR)/oops.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/oops.o $(SRCDIR)/oops.c
 
-help_message.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)help_message.o $(SRCDIR)help_message.c
+$(BUILDIR)/md5sum.o: $(SRCDIR)/md5sum.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/md5sum.o $(SRCDIR)/md5sum.c
 
-oops.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)oops.o $(SRCDIR)oops.c
+$(BUILDIR)/notify.o: $(BUILDIR)/fclrprintf.o \
+          $(SRCDIR)/notify.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/notify.o $(SRCDIR)/notify.c
 
-md5sum.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)md5sum.o $(SRCDIR)md5sum.c
+$(BUILDIR)/fclrprintf.o: $(SRCDIR)/fclrprintf.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/fclrprintf.o $(SRCDIR)/fclrprintf.c
 
-notify.o:
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)notify.o $(SRCDIR)notify.c
+# Resource file
+$(BUILDIR)/rc.o:
+	$(RES) -i $(SRCDIR)/ast.rc -o $(BUILDIR)rc.o
 
 link:
-	@echo Waiting for files saved \($(WAIT)s\) ...
-	@sleep $(WAIT)
-	$(CC) $(LDFLAGS) -o $(DESTDIR)$(EXENAME).exe $(BUILDIR)*.o
+	$(CC) $(LDFLAGS) -o $(DESTDIR)$(EXENAME).exe $(BUILDIR)/*.o
 
 clean:
-	@rm -f $(BUILDIR)/*.o
+	@-rm -f $(BUILDIR)/*.o
