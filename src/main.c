@@ -40,7 +40,7 @@ int main ( int argc, char **argv )
     p_osimg_tgt[0] = NULL; /* osimage */
     p_osimg_tgt[1] = NULL; /* ostarget */
 
-    img imginfo = { 0, NULL, NULL, NULL, NULL, NULL, NULL };
+    static img imginfo = { 0, NULL, NULL, NULL, NULL, NULL, NULL };
     
     always_yes = 0;
     quiet_mode = 0;

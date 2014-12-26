@@ -16,6 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+# pragma once
+
+# ifndef AST_H_
+# define AST_H_
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -29,6 +33,7 @@
 # include <windows.h>
 # include <tchar.h>
 
+# endif
 /* Struct contains image information:
  *
  * - Distribution
