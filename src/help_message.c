@@ -46,7 +46,7 @@ int help_message ( char *progname ) /* "progname" is argv[0] */
   --no-extract       DO NOT extract the files (not recommend)\n\
   --help, -h         Show help messages\n\
 \n\
-Report bugs to https://bugs.anthonos.org/\n\
-            or https://github.com/AOSC-Dev/Anthon-Starter/issue\n", progname );
+Report bugs to https://bugs.anthonos.org\n\
+            or https://github.com/AOSC-Dev/Anthon-Starter/issues\n", progname );
       return 0;
 }
