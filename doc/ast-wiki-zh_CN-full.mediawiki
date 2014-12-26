@@ -2,6 +2,8 @@
 
 == 概述 ==
 
+[[File:ast.png|150px|right|thumb|安同开始程序]]
+
 '''安同开始程序'''（英文名'''Anthon-Starter'''）是一款操作系统安装助手类软件，由安同开源社区发起并维护，提供给安同开源社区各发行版从其他操作系统通过硬盘安装系统的功能的软件。
 
 目前项目正在缓慢发展中。
@@ -16,7 +18,7 @@
 * 协议：[http://zh.wikipedia.org/wiki/GNU%E9%80%9A%E7%94%A8%E5%85%AC%E5%85%B1%E8%AE%B8%E5%8F%AF%E8%AF%81#GPLv3 GNU GPL 3.0]
 * 源码：https://github.com/AOSC-Dev/Anthon-Starter
 
-您可以使用 Git 并通过以下命令：
+您可以使用 [http://www.git-scm.com/ Git] 并通过以下命令：
 
 <code>
 git clone https://github.com/AOSC-Dev/Anthon-Starter.git
@@ -57,7 +59,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 0.2 使用 C 语言将程序全部重写。前期将只拥有命令行界面，后期将添加简单的图形界面，并且带自动探测系统配置功能。
 
-本版本目前在 [https://github.com/AOSC-Dev/Anthon-Starter Github] 上有源码的每日推送，位于 <code>0.2.0-devel</code> 分支。
+本版本目前在 [https://github.com/AOSC-Dev/Anthon-Starter GitHub] 上有源码的每日推送，位于 <code>0.2.0-devel</code> 分支。
 
 === 0.3 代系计划 ===
 
@@ -67,7 +69,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 0.4.x 将努力实现直接在 Windows 下安装 AOSC 发行版的功能，并整合对系统的配置，相当于安装程序。
 
-'''也许并非 wubi 式。'''
+{{Box|提示：|也许并非 wubi 式。|#00ffff}}
 
 <!-- 版本历史 & 计划 -->
 
@@ -139,12 +141,12 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 ==== 初始化 ====
 
+ int init ( img *imginfo, char *osimage, char *ostarget );
+
 初始化安同开始程序，包括：
 
 * 检查自身完整性（7z.exe 以及 7z.dll）；
 * 检查指向的映像文件正确性（检查 md5sum.ast）。
-
- int init ( img *imginfo, char *osimage, char *ostarget );
 
 ==== 获取系统信息 ====
 
@@ -163,7 +165,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
  }
 
 * 系统引导器类型，通过探测 <code>NTLDR</code> 以及 <code>%systemdrive%\Windows\Boot</code>（BCD）来判断。
-* 系统盘剩余容量，通过 WinAPI <code>GetDiskFreeSpaceEx</code> 来判断。这个过程本用于决定之后 <code>live.squashfs</code> 的解压位置，但是目前被 <code>--output=</code> 参数覆盖。
+* 解压目标盘剩余容量，通过 WinAPI <code>GetDiskFreeSpaceEx</code> 来判断，用于决定之后 <code>live.squashfs</code> 的解压位置，目标盘使用 <code>--output=</code> 参数指定。
 * 处理器架构，通过 WinAPI <code>GetNativeSystemInfo</code> 来获取这个信息。
 
 '''注意：'''MinGW 并未在其头文件中声明这个函数，其库中也没有，但是在非低版本（早于 Windows Vista 的系统中只有 <code>GetSystemInfo</code>）的 Windows 系统中存在此函数，用于“突破” WOW64 的限制。因此程序通过
@@ -180,6 +182,8 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 * 系统引导器
 * 分区表（<code>MBR</code> 以及 <code>ESP</code> 中的必要文件）
+
+每个文件都将经过校验并保存在 <code>%systemdrive%\ast_bkup\</code> 中。
 
 ==== 解压缩映像文件 ====
 
@@ -208,13 +212,16 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 ===== 向终端打印彩色字符 =====
 
- void clrprintf ( WORD color, char* format, ... );
+ # define clrprintf(color,fmt,...) fclrprintf(stdout,color,fmt,##__VA_ARGS__)
+ void fclrprintf ( FILE *stream, WORD color, char* format, ... );
 
 代码参考了 Heroin 于开源中国网站上 [http://www.oschina.net/code/snippet_48783_329 《C++ 输出彩色的控制台》]一文中的程序，在此致以感谢。
 
 ===== 更方便地向终端输出 =====
 
  void notify ( int TNotice, char *format, ... );
+
+这是一个对 <code>fclrprintf</code> 的封装，用于向终端输出一条带特定消息头的消息。
 
 其中，整数 <code>TNotice</code> 表示在终端上输出的消息等级，并据此确定消息开头。TNotice 的定义（位于 defs.h）为：
 
@@ -223,7 +230,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
  # define WARN 2
  # define FAIL 3
 
-函数调用 <code>clrprintf</code> 等函数向终端输出一串信息。<code>TNotice</code> 中：
+函数调用 <code>fclrprintf</code> 等函数向终端输出一串信息。<code>TNotice</code> 中：
 
 * <code>SUCC</code> 决定消息开头为 <font color="green">[S]</font>
 * <code>INFO</code> 决定消息开头为 <font color="cyan">[I]</font>
@@ -237,7 +244,6 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 ===== 快速 MD5 校验 =====
 
  int md5sum ( char *rtn, char *file );
-
 
 === 软件体系 ===
 
@@ -315,11 +321,15 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 == 小组人员 ==
 
-* 黎民雍 <lmy441900@gmail.com>
-* 刘子兴 <liushuyu011@gmail.com>
-* 杜旻晖 <duminghui@126.com>
+各开发人员姓名上的链接连接到其 GitHub 个人主页上。
+
+* [https://github.com/lmy441900 黎民雍] <lmy441900@gmail.com>
+* [https://github.com/liushuyu 刘子兴] <liushuyu011@gmail.com>
+* [https://github.com/ekd123 马凯] <crtmike@gmail.com>
+* [https://github.com/m13253 StarBrilliant] <m13253@qq.com>
+* [https://github.com/duminhui 杜旻晖] <duminghui@126.com>
 * 罗超 <campermsn@gmail.com>
-* 许皓鸣 <18929292333@163.com>
+* [https://github.com/xuhaoming 许皓鸣] <18929292333@163.com>
 
 联系我们，您可以：
 

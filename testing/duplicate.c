@@ -21,19 +21,17 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <time.h>
 
 # define BUF_SIZE 512
 
 int duplicate ( const char *src, char *dest );
 
-int main ( void )
+int main ( int argc, char **argv )
 {
-    char *src  = malloc ( BUF_SIZE ),
-         *dest = malloc ( BUF_SIZE );
-    
-    scanf ( "%512s %512s", src, dest );
-    
-    duplicate ( src, dest );
+    time_t a=time(NULL);
+    duplicate ( argv[1], argv[2] );
+    printf("used %lds", (time(NULL) - a) );
     
     return 0;
 }
@@ -42,26 +40,15 @@ int duplicate ( const char *src, char *dest )
 {
     FILE *fin  = NULL,
          *fout = NULL;
-    char *bufin  = malloc ( BUF_SIZE ),
-         *bufout = malloc ( BUF_SIZE );
     
     if ( access ( src, R_OK ) == 0 )
     {
-        if ( access ( dest, ( W_OK + R_OK ) ) == 0 )
-        {
             fin  = fopen ( src , "rb" );
-            snprintf(dest, BUF_SIZE, "%s%s", dest, "tgt.mp4");
             fout = fopen ( dest, "wb" );
-            //setvbuf ( fin , bufin , _IOFBF, 4096 );
-            //setvbuf ( fout, bufout, _IOFBF, 4096 );
+            //setvbuf ( fin , NULL, _IOFBF, 40960 );
+            setvbuf ( fout, NULL, _IOFBF, 40960 );
             while ( !feof ( fin ) )
                 fputc ( fgetc ( fin ), fout );
-        }
-        else
-        {
-            puts("Destination not available");
-            exit(2);
-        }
     }
     else
     {
