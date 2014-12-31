@@ -1,6 +1,6 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
- * Copyright (C) 2014 Anthon Open Source Community
+ * Copyright (C) 2014-2015 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # include "ast.h"
 
 /* Main Title */
-# define TITLE puts("Anthon-Starter 0.2.0 Development Preview\nCopyright (C) 2014 Anthon Open Source Community\n")
+# define TITLE puts("Anthon-Starter 0.2.0 Development Preview\nCopyright (C) 2014-2015 Anthon Open Source Community\n")
 
 int main ( int argc, char **argv )
 {
