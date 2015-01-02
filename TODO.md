@@ -7,13 +7,14 @@
 6.  **DD** Value passing mistake ---- Junde Yi
 7.  **D1** Backup: Stage 1 done! (at testing/backup.h) ---- LZX
 8.  **DD** Hang up the null pointers to prevent memory leaks ---- Junde Yi
-9.  **H**  oops() function for signal processing ---- Junde Yi
+9.  **D1** oops() function for signal processing ---- Junde Yi
 10. **DD** Iterative including ---- Junde Yi
 11. **DD** Fix the CLI to make it looks like a backend more ---- Junde Yi
 12. **ST** src/init.c So much warning! ---> @duminhui ---- FIXED by Junde Yi (deleted)
 13. **DD** src/clrprint.c -> clrprintf (using va_args) ---- Junde Yi
-14. **D2**  New (osimage)/md5sum standard (See doc/osimage/md5sum-standard)
+14. **D2** New (osimage)/md5sum standard (See doc/osimage/md5sum-standard)
 15. **H**  EAFP instead of LBYL
+16. **H**  Include `7z.exe` and `7z.dll` into the main program (using .rc file) ---- Junde Yi
 
 
 ## Status
