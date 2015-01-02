@@ -8,9 +8,6 @@ RES = windres
 # Seconds to wait the object files saved for -j option
 WAIT = 5
 
-# Release using
-# CFLAGS = -O2 -Wall -pipe
-# LDFLAGS = -flto
 CFLAGS = -O0 -g -Wall -pipe
 LDFLAGS = 
 SRCDIR = src
