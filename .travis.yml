@@ -25,9 +25,10 @@ addons:
     build_command: "make -j"
     branch_pattern: ci
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
-
 script:
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then make -j -k; fi
+# - make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres # dirty hack for wrong host
+# - if [ "${COVERITY_SCAN}" = '1' ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
 
 notifications:
   irc:

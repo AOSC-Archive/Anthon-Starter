@@ -37,6 +37,7 @@ int chkargs ( int argc, char **argv,
         { "no-verify"  , no_argument       , NULL, NO_VERIFY  },
         { "no-extract" , no_argument       , NULL, NO_EXTRACT },
         { "help"       , no_argument       , NULL, 'h'        },
+	{ "info"       , no_argument       , NULL, 'i'        },
         { 0            , 0                 , 0   , 0          }  };
 
     /* These are for getopt_long() */
@@ -115,7 +116,8 @@ int chkargs ( int argc, char **argv,
 
                 case 'h': /* --help, -h */
                     return 1;
-
+		case 'i': /* --info, -i */
+                    return 5;
                 case NO_VERIFY: /* --no-verify */
                     *will_verify = 0;
                     break;

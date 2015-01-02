@@ -117,3 +117,4 @@ int md5sum ( char *rtn, char *file );
  * duplicate: Make a duplicate from src to dest
  */
 int duplicate ( const char *src, char *dest );
+int info (void);

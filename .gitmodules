@@ -1,0 +1,3 @@
+[submodule "libWinTF8"]
+	path = bundle/libWinTF8
+	url = https://github.com/m13253/libWinTF8.git
