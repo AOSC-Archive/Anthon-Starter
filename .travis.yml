@@ -22,24 +22,14 @@ addons:
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
     build_command_prepend: "make clean && cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
-    build_command: "make -j"
-    branch_pattern: ci
+    build_command: "autoreconf -fis; ./configure CC=i686-w64-mingw32-gcc && make -e RES=i686-w64-mingw32-windres"
+    branch_pattern: 0.2.0-devel
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 script:
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then make -j -k; fi
-# - make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres # dirty hack for wrong host
-# - if [ "${COVERITY_SCAN}" = '1' ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
-
-notifications:
-  irc:
-    channels:
-      - "chat.freenode.net#aosc"
-    template:
-      - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
-      - "Difference: %{compare_url} , and build process: %{build_url}."
-    webhooks:
-        urls:
-          - "https://webhooks.gitter.im/e/f4cddccdf9394c96f5b7"
-        on_success: change  # options: [always|never|change] default: always
-        on_failure: always  # options: [always|never|change] default: always
-        on_start: false     # default: false
+  - |
+    if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then
+      autoreconf -fis -Wall;
+      ./configure CC=i686-w64-mingw32-gcc;
+      make -e RES=i686-w64-mingw32-windres -k;
+    fi
+# - if [ "${COVERITY_SCAN}" = 1 ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
