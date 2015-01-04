@@ -22,14 +22,14 @@ addons:
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
     build_command_prepend: "make clean && cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
-    build_command: "autoreconf -fis; ./configure CC=i686-w64-mingw32-gcc && make -e RES=i686-w64-mingw32-windres"
+    build_command: "autoreconf -fis; ./configure --target=i686-w64-mingw32 && make"
     branch_pattern: 0.2.0-devel
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 script:
   - |
     if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then
       autoreconf -fis -Wall;
-      ./configure CC=i686-w64-mingw32-gcc;
+      ./configure --target=i686-w64-mingw32-gcc;
       make -e RES=i686-w64-mingw32-windres -k;
     fi
 # - if [ "${COVERITY_SCAN}" = 1 ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
