@@ -32,42 +32,52 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 === 0.1.0 代系 ===
 
- 0.1.0.0：2012/2/9发布；
- 0.1.0.3：2012/2/17发布；
+ 0.1.0.0：2012/2/9 发布；
+ 0.1.0.3：2012/2/17 发布；
  【已停止支持】于：2013/7/1
 
-0.1.0 代系版本首次实现了安同 OS 的硬盘安装功能，使用 Delphi 7 制作界面，但核心仍是批处理；0.1.0.3 中则针对引导器做了一些小修改和错误修复。
+<code>0.1.0</code> 代系版本首次实现了安同 OS 的硬盘安装功能，使用 Delphi 7 制作界面，但核心仍是批处理；<code>0.1.0.3</code> 中则针对引导器做了一些小修改和错误修复。
 
 === 0.1.1 代系 ===
 
- 0.1.1.0：2013/6/27发布；
- 0.1.1.1：2013/7/6发布；
- 0.1.1.2：2013/7/19发布；
- 0.1.1.3：2013/8/3发布（稳定版本）；
+ 0.1.1.0：2013/6/27 发布；
+ 0.1.1.1：2013/7/6 发布；
+ 0.1.1.2：2013/7/19 发布；
+ 0.1.1.3：2013/8/3 发布（稳定版本）；
  【已停止支持】于：2014/2/1
 
-0.1.1 代系去除了 GUI 并实现了 CLI 的界面，全部采用批处理编写并去除了 0.1.0 中可能有版权争议的组件；软件默认修改NT系统引导器来引导 GRUB4DOS 0.4.4 并引导至安同-EHL3安装器；支持简体中文、繁体中文、英语和德语；支持 NT6 权限管理。
+<code>0.1.1</code> 代系去除了 GUI 并实现了 CLI 的界面，全部采用批处理编写并去除了 <code>0.1.0</code> 中可能有版权争议的组件；软件默认修改 NT 系统引导器来引导 GRUB4DOS 0.4.4 并引导至安同-EHL3安装器；支持简体中文、繁体中文、英语和德语；支持 NT6 权限管理。
 
 === 0.1.2 代系 ===
 
- 0.1.2.0：2014/7/10发布；
+ 0.1.2.0：2014/7/10 发布；
  【已停止支持】于：2014/8/28
 
-0.1.2 代系大幅度精简及优化了程序体，去除德语及繁体中文的支持，增加对 GPT + EFI 组合计算机的支持；增加映像校验、OS2 发行版支持；更新一系列组件。
+<code>0.1.2</code> 代系大幅度精简及优化了程序体，去除德语及繁体中文的支持，增加对 GPT + EFI 组合计算机的支持；增加映像校验、OS2 发行版支持；更新一系列组件。
 
 === 0.2 代系计划 ===
 
-0.2 使用 C 语言将程序全部重写。前期将只拥有命令行界面，后期将添加简单的图形界面，并且带自动探测系统配置功能。
+==== 0.2.0 计划 ====
 
-本版本目前在 [https://github.com/AOSC-Dev/Anthon-Starter GitHub] 上有源码的每日推送，位于 <code>0.2.0-devel</code> 分支。
+<code>0.2.0</code> 版本使用 C 语言将程序全部重写。前期将只拥有命令行界面，后期将添加简单的图形界面，并且带自动探测系统配置功能。
+
+本版本作为本文档的技术基准，并且在 [https://github.com/AOSC-Dev/Anthon-Starter GitHub] 上有源码的推送，位于 <code>0.2.0-devel</code> 分支。
+
+==== 0.2.5 计划 ====
+
+<code>0.2.5</code> 版本是对于 <code>0.2.0</code> 版本的重构计划版本，将对代码和程序进行重新架构，并深度植入由 [https://github.com/m13253 StarBrilliant] 制作的 [https://github.com/m13253/libWinTF8 libWinTF8] 库，提供更好的 [http://zh.wikipedia.org/wiki/UTF-8 UTF-8] 支持。
+
+<code>0.2.5</code> 版本将计划对多平台移植进行支持，通过高度抽象的函数封装和条件编译来实现。
+
+本版本目前亦已开始准备，在 [https://github.com/AOSC-Dev/Anthon-Starter GitHub] 上有源码的推送，位于 <code>0.2.5-devel</code> 分支。
 
 === 0.3 代系计划 ===
 
-0.3 将在整合 0.2 功能的情况下，编写步骤化的、更易于使用的图形用户界面。
+<code>0.3</code> 将在整合 <code>0.2.5 +</code> 功能的情况下，编写步骤化的、更易于使用的图形用户界面。
 
 === 0.4 代系计划 ===
 
-0.4.x 将努力实现直接在 Windows 下安装 AOSC 发行版的功能，并整合对系统的配置，相当于安装程序。
+<code>0.4.x</code> 将努力实现直接在 Windows 下安装 AOSC 发行版的功能，并整合对系统的配置，相当于安装程序。
 
 {{Box|提示：|也许并非 wubi 式。|#00ffff}}
 
@@ -150,7 +160,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 ==== 获取系统信息 ====
 
- int getsysinfo ( int *loader, int ptable, char *systemdrive );
+ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget );
 
 此函数用于获得当前系统信息，包括：
 
@@ -165,14 +175,14 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
  }
 
 * 系统引导器类型，通过探测 <code>NTLDR</code> 以及 <code>%systemdrive%\Windows\Boot</code>（BCD）来判断。
-* 解压目标盘剩余容量，通过 WinAPI <code>GetDiskFreeSpaceEx</code> 来判断，用于决定之后 <code>live.squashfs</code> 的解压位置，目标盘使用 <code>--output=</code> 参数指定。
+* 解压目标盘剩余容量，通过 WinAPI <code>GetDiskFreeSpaceEx</code> 来判断，用于决定之后 <code>live.squashfs</code> 的解压位置，目标盘使用 <code>--output=</code> 参数（形参 <code>*ostarget</code>）指定。
 * 处理器架构，通过 WinAPI <code>GetNativeSystemInfo</code> 来获取这个信息。
 
-'''注意：'''MinGW 并未在其头文件中声明这个函数，其库中也没有，但是在非低版本（早于 Windows Vista 的系统中只有 <code>GetSystemInfo</code>）的 Windows 系统中存在此函数，用于“突破” WOW64 的限制。因此程序通过
+'''注意：'''我们编写这部分代码时使用了 MinGW-32，但其并未在头文件中声明这个函数，其库中也没有，但是在非低版本（早于 Windows Vista 的系统中只有 <code>GetSystemInfo</code>）的 Windows 系统中存在此函数，用于“突破” WOW64 的限制。因此程序通过
 
  PGNSI pGNSI = ( PGNSI ) GetProcAddress ( GetModuleHandle ( TEXT ( "kernel32.dll" ) ), "GetNativeSystemInfo" );
 
-以及一个判断结构来决定应该使用哪一个函数。
+以及一个判断结构来决定应该使用哪一个函数。特别感谢社区开发者 [https://github.com/LionNatsu LionNatsu] 的帮助。
 
 * 内存大小，通过 <code>GlobalMemoryStatusEx</code> 获得内存总大小并在必要时给出警告。
 
@@ -180,8 +190,8 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
  int backup ( int loader, int ptable );
 
-* 系统引导器
 * 分区表（<code>MBR</code> 以及 <code>ESP</code> 中的必要文件）
+* 系统引导器
 
 每个文件都将经过校验并保存在 <code>%systemdrive%\ast_bkup\</code> 中。
 
@@ -268,13 +278,12 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 === 从源码构建 ===
 
-安同开始程序使用 [http://zh.wikipedia.org/wiki/Make#GNU_make GNU Make] 来构建程序，Makefile 置于源码树根目录下，只需要在源码树根目录下执行 <code>make</code> 即可。
+安同开始程序使用 [http://zh.wikipedia.org/wiki/Make#GNU_make GNU Make] 来构建程序，Makefile 置于源码树根目录下，只需要在源码树根目录下执行 <code>mingw32-make</code> 即可。
 
 在 Windows 环境中，构建安同开始程序需要：
 
-* mingw32 (gcc)
-* msys
-* git （可选，用于 clone 代码仓库）
+* mingw-w64 (gcc)
+* mingw32-make
 
 为了保证程序的便携性，我们不采用 [http://zh.wikipedia.org/wiki/Cygwin Cygwin] 环境，因为那需要第三方 [http://zh.wikipedia.org/wiki/POSIX POSIX] 兼容库，体积比较庞大。当然，若您使用的是 Cygwin 的 mingw 实现，也没关系。
 
@@ -283,13 +292,11 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 * binutils-mingw-w64-i686
 * gcc-mingw-w64-i686
 
-{{Box|注意：|安同开始程序使用了 <code>GlobalMemoryStatusEx</code> 函数，这个函数在 Linux 下（貌似）只能使用 mingw64 来编译，Windows 平台则无此问题。|#ffd700}}
-
-现阶段安同开始程序未提供 [http://zh.wikipedia.org/wiki/Autoconf configure] 脚本，因此在执行 make 时需要手动调节这些变量：<code>$(CC)</code>，<code>$(LD)</code> 以及 <code>$(RES)</code>，否则将不能通过编译。也许可以这样：
+现阶段安同开始程序未提供 [http://zh.wikipedia.org/wiki/Autoconf configure] 脚本，因此在执行 <code>mingw32-make</code> 时需要手动调节这些变量：<code>$(CC)</code>，<code>$(LD)</code> 以及 <code>$(RES)</code>，否则将不能通过编译。也许可以这样：
 
  make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres
 
-来通过 mingw64 交叉编译安同开始程序。
+来通过 mingw-w64 交叉编译安同开始程序。
 
 === 反馈 ===
 
@@ -301,8 +308,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
 # Fork 代码仓库；
 # 对代码进行修改；
-# 向 AOSC-Dev/Anthon-Starter 提交 Pull Request。
-#* 给我们发送 patch 文件也可以。
+# 向 <code>AOSC-Dev/Anthon-Starter</code> 提交 Pull Request。
 
 ==== 报告缺陷 ====
 
@@ -328,8 +334,10 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 * [https://github.com/ekd123 马凯] <crtmike@gmail.com>
 * [https://github.com/m13253 StarBrilliant] <m13253@qq.com>
 * [https://github.com/duminhui 杜旻晖] <duminghui@126.com>
+<!-- 两位好像从未进行过开发？
 * 罗超 <campermsn@gmail.com>
 * [https://github.com/xuhaoming 许皓鸣] <18929292333@163.com>
+-->
 
 联系我们，您可以：
 
