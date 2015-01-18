@@ -39,7 +39,7 @@ int run ( char *osimage, char *ostarget,
     /* Before doing anything, backup the important files.
      * Variables are set in getsysinfo().
      */
-    backup ( loader, ptable );
+    backup ( systemdrive, loader, ptable );
     
     /* Extract files from ISO image. */
     if ( will_extract )

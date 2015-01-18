@@ -19,8 +19,57 @@
 
 # include "ast.h"
 
-int backup ( int loader, int ptable )
+void do_backup_ntldr ( char *systemdrive );
+void do_backup_bcd ( char *systemdrive );
+
+int backup ( char *systemdrive, int loader, int ptable )
 {
+    char *cmdbuf = malloc ( CMD_BUF );
+    /* TODO: MBR / ESP first. */
+    
+    /* Native system's boot loader */
+    /* Use this to store the backup files. */
+    snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup%c", systemdrive, '\0' );
+    if ( mkdir ( cmdbuf ) == 0 )
+    {
+        switch ( loader )
+        {
+            case LOADER_NTLDR:
+                do_backup_ntldr ( systemdrive );
+                break;
+            case LOADER_BCD:
+                do_backup_bcd ( systemdrive );
+                break;
+            default:
+                /* LOADER_UNKNOWN??? But I've never used it!
+                * I'd better abort the program...
+                */
+                notify ( FAIL, "Unknown error: Unknown boot loader when backing up. Program exits." );
+                exit ( 1 );
+        }
+    }
+    else
+    {
+        notify ( FAIL, "Failed to create backup directory. For safe, program exits." );
+        exit ( 1 );
+    }
+    
+    take ( cmdbuf );
     return 0;
 }
 
+void do_backup_ntldr ( char *systemdrive )
+{
+    
+}
+
+void do_backup_bcd ( char *systemdrive )
+{
+    char *cmdbuf = malloc ( CMD_BUF );
+    system ( "bcdedit /export %systemdrive%\\ast_bkup\\BCDbckup" );
+    snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup\\BCDbckup%c", systemdrive, '\0' );
+    if ( access ( cmdbuf, F_OK ) == 0 )
+        notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+    else
+        notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+}

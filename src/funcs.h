@@ -55,7 +55,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget );
 /*
  * backup: Backup the important files before we do everything.
  */
-int backup ( int loader, int ptable );
+int backup ( char *systemdrive, int loader, int ptable );
 
 /*
  * extract: Extract necessary files to the specified destination, usually from the passed arguments.
