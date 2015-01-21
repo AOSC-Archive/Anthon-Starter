@@ -66,10 +66,17 @@ void do_backup_ntldr ( char *systemdrive )
 void do_backup_bcd ( char *systemdrive )
 {
     char *cmdbuf = malloc ( CMD_BUF );
-    system ( "bcdedit /export %systemdrive%\\ast_bkup\\BCDbckup" );
-    snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup\\BCDbckup%c", systemdrive, '\0' );
-    if ( access ( cmdbuf, F_OK ) == 0 )
-        notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+    if ( cmdbuf != NULL )
+    {
+        system ( "C:\\Windows\\System32\\bcdedit.exe /export %systemdrive%\\ast_bkup\\BCDbckup" );
+        snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup\\BCDbckup%c", systemdrive, '\0' );
+        if ( access ( cmdbuf, F_OK ) == 0 )
+            notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+        else
+            notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+        
+        take ( cmdbuf );
+    }
     else
-        notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+        raise ( SIGSEGV ); /* Will be changed later */
 }
