@@ -2,8 +2,8 @@
 
 EXENAME = ast
 
-TARGET = 
-CC = ${TARGET}-gcc
+HOST = i686-w64-mingw32
+CC = ${HOST}-gcc
 RES = windres
 
 # Seconds to wait the object files saved for -j option
