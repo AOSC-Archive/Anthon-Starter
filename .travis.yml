@@ -4,7 +4,6 @@ compiler:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get -qq install binutils-mingw-w64-i686 gcc-mingw-w64-i686
-  - mkdir build
 env:
   global:
   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -18,7 +17,7 @@ addons:
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
     build_command_prepend: "cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
-    build_command: "make"
+    build_command: "make -j"
     branch_pattern: 0.2.0-devel
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 
@@ -30,4 +29,7 @@ notifications:
     template:
       - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
       - "Difference: %{compare_url} , and build process: %{build_url}."
+
+script:
+  - make -j
 
