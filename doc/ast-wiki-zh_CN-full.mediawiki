@@ -4,7 +4,7 @@
 
 [[File:ast.png|150px|right|thumb|安同开始程序]]
 
-'''安同开始程序'''（英文名'''Anthon-Starter'''）是一款操作系统安装助手类软件，由安同开源社区发起并维护，提供给安同开源社区各发行版从其他操作系统通过硬盘安装系统的功能的软件。
+'''安同开始程序'''（英文名 '''Anthon-Starter'''）是一款操作系统安装助手类软件，由安同开源社区发起并维护，提供给安同开源社区各发行版从其他操作系统通过硬盘安装系统的功能的软件。
 
 目前项目正在缓慢发展中。
 
@@ -156,7 +156,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 初始化安同开始程序，包括：
 
 * 检查自身完整性（7z.exe 以及 7z.dll）；
-* 检查指向的映像文件正确性（检查 md5sum.ast）。
+* 检查指向的映像文件正确性（AOSC OS2 中的 <code>md5sum.ast</code> 以及 AOSC OS3 中的 <code>md5sum</code>）。
 
 ==== 获取系统信息 ====
 
@@ -178,7 +178,7 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 * 解压目标盘剩余容量，通过 WinAPI <code>GetDiskFreeSpaceEx</code> 来判断，用于决定之后 <code>live.squashfs</code> 的解压位置，目标盘使用 <code>--output=</code> 参数（形参 <code>*ostarget</code>）指定。
 * 处理器架构，通过 WinAPI <code>GetNativeSystemInfo</code> 来获取这个信息。
 
-'''注意：'''我们编写这部分代码时使用了 MinGW-32，但其并未在头文件中声明这个函数，其库中也没有，但是在非低版本（早于 Windows Vista 的系统中只有 <code>GetSystemInfo</code>）的 Windows 系统中存在此函数，用于“突破” WOW64 的限制。因此程序通过
+'''注意：'''我们编写这部分代码时正使用 MinGW-32，但其并未在头文件中声明这个函数，其库中也没有，但是在非低版本（早于 Windows Vista 的系统中只有 <code>GetSystemInfo</code>）的 Windows 系统中存在此函数，用于“突破” WOW64 的限制。因此程序通过
 
  PGNSI pGNSI = ( PGNSI ) GetProcAddress ( GetModuleHandle ( TEXT ( "kernel32.dll" ) ), "GetNativeSystemInfo" );
 
@@ -255,34 +255,17 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 
  int md5sum ( char *rtn, char *file );
 
-=== 软件体系 ===
-
- 命令行参数 > main() -- chkargs() ----- run() -- (return) > 退出
-                                   |  |   |
-                                   |  |   |-> init() -- md5sum()
-                                   |  |   |           \-- 遇到错误 --> 退出
-                                   |  |   |-> getsysinfo()
-              clrprintf()          |  |   |-> backup()
-              notify()             |  |   |-> extract() 
-              take()               |  |   |-> verify()
-                                   |  |   |-> deploy()
-                                   |  |   |-> (return)
-                                   |  |
-                                   |  |-> startup() --> 退出
-                                   |
-                                   |-> help_message() --> 退出
-
 <!-- 程序架构 -->
 
 == 进入开发 ==
 
 === 从源码构建 ===
 
-安同开始程序使用 [http://zh.wikipedia.org/wiki/Make#GNU_make GNU Make] 来构建程序，Makefile 置于源码树根目录下，只需要在源码树根目录下执行 <code>mingw32-make</code> 即可。
+安同开始程序使用 [http://zh.wikipedia.org/wiki/Make#GNU_make GNU Make] 来构建程序，Makefile 置于源码树根目录下，只需要在源码树根目录下执行 <code>mingw32-make</code> 或 <code>make</code> 即可。
 
 在 Windows 环境中，构建安同开始程序需要：
 
-* mingw-w64 (gcc)
+* i686-mingw-w64 (gcc)
 * mingw32-make
 
 为了保证程序的便携性，我们不采用 [http://zh.wikipedia.org/wiki/Cygwin Cygwin] 环境，因为那需要第三方 [http://zh.wikipedia.org/wiki/POSIX POSIX] 兼容库，体积比较庞大。当然，若您使用的是 Cygwin 的 mingw 实现，也没关系。
@@ -292,11 +275,14 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 * binutils-mingw-w64-i686
 * gcc-mingw-w64-i686
 
-现阶段安同开始程序未提供 [http://zh.wikipedia.org/wiki/Autoconf configure] 脚本，因此在执行 <code>mingw32-make</code> 时需要手动调节这些变量：<code>$(CC)</code>，<code>$(LD)</code> 以及 <code>$(RES)</code>，否则将不能通过编译。也许可以这样：
+现阶段安同开始程序未提供 [http://zh.wikipedia.org/wiki/Autoconf configure] 脚本，因此不能通过 <code>./configure</code> 来配置编译安同开始程序。不过，我们在 <code>Makefile</code> 中指定了 <code>${HOST}</code> 变量并根据 <code>${HOST}</code> 指定了 <code>${CC}</code>、<code>${LD}</code> 和 <code>${RES}</code>：
 
- make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres
+ HOST ?= i686-w64-mingw32
+ CC   := ${HOST}-gcc
+ LD   := ${HOST}-gcc
+ RES  := ${HOST}-windres
 
-来通过 mingw-w64 交叉编译安同开始程序。
+<code>${HOST}</code> 变量指定编译机器所使用的编译器类型，若无意外请使用预置配置。错误指定这个变量或清空这个变量都将导致编译失败。
 
 === 反馈 ===
 
@@ -347,3 +333,4 @@ git clone https://github.com/AOSC-Dev/Anthon-Starter.git
 欢迎您的参与！
 
 <!-- 小组人员 -->
+
