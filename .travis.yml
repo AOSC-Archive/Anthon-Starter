@@ -18,9 +18,9 @@ addons:
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
     build_command_prepend: "cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
-    build_command: "make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres"
+    build_command: "make"
     branch_pattern: 0.2.0-devel
-   # build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
+#   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
     
     
 notifications:
@@ -29,11 +29,11 @@ notifications:
       - "chat.freenode.net#anthon"
     template:
       - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
-      - "diff: %{compare_url} , and build process: %{build_url}."
+      - "Difference: %{compare_url} , and build process: %{build_url}."
     
     
     
 script:
-  - make -e CC=i686-w64-mingw32-gcc LD=i686-w64-mingw32-ld RES=i686-w64-mingw32-windres
+  - make
  # - if [ "${COVERITY_SCAN}" = '1' ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
  #build_script_url
