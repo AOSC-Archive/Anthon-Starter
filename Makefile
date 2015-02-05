@@ -1,87 +1,56 @@
-# Makefile for Anthon-Starter 0.2.0
+# Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
+# Copyright (C) 2014-2015 Anthon Open Source Community
+# This is a make file for Anthon-Starter 0.2.0.
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-EXENAME = ast
+HOST ?= i686-w64-mingw32
+CC   := ${HOST}-gcc
+LD   := ${HOST}-gcc
+RES  := ${HOST}-windres
 
-HOST = i686-w64-mingw32
-CC = ${HOST}-gcc
-RES = ${HOST}-windres
+CFLAGS    = -O0 -g -Wall -pipe
+LDFLAGS   =
+SRCDIR    = src
+BUILDDIR  = build
+DESTDIR  ?= $(shell pwd)
 
-# Seconds to wait the object files saved for -j option
-WAIT = 5
+vpath %.c  ${SRCDIR}
+vpath %.h  ${SRCDIR}
+vpath %.rc ${SRCDIR}
+vpath %.o  ${BUILDDIR}
 
-CFLAGS = -O0 -g -Wall -pipe
-LDFLAGS = 
-SRCDIR = src
-BUILDDIR = build
-DESTDIR = 
-MKDIR = mkdir
+.PHONY: all clean mkdir ast.exe
 
-.PHONY: all link clean ASSISTANCE mkdir
+OBJS := rc.o main.o chkargs.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o notify.o md5sum.o fclrprintf.o
 
-all: mkdir ${BUILDDIR}/main.o ASSISTANCE link
+all: mkdir ast.exe
 
-# Main function block
 mkdir:
-	@-rm -rf ${BUILDDIR}
-	${MKDIR} ${BUILDDIR}
+#	Make "./build" directory first (to store object files)
+	-$@ -p ${BUILDDIR}
 
-${BUILDDIR}/main.o: ${BUILDDIR}/chkargs.o ${BUILDDIR}/run.o ${BUILDDIR}/help_message.o \
-        ${SRCDIR}/main.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/main.o ${SRCDIR}/main.c
+ast.exe: ${OBJS}
+#	FIXME: Automatic variables not used. (not advanced enouth :P)
+	${LD} ${LDFLAGS} -o ${DESTDIR}/$@ $(foreach i,${OBJS},${BUILDDIR}/${i})
 
-${BUILDDIR}/chkargs.o: ${SRCDIR}/chkargs.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/chkargs.o ${SRCDIR}/chkargs.c
+%.o: %.c ast.h
+	${CC} ${CFLAGS} -c -o ${BUILDDIR}/$@ $<
 
-${BUILDDIR}/help_message.o: ${SRCDIR}/help_message.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/help_message.o ${SRCDIR}/help_message.c
-
-${BUILDDIR}/run.o: ${BUILDDIR}/init.o ${BUILDDIR}/getsysinfo.o ${BUILDDIR}/backup.o ${BUILDDIR}/extract.o ${BUILDDIR}/verify.o ${BUILDDIR}/deploy.o \
-       ${SRCDIR}/run.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/run.o ${SRCDIR}/run.c
-
-# Run function block
-${BUILDDIR}/init.o: ${SRCDIR}/init.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/init.o ${SRCDIR}/init.c
-
-${BUILDDIR}/getsysinfo.o: ${SRCDIR}/getsysinfo.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/getsysinfo.o ${SRCDIR}/getsysinfo.c
-
-${BUILDDIR}/backup.o: ${SRCDIR}/backup.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/backup.o ${SRCDIR}/backup.c
-
-${BUILDDIR}/extract.o: ${SRCDIR}/extract.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/extract.o ${SRCDIR}/extract.c
-
-${BUILDDIR}/verify.o: ${SRCDIR}/verify.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/verify.o ${SRCDIR}/verify.c
-
-${BUILDDIR}/deploy.o: ${SRCDIR}/deploy.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/deploy.o ${SRCDIR}/deploy.c
-
-# Assistance function block
-ASSISTANCE: ${BUILDDIR}/oops.o ${BUILDDIR}/md5sum.o ${BUILDDIR}/notify.o
-
-${BUILDDIR}/oops.o: ${SRCDIR}/oops.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/oops.o ${SRCDIR}/oops.c
-
-${BUILDDIR}/md5sum.o: ${SRCDIR}/md5sum.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/md5sum.o ${SRCDIR}/md5sum.c
-
-${BUILDDIR}/notify.o: ${BUILDDIR}/fclrprintf.o \
-          ${SRCDIR}/notify.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/notify.o ${SRCDIR}/notify.c
-
-${BUILDDIR}/fclrprintf.o: ${SRCDIR}/fclrprintf.c ${SRCDIR}/ast.h
-	${CC} ${CFLAGS} -c -o ${BUILDDIR}/fclrprintf.o ${SRCDIR}/fclrprintf.c
-
-# Resource file
-${BUILDDIR}/rc.o:
-	${RES} -i ${SRCDIR}/ast.rc -o ${BUILDDIR}rc.o
-
-link:
-	${CC} ${LDFLAGS} -o ${DESTDIR}${EXENAME}.exe ${BUILDDIR}/*.o
+rc.o: ast.rc
+	${RES} -i $< -o ${BUILDDIR}/$@
 
 clean:
-	@-rm -rf ${BUILDDIR}
-	@-rm -f ast.exe
+	-rm -rf ${BUILDDIR}
 
