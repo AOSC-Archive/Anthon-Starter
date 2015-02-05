@@ -62,6 +62,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
     else
     {
         notify ( FAIL, "Fatal: Can\'t determine the partition table! (ReadFile)\n    Program exists." );
+        exit ( 1 );
     }
     CloseHandle ( hDevice );
 
