@@ -63,3 +63,4 @@ typedef struct
 int always_yes,
     verbose_mode,
     quiet_mode;
+
