@@ -7,10 +7,10 @@ before_install:
   - mkdir build
 env:
   global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "Travis encrypt" command using the project repository's public key
-   - secure: "mTqn44XSHfP9wzBOAP2W14k3c6lkE9LFGF1BYIBhg6FgzF0Ywev+yUAG4CsneGzQDRDElK+382/KsUCD7EyBD1KE8kH3viSABJeRJtGG0ZBbt9Ptsd9qbpFpH3+gP5esiHw+8VpA/78ojuCLAiFOV3sHNycKAG+s+9Tiporesdw="
-   
+  # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+  #   via the "Travis encrypt" command using the project repository's public key
+  - secure: "mTqn44XSHfP9wzBOAP2W14k3c6lkE9LFGF1BYIBhg6FgzF0Ywev+yUAG4CsneGzQDRDElK+382/KsUCD7EyBD1KE8kH3viSABJeRJtGG0ZBbt9Ptsd9qbpFpH3+gP5esiHw+8VpA/78ojuCLAiFOV3sHNycKAG+s+9Tiporesdw="
+
 addons:
   coverity_scan:
     project:
@@ -21,8 +21,8 @@ addons:
     build_command: "make"
     branch_pattern: 0.2.0-devel
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
-    
-    
+
+
 notifications:
   irc:
     channels:
@@ -30,10 +30,4 @@ notifications:
     template:
       - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
       - "Difference: %{compare_url} , and build process: %{build_url}."
-    
-    
-    
-script:
-  - make
- # - if [ "${COVERITY_SCAN}" = '1' ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
- #build_script_url
+
