@@ -19,10 +19,10 @@
 
 # include "ast.h"
 
-void do_backup_mbr ( char *systemdrive );
-void do_backup_esp ( char *systemdrive );
-void do_backup_ntldr ( char *systemdrive );
-void do_backup_bcd ( char *systemdrive );
+static void do_backup_mbr ( char *systemdrive );
+static void do_backup_esp ( char *systemdrive );
+static void do_backup_ntldr ( char *systemdrive );
+static void do_backup_bcd ( char *systemdrive );
 
 int backup ( char *systemdrive, int loader, int ptable )
 {
@@ -33,6 +33,12 @@ int backup ( char *systemdrive, int loader, int ptable )
     /* TODO: A folder or file of the same name.
      *   According to version 0.1.2 (init.bat), when this happens, rename this existing folder, and make "ast_bkup" normally.
      */
+    if ( access ( cmdbuf, F_OK ) == EXIT_SUCCESS )
+    {
+        /* A folder or file of the same name exists. Rename it. */
+        rename ( cmdbuf, tmpnam( NULL ) );
+    }
+    
     if ( mkdir ( cmdbuf ) == 0 )
     {
         /* MBR / ESP backup comes first. */
@@ -79,7 +85,7 @@ int backup ( char *systemdrive, int loader, int ptable )
     return 0;
 }
 
-void do_backup_mbr ( char *systemdrive )
+static void do_backup_mbr ( char *systemdrive )
 {
     char *mbrbkup_path = malloc ( CMD_BUF );
     snprintf ( mbrbkup_path, CMD_BUF, "%s%s%c", systemdrive, "\\ast_bkup\\MBRbckup", '\0' );
@@ -116,19 +122,25 @@ void do_backup_mbr ( char *systemdrive )
     CloseHandle ( hDevice );
 }
 
-void do_backup_esp ( char *systemdrive )
+static void do_backup_esp ( char *systemdrive )
 {
 }
 
-void do_backup_ntldr ( char *systemdrive )
+static void do_backup_ntldr ( char *systemdrive )
 {
 }
 
-void do_backup_bcd ( char *systemdrive )
+static void do_backup_bcd ( char *systemdrive )
 {
     char *cmdbuf = malloc ( CMD_BUF );
     if ( cmdbuf != NULL )
     {
+        /* FIXME:
+         *   1. This does not work at all.
+         *   2. system() is not safe enough.
+         * TODO:
+         *   - I think it can be easier if generate a batch script and execute it.
+         */
         system ( "C:\\Windows\\System32\\bcdedit.exe /export %%systemdrive%%\\ast_bkup\\BCDbckup" );
         snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup\\BCDbckup%c", systemdrive, '\0' );
         if ( access ( cmdbuf, F_OK ) == 0 )
