@@ -33,7 +33,7 @@ int backup ( char *systemdrive, int loader, int ptable )
     /* TODO: A folder or file of the same name.
      *   According to version 0.1.2 (init.bat), when this happens, rename this existing folder, and make "ast_bkup" normally.
      */
-    if ( access ( cmdbuf, F_OK ) == EXIT_SUCCESS )
+    if ( access ( cmdbuf, F_OK ) == 0 )
     {
         /* A folder or file of the same name exists. Rename it. */
         rename ( cmdbuf, tmpnam( NULL ) );
@@ -138,15 +138,33 @@ static void do_backup_bcd ( char *systemdrive )
         /* FIXME:
          *   1. This does not work at all.
          *   2. system() is not safe enough.
-         * TODO:
-         *   - I think it can be easier if generate a batch script and execute it.
          */
-        system ( "C:\\Windows\\System32\\bcdedit.exe /export %%systemdrive%%\\ast_bkup\\BCDbckup" );
+        
+        /* Generate a batch script */
+        FILE *batch = fopen ( "bcd_backup.bat", "wt+" );
+        
         snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup\\BCDbckup%c", systemdrive, '\0' );
-        if ( access ( cmdbuf, F_OK ) == 0 )
-            notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+        if ( batch != NULL )
+        {
+            /* Write script, and close it. */
+            fprintf ( batch, "@bcdedit /export %s\n", cmdbuf );
+            fclose ( batch );
+            
+            /* Execute it.
+             * No no please forgive my using system()
+             */
+            system ( "bcd_backup.bat" );
+            
+            /* Check the file's existance */
+            if ( access ( cmdbuf, F_OK ) == 0 )
+                notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+            else
+                notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+        } /* if ( batch != NULL ) */
         else
-            notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+        {
+            notify ( FAIL, "Fatal error: Failed to generate BCD backup script file. Abort." );
+        }
         
         take ( cmdbuf );
     }
