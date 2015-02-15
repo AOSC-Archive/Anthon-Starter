@@ -36,6 +36,8 @@ void oops ( int signo )
             exit ( 255 );
         case SIGSEGV:
             printf ( "Program received SIGSEGV (Segmentation Fault)." );
-            break;
+            exit ( 11 ); /* Signal #11 (May be changed later) */
+            // break;
     }
 }
+
