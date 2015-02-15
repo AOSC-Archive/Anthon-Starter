@@ -124,6 +124,11 @@ static void do_backup_mbr ( char *systemdrive )
 
 static void do_backup_esp ( char *systemdrive )
 {
+    /* TODO: ESP (GPT) backup
+     *   This problem even hasn't been solved in version 0.1.2:
+     *     - In 0.1.2 we execute "mountvol W:\ /s" and check if it is an ESP.
+     *     - But this does not function well, for on systems support GPT but using MBR this will fail.
+     */
 }
 
 static void do_backup_ntldr ( char *systemdrive )
