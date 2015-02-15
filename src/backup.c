@@ -128,6 +128,27 @@ static void do_backup_esp ( char *systemdrive )
 
 static void do_backup_ntldr ( char *systemdrive )
 {
+    char *cmdbuf = malloc ( CMD_BUF );
+    snprintf ( cmdbuf, CMD_BUF, "%s%s", systemdrive, "\\boot.ini" ); /* File that will be backed up */
+    if ( access ( cmdbuf, R_OK + W_OK ) == 0 )
+    {
+        char *backup_target = malloc ( CMD_BUF );
+        snprintf ( backup_target, CMD_BUF, "%s%s", systemdrive, "\\ast_bkup\\boot.ini.bak" ); /* Backup target */
+
+        // SetFileAttributes ( cmdbuf, FILE_ATTRIBUTE_NORMAL );
+        duplicate ( cmdbuf, backup_target );
+        /* Check the file's existance */
+        if ( access ( backup_target, F_OK ) == 0 )
+            notify ( INFO, "NT Loader configuration file (boot.ini) has been saved to:\n    %s", backup_target );
+        else
+            notify ( WARN, "Failed to backup NT Loader configuration file (boot.ini)" );
+
+        take ( backup_target );
+    } /* if ( access ( cmdbuf, R_OK + W_OK ) == 0 ) */
+    else
+        notify ( WARN, "NT Loader configuration file (boot.ini) not found" ); /* boot.ini not existing? */
+
+    take ( cmdbuf );
 }
 
 static void do_backup_bcd ( char *systemdrive )
@@ -136,7 +157,7 @@ static void do_backup_bcd ( char *systemdrive )
     if ( cmdbuf != NULL )
     {
         /* FIXME:
-         *   1. This does not work at all.
+         *   1. This does not work at all. (Maybe?)
          *   2. system() is not safe enough.
          */
         
