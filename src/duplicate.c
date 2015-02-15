@@ -1,6 +1,6 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
- * Copyright (C) 2014 Anthon Open Source Community
+ * Copyright (C) 2014-2015 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,24 +17,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* # include "ast.h" */
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <time.h>
+# include "ast.h"
 
-# define BUFSIZE 40960
-
-int duplicate ( const char *src, char *dest );
-
-int main ( int argc, char **argv )
-{
-    time_t a=time(NULL);
-    duplicate ( argv[1], argv[2] );
-    printf("used %lds", (time(NULL) - a) );
-    
-    return 0;
-}
+# define BUFSIZE 40960 /* 4 MiB */
 
 int duplicate ( const char *src, char *dest )
 {
@@ -45,17 +30,15 @@ int duplicate ( const char *src, char *dest )
     {
             fin  = fopen ( src , "rb" );
             fout = fopen ( dest, "wb" );
-            //setvbuf ( fin , NULL, _IOFBF, BUFSIZE );
             setvbuf ( fout, NULL, _IOFBF, BUFSIZE );
             while ( !feof ( fin ) )
                 fputc ( fgetc ( fin ), fout );
     }
     else
     {
-        puts("Source not available");
-        exit(2);
+        notify ( FAIL, "Fatal error: Source not available when copying: %s -> %s\n    Abort.", src, dest );
+        exit ( 2 );
     }
-
     
     fclose ( fin  );
     fclose ( fout );

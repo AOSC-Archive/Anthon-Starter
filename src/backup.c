@@ -19,19 +19,46 @@
 
 # include "ast.h"
 
-void do_backup_ntldr ( char *systemdrive );
-void do_backup_bcd ( char *systemdrive );
+static void do_backup_mbr ( char *systemdrive );
+static void do_backup_esp ( char *systemdrive );
+static void do_backup_ntldr ( char *systemdrive );
+static void do_backup_bcd ( char *systemdrive );
 
 int backup ( char *systemdrive, int loader, int ptable )
 {
     char *cmdbuf = malloc ( CMD_BUF );
-    /* TODO: MBR / ESP first. */
-    
-    /* Native system's boot loader */
-    /* Use this to store the backup files. */
+    /* We use this directory to store the backup files. */
     snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup%c", systemdrive, '\0' );
+    
+    /* TODO: A folder or file of the same name.
+     *   According to version 0.1.2 (init.bat), when this happens, rename this existing folder, and make "ast_bkup" normally.
+     */
+    if ( access ( cmdbuf, F_OK ) == 0 )
+    {
+        /* A folder or file of the same name exists. Rename it. */
+        rename ( cmdbuf, tmpnam( NULL ) );
+    }
+    
     if ( mkdir ( cmdbuf ) == 0 )
     {
+        /* MBR / ESP backup comes first. */
+        switch ( ptable )
+        {
+            case PTABLE_MBR:
+                do_backup_mbr ( systemdrive );
+                break;
+            case PTABLE_GPT:
+                do_backup_esp ( systemdrive );
+                break;
+            default:
+                /* This is impossible at present, for the program will abort when getting partition table.
+                 * But for safety, abort.
+                 */
+                notify ( FAIL, "Unknown error: Unknown partition table when backing up. Program exits." );
+                exit ( 1 );
+        }
+        
+        /* Native system's boot loader */
         switch ( loader )
         {
             case LOADER_NTLDR:
@@ -42,15 +69,15 @@ int backup ( char *systemdrive, int loader, int ptable )
                 break;
             default:
                 /* LOADER_UNKNOWN??? But I've never used it!
-                * I'd better abort the program...
-                */
+                 * I'd better abort the program...
+                 */
                 notify ( FAIL, "Unknown error: Unknown boot loader when backing up. Program exits." );
                 exit ( 1 );
         }
-    }
+    } /* if ( mkdir ( cmdbuf ) == 0 ) */
     else
     {
-        notify ( FAIL, "Failed to create backup directory. For safe, program exits." );
+        notify ( FAIL, "Failed to create backup directory. For safety, program exits." );
         exit ( 1 );
     }
     
@@ -58,25 +85,116 @@ int backup ( char *systemdrive, int loader, int ptable )
     return 0;
 }
 
-void do_backup_ntldr ( char *systemdrive )
+static void do_backup_mbr ( char *systemdrive )
 {
+    char *mbrbkup_path = malloc ( CMD_BUF );
+    snprintf ( mbrbkup_path, CMD_BUF, "%s%s%c", systemdrive, "\\ast_bkup\\MBRbckup", '\0' );
+    TCHAR szDevice[MAX_PATH] = _T ( "\\\\.\\PhysicalDrive0" ); /* FIXME */
+    HANDLE hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
+    BYTE mbr[0x200] = {0};
+    DWORD dwBeRead = 0;
     
+    if ( hDevice == INVALID_HANDLE_VALUE )
+    {
+        notify ( FAIL, "Fatal: Can\'t determine the partition table! (CreateFile)\n    Program exists." );
+        exit ( 1 );
+    }
+    
+    BOOL bRet = ReadFile ( hDevice, &mbr, 0x200, &dwBeRead, NULL );
+    if ( bRet && dwBeRead )
+    {
+        FILE *fp = fopen ( mbrbkup_path, "wb" );
+        if ( fp )
+        {
+            int iBeWrite = fwrite ( &mbr, sizeof ( BYTE ), 0x200, fp );
+            if ( iBeWrite == 0x200 )
+                notify ( INFO, "Master Boot Record data is saved to:\n     %s", mbrbkup_path );
+            else
+                notify ( WARN, "Failed to backup Master Boot Record!" );
+        }
+        fclose ( fp );
+    }
+    else
+    {
+        notify ( FAIL, "Fatal: Can\'t determine the partition table! (ReadFile: %d)\n    Program exists.", GetLastError() );
+        exit ( 1 );
+    }
+    CloseHandle ( hDevice );
 }
 
-void do_backup_bcd ( char *systemdrive )
+static void do_backup_esp ( char *systemdrive )
+{
+    /* TODO: ESP (GPT) backup
+     *   This problem even hasn't been solved in version 0.1.2:
+     *     - In 0.1.2 we execute "mountvol W:\ /s" and check if it is an ESP.
+     *     - But this does not function well, for on systems support GPT but using MBR this will fail.
+     */
+}
+
+static void do_backup_ntldr ( char *systemdrive )
+{
+    char *cmdbuf = malloc ( CMD_BUF );
+    snprintf ( cmdbuf, CMD_BUF, "%s%s", systemdrive, "\\boot.ini" ); /* File that will be backed up */
+    if ( access ( cmdbuf, R_OK + W_OK ) == 0 )
+    {
+        char *backup_target = malloc ( CMD_BUF );
+        snprintf ( backup_target, CMD_BUF, "%s%s", systemdrive, "\\ast_bkup\\boot.ini.bak" ); /* Backup target */
+
+        // SetFileAttributes ( cmdbuf, FILE_ATTRIBUTE_NORMAL );
+        duplicate ( cmdbuf, backup_target );
+        /* Check the file's existance */
+        if ( access ( backup_target, F_OK ) == 0 )
+            notify ( INFO, "NT Loader configuration file (boot.ini) has been saved to:\n    %s", backup_target );
+        else
+            notify ( WARN, "Failed to backup NT Loader configuration file (boot.ini)" );
+
+        take ( backup_target );
+    } /* if ( access ( cmdbuf, R_OK + W_OK ) == 0 ) */
+    else
+        notify ( WARN, "NT Loader configuration file (boot.ini) not found" ); /* boot.ini not existing? */
+
+    take ( cmdbuf );
+}
+
+static void do_backup_bcd ( char *systemdrive )
 {
     char *cmdbuf = malloc ( CMD_BUF );
     if ( cmdbuf != NULL )
     {
-        system ( "C:\\Windows\\System32\\bcdedit.exe /export %systemdrive%\\ast_bkup\\BCDbckup" );
+        /* FIXME:
+         *   1. This does not work at all. (Maybe?)
+         *   2. system() is not safe enough.
+         */
+        
+        /* Generate a batch script */
+        FILE *batch = fopen ( "bcd_backup.bat", "wt+" );
+        
         snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup\\BCDbckup%c", systemdrive, '\0' );
-        if ( access ( cmdbuf, F_OK ) == 0 )
-            notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+        if ( batch != NULL )
+        {
+            /* Write script, and close it. */
+            fprintf ( batch, "@bcdedit /export %s\n", cmdbuf );
+            fclose ( batch );
+            
+            /* Execute it.
+             * No no please forgive my using system()
+             */
+            system ( "bcd_backup.bat" );
+            
+            /* Check the file's existance */
+            if ( access ( cmdbuf, F_OK ) == 0 )
+                notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+            else
+                notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+        } /* if ( batch != NULL ) */
         else
-            notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+        {
+            notify ( FAIL, "Fatal error: Failed to generate BCD backup script file. Abort." );
+        }
         
         take ( cmdbuf );
     }
     else
         raise ( SIGSEGV ); /* Will be changed later */
 }
+

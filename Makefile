@@ -33,7 +33,7 @@ vpath %.o  ${BUILDDIR}
 
 .PHONY: all clean mkdir ast.exe
 
-OBJS := rc.o main.o chkargs.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o notify.o md5sum.o fclrprintf.o
+OBJS := rc.o main.o chkargs.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o notify.o md5sum.o fclrprintf.o duplicate.o
 
 all: mkdir ast.exe
 
