@@ -75,7 +75,10 @@ int main ( int argc, char **argv )
             return 0;
         case 2:
             /* Start running */
+            // >>>SIGINT TEST<<<
             // while(1);
+            // >>>SIGSEGV TEST<<<
+            // puts(NULL);
             if ( quiet_mode == 0 )
                 TITLE;
             run ( p_osimg_tgt[0] /* osimage */, p_osimg_tgt[1] /* ostarget */,
