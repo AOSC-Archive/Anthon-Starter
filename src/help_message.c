@@ -32,7 +32,7 @@ int help_message ( char *progname ) /* "progname" is argv[0] */
 \n\
 <Switches>\n\
   --live=, -l        Set the location of ISO image\n\
-  --output, -o       Set the location where Live environment file\n\
+  --output=, -o      Set the location where Live environment file\n\
                        should be put\n\
   --form=, -f        Set the installation method of boot loader\n\
                        Available parameters:\n\
