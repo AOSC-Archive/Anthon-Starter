@@ -36,7 +36,9 @@ int backup ( char *systemdrive, int loader, int ptable )
     if ( access ( cmdbuf, F_OK ) == 0 )
     {
         /* A folder or file of the same name exists. Rename it. */
-        rename ( cmdbuf, tmpnam( NULL ) );
+		char template[]= "ast_backup_XXXXXX";
+		mkstemp (template); //Use mkstemp to work around tmpnam's bug.
+        rename ( cmdbuf, template );
     }
     
     if ( mkdir ( cmdbuf ) == 0 )
