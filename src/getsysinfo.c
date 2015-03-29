@@ -142,7 +142,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
         notify ( WARN, "You may have no enough free space on your RAM. (less than 1.5 GiB)" );
     
     /* Free the memory */
-    //take ( tmp );
+    take ( tmp );
 
     return 0;
 }

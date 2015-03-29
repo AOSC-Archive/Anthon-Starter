@@ -24,7 +24,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
     /* First check if 7-Zip exists :) */
     if ( access ( "res\\7z.exe", X_OK ) == 0 )
     {
-        char *tmp = NULL,                /* Temporary command line buffer. FIXME: If overflowed? */
+        char *tmp  = NULL,                /* Temporary command line buffer. FIXME: If overflowed? */
              *temp = getenv ( "TEMP" );  /* %temp%, which is one of the system environment variables. */
         FILE *sumf = NULL;               /* Checksum file pointer */
         
@@ -203,6 +203,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
         sumf = NULL;    /* FILE *sumf */
         take ( tmp );   /* Take the memory of buffer */
         
+        /* NOTICE: temp CANNOT BE FREED for it's a constant string. (Maybe? It fails.) */
         //take ( temp );  /* Take the memory of %temp% */
     } /* if ( access ( "res\\7z.exe", X_OK ) == 0 ) */
     else
