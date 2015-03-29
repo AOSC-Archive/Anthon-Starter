@@ -25,10 +25,19 @@
 #define LET_IT_FAIL 1
 
 void *xmalloc (const size_t size);
-#define xfree(ptr) if(ptr!=NULL){free(ptr);ptr=NULL;}
-// void xfree (void *ptr);
+#ifdef __cplusplus
+void xfree(void *&ptr) {
+    free(ptr);
+    ptr = nullptr;
+}
+#else
+#define xfree(ptr) { \
+    free((ptr)); \
+    (ptr) = NULL; \
+}
+#endif
 
-int main ( void )
+int main (void)
 {
     char *test = xmalloc (512);
     (puts ("Allocation"), test != NULL) ? (puts("SUCC\n")) : (puts("FAIL\n"));
@@ -55,17 +64,9 @@ void *xmalloc (const size_t size)
     if (ptr == NULL)
     {
         /* Memory allocation failed, exit the whole program */
-        puts ("*** Fatal: libast: Memory allocation failed. ***");
+        fputs (stderr, "*** libast: Fatal: Memory allocation failed. Abort. ***");
         abort ();
     }
     else
         return ptr;
 }
-
-/*
-void xfree (void *ptr)
-{
-    
-}
-*/
-
