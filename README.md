@@ -25,12 +25,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 To build Anthon-Starter, you need these tools be installed:
 
-* In Microsoft(R) Windows(R)
-    * i686-mingw-w64
-    * GNU Make (of cource)
-* In Linux(R)
-    * binutils-mingw-w64-i686
-    * gcc-mingw-w64-i686
+- In Microsoft(R) Windows(R)
+    - *i686-mingw-w64*
+        - Cygwin, TDM-GCC-64, win-builds, all are okay.
+    - *GNU Make* (of cource, and usually integrated in compiler toolkits)
+- In Linux(R)
+    - *binutils-mingw-w64-i686*
+    - *gcc-mingw-w64-i686*
 
 At present we haven't prepared `configure` (autotools) yet, but we have specified these variables in `Makefile`:
 
@@ -42,6 +43,22 @@ RES  := ${HOST}-windres
 ````
 
 Unless knowing what you're doing, please use the pre-configured `${HOST}` variable. Mistakenly specify or empty this variable can be failed to compile.
+
+**Note:** In file `Makefile.windows` we have specified some special variables (such as, shell commands) for Windows native toolchains:
+
+````Makefile
+HOST ?= x86_64-w64-mingw32
+CC   := ${HOST}-gcc
+LD   := ${HOST}-gcc
+# Note: Often windres has no prefix.
+RES  := windres
+
+CFLAGS    = -m32 -O0 -g -Wall -pipe
+LDFLAGS   = -m32
+RCFLAGS   = --output-format=coff --target=pe-i386
+````
+
+These parameters are for TDM-GCC-64 (including mingw-w64), and added x86_32 compiling options to cross-compile 32 bits program. 
 
 ## Developers
 

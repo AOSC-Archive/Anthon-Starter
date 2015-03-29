@@ -1,6 +1,6 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
- * Copyright (C) 2014-2015 Anthon Open Source Community
+ * Copyright (C) 2012-2015 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -93,3 +93,4 @@ void notify ( int TNotice, char *format, ... )
     
     va_end ( args );
 }
+

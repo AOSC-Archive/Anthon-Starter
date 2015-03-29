@@ -1,6 +1,6 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
- * Copyright (C) 2014-2015 Anthon Open Source Community
+ * Copyright (C) 2012-2015 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -203,7 +203,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
         sumf = NULL;    /* FILE *sumf */
         take ( tmp );   /* Take the memory of buffer */
         
-        take ( temp );  /* Take the memory of %temp% */
+        //take ( temp );  /* Take the memory of %temp% */
     } /* if ( access ( "res\\7z.exe", X_OK ) == 0 ) */
     else
     {

@@ -1,6 +1,6 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
- * Copyright (C) 2014-2015 Anthon Open Source Community
+ * Copyright (C) 2012-2015 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,12 +27,12 @@ int help_message ( char *progname ) /* "progname" is argv[0] */
 <Commands>\n\
   install            Install the specified AOSC OS Live environment\n\
                        to your computer\n\
-  help               Show this help\n\
+  help               Show this help message\n\
   startup            Active startup (to clean up trashes)\n\
 \n\
 <Switches>\n\
   --live=, -l        Set the location of ISO image\n\
-  --output, -o       Set the location where Live environment file\n\
+  --output=, -o      Set the location where Live environment file\n\
                        should be put\n\
   --form=, -f        Set the installation method of boot loader\n\
                        Available parameters:\n\
@@ -40,13 +40,17 @@ int help_message ( char *progname ) /* "progname" is argv[0] */
                          mbr: Edit the MBR (Only for machines have MBR)\n\
                          gpt: Edit the ESP (Only for machines have GPT)\n\
                          nodeploy: DO NOT deploy boot loader (not recommend)\n\
+  --verbose, -v      To be verbose\n\
+  --quiet, -q        To be quiet if there\'s no error\n\
   --pause, -p        Automatically pause after operation\n\
   --reboot, -r       Reboot the system after operation\n\
+  --yes, -y          Always answers yes to all warnings\n\
   --no-verify        DO NOT verify the files (not recommend)\n\
   --no-extract       DO NOT extract the files (not recommend)\n\
-  --help, -h         Show help messages\n\
+  --help, -h         Show this help message\n\
 \n\
 Report bugs to https://bugs.anthonos.org\n\
             or https://github.com/AOSC-Dev/Anthon-Starter/issues\n", progname );
       return 0;
 }
+

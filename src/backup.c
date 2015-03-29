@@ -1,6 +1,6 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
- * Copyright (C) 2014-2015 Anthon Open Source Community
+ * Copyright (C) 2012-2015 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 
 # include "ast.h"
 
-static void do_backup_mbr ( char *systemdrive );
-static void do_backup_esp ( char *systemdrive );
-static void do_backup_ntldr ( char *systemdrive );
-static void do_backup_bcd ( char *systemdrive );
+static void do_backup_mbr ( char *systemdrive, char *folder );
+static void do_backup_esp ( char *systemdrive, char *folder );
+static void do_backup_ntldr ( char *systemdrive, char *folder );
+static void do_backup_bcd ( char *systemdrive, char *folder );
 
 int backup ( char *systemdrive, int loader, int ptable )
 {
-    char *cmdbuf = malloc ( CMD_BUF );
+    char *cmdbuf = malloc (MAX_PATH);
     /* We use this directory to store the backup files. */
-    snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup%c", systemdrive, '\0' );
+    snprintf ( cmdbuf, MAX_PATH, "%s\\ast_bkup", systemdrive );
     
     /* TODO: A folder or file of the same name.
      *   According to version 0.1.2 (init.bat), when this happens, rename this existing folder, and make "ast_bkup" normally.
@@ -36,9 +36,14 @@ int backup ( char *systemdrive, int loader, int ptable )
     if ( access ( cmdbuf, F_OK ) == 0 )
     {
         /* A folder or file of the same name exists. Rename it. */
+        /* First generate temporary folder name. */
 		char template[]= "ast_backup_XXXXXX";
-		mkstemp (template); //Use mkstemp to work around tmpnam's bug.
-        rename ( cmdbuf, template );
+		_mktemp (template); //Use mkstemp to work around tmpnam's bug.
+        /* NOTICE: We just CANNOT directly rename a folder (tested on Windows 8.1: retval=-1 errno=13(EACCES))
+         * Solution: Use a new folder. Needed better solution. (FIXME)
+         */
+        //printf("retval=%d, errno=%d",retval,*(_errno()));
+        snprintf (cmdbuf, MAX_PATH, "%s\\%s", systemdrive, template);
     }
     
     if ( mkdir ( cmdbuf ) == 0 )
@@ -47,10 +52,10 @@ int backup ( char *systemdrive, int loader, int ptable )
         switch ( ptable )
         {
             case PTABLE_MBR:
-                do_backup_mbr ( systemdrive );
+                do_backup_mbr ( systemdrive, cmdbuf );
                 break;
             case PTABLE_GPT:
-                do_backup_esp ( systemdrive );
+                do_backup_esp ( systemdrive, cmdbuf );
                 break;
             default:
                 /* This is impossible at present, for the program will abort when getting partition table.
@@ -64,10 +69,10 @@ int backup ( char *systemdrive, int loader, int ptable )
         switch ( loader )
         {
             case LOADER_NTLDR:
-                do_backup_ntldr ( systemdrive );
+                do_backup_ntldr ( systemdrive, cmdbuf );
                 break;
             case LOADER_BCD:
-                do_backup_bcd ( systemdrive );
+                do_backup_bcd ( systemdrive, cmdbuf );
                 break;
             default:
                 /* LOADER_UNKNOWN??? But I've never used it!
@@ -79,7 +84,7 @@ int backup ( char *systemdrive, int loader, int ptable )
     } /* if ( mkdir ( cmdbuf ) == 0 ) */
     else
     {
-        notify ( FAIL, "Failed to create backup directory. For safety, program exits." );
+        notify (FAIL, "Failed to create another backup directory (Error %d)", *(_errno()));
         exit ( 1 );
     }
     
@@ -87,10 +92,10 @@ int backup ( char *systemdrive, int loader, int ptable )
     return 0;
 }
 
-static void do_backup_mbr ( char *systemdrive )
+static void do_backup_mbr ( char *systemdrive, char *folder )
 {
-    char *mbrbkup_path = malloc ( CMD_BUF );
-    snprintf ( mbrbkup_path, CMD_BUF, "%s%s%c", systemdrive, "\\ast_bkup\\MBRbckup", '\0' );
+    char *mbrbkup_path = malloc (MAX_PATH);
+    snprintf ( mbrbkup_path, MAX_PATH, "%s%s%c", systemdrive, "\\ast_bkup\\MBRbckup", '\0' );
     TCHAR szDevice[MAX_PATH] = _T ( "\\\\.\\PhysicalDrive0" ); /* FIXME */
     HANDLE hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
     BYTE mbr[0x200] = {0};
@@ -124,23 +129,24 @@ static void do_backup_mbr ( char *systemdrive )
     CloseHandle ( hDevice );
 }
 
-static void do_backup_esp ( char *systemdrive )
+static void do_backup_esp ( char *systemdrive, char *folder )
 {
     /* TODO: ESP (GPT) backup
      *   This problem even hasn't been solved in version 0.1.2:
      *     - In 0.1.2 we execute "mountvol W:\ /s" and check if it is an ESP.
      *     - But this does not function well, for on systems support GPT but using MBR this will fail.
      */
+    notify (INFO, "ESP Backup skipped (not finished yet :P)");
 }
 
-static void do_backup_ntldr ( char *systemdrive )
+static void do_backup_ntldr ( char *systemdrive, char *folder )
 {
-    char *cmdbuf = malloc ( CMD_BUF );
-    snprintf ( cmdbuf, CMD_BUF, "%s%s", systemdrive, "\\boot.ini" ); /* File that will be backed up */
+    char *cmdbuf = malloc (MAX_PATH);
+    snprintf ( cmdbuf, MAX_PATH, "%s%s", systemdrive, "\\boot.ini" ); /* File that will be backed up */
     if ( access ( cmdbuf, R_OK + W_OK ) == 0 )
     {
-        char *backup_target = malloc ( CMD_BUF );
-        snprintf ( backup_target, CMD_BUF, "%s%s", systemdrive, "\\ast_bkup\\boot.ini.bak" ); /* Backup target */
+        char *backup_target = malloc (MAX_PATH);
+        snprintf ( backup_target, MAX_PATH, "%s%s", systemdrive, "\\ast_bkup\\boot.ini.bak" ); /* Backup target */
 
         // SetFileAttributes ( cmdbuf, FILE_ATTRIBUTE_NORMAL );
         duplicate ( cmdbuf, backup_target );
@@ -158,20 +164,20 @@ static void do_backup_ntldr ( char *systemdrive )
     take ( cmdbuf );
 }
 
-static void do_backup_bcd ( char *systemdrive )
+static void do_backup_bcd ( char *systemdrive, char *folder )
 {
-    char *cmdbuf = malloc ( CMD_BUF );
+    char *cmdbuf = malloc (MAX_PATH);
     if ( cmdbuf != NULL )
     {
         /* FIXME:
-         *   1. This does not work at all. (Maybe?)
+         *   1. This does not work at all. (Fixed)
          *   2. system() is not safe enough.
          */
         
         /* Generate a batch script */
         FILE *batch = fopen ( "bcd_backup.bat", "wt+" );
         
-        snprintf ( cmdbuf, CMD_BUF, "%s\\ast_bkup\\BCDbckup%c", systemdrive, '\0' );
+        snprintf ( cmdbuf, MAX_PATH, "%s\\BCDbckup", folder );
         if ( batch != NULL )
         {
             /* Write script, and close it. */
@@ -188,6 +194,9 @@ static void do_backup_bcd ( char *systemdrive )
                 notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
             else
                 notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+            
+            if (remove ("bcd_backup.bat") != 0)
+                notify (WARN, "Failed to remove bcd_backup.bat (not urgent)"); /* WARN without pausing may be better */
         } /* if ( batch != NULL ) */
         else
         {

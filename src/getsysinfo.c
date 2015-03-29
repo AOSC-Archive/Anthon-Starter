@@ -1,6 +1,6 @@
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
- * Copyright (C) 2014-2015 Anthon Open Source Community
+ * Copyright (C) 2012-2015 Anthon Open Source Community
  * This file is a part of Anthon-Starter.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -142,7 +142,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
         notify ( WARN, "You may have no enough free space on your RAM. (less than 1.5 GiB)" );
     
     /* Free the memory */
-    take ( tmp );
+    //take ( tmp );
 
     return 0;
 }
