@@ -203,7 +203,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
         sumf = NULL;    /* FILE *sumf */
         take ( tmp );   /* Take the memory of buffer */
         
-        take ( temp );  /* Take the memory of %temp% */
+        //take ( temp );  /* Take the memory of %temp% */
     } /* if ( access ( "res\\7z.exe", X_OK ) == 0 ) */
     else
     {
