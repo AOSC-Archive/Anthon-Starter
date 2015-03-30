@@ -167,6 +167,7 @@ static void do_backup_ntldr ( char *systemdrive, char *folder )
 static void do_backup_bcd ( char *systemdrive, char *folder )
 {
     char *cmdbuf = malloc (MAX_PATH);
+    PVOID OldValue = NULL;
     if ( cmdbuf != NULL )
     {
         /* FIXME:
@@ -177,7 +178,12 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
         /* Generate a batch script */
         FILE *batch = fopen ( "bcd_backup.bat", "wt+" );
         
+        /* Redirect to the target backup folder */
         snprintf ( cmdbuf, MAX_PATH, "%s\\BCDbckup", folder );
+        
+        /* Redirect to the native System32 folder (See issue #11) */
+        Wow64DisableWow64FsRedirection (&OldValue);
+        
         if ( batch != NULL )
         {
             /* Write script, and close it. */
@@ -203,6 +209,8 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
             notify ( FAIL, "Fatal error: Failed to generate BCD backup script file. Abort." );
         }
         
+        /* Immediately re-enable redirection. */
+        Wow64RevertWow64FsRedirection (OldValue);
         take ( cmdbuf );
     }
     else
