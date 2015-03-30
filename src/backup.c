@@ -95,7 +95,7 @@ int backup ( char *systemdrive, int loader, int ptable )
 static void do_backup_mbr ( char *systemdrive, char *folder )
 {
     char *mbrbkup_path = malloc (MAX_PATH);
-    snprintf ( mbrbkup_path, MAX_PATH, "%s%s%c", systemdrive, "\\ast_bkup\\MBRbckup", '\0' );
+    snprintf (mbrbkup_path, MAX_PATH, "%s%s", systemdrive, "\\ast_bkup\\MBRbckup");
     TCHAR szDevice[MAX_PATH] = _T ( "\\\\.\\PhysicalDrive0" ); /* FIXME */
     HANDLE hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
     BYTE mbr[0x200] = {0};
