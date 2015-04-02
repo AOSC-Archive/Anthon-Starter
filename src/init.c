@@ -44,16 +44,16 @@ int init ( img *imginfo, char *osimage, char *ostarget )
         /* New standard: (osimage)/md5sum */
         
         /* Output the command line to buffer (tmp) first... */
-        snprintf ( tmp, CMD_BUF, "%s %s %s%s %s%c", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
+        snprintf ( tmp, CMD_BUF, "%s %s %s%s %s", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum -y > nul" ); /* NOTICE: ">nul" is not portable */
         /* Extract md5sum to %TEMP% */
         system ( tmp ); /* WTF after 7-Zip failed it still returns 0! */
         
         /* So check the file's existence. */
-        snprintf ( tmp, CMD_BUF, "%s%s%c", temp, "\\md5sum", '\0' ); /* Put it in the buffer */
+        snprintf ( tmp, CMD_BUF, "%s%s", temp, "\\md5sum" ); /* Put it in the buffer */
         if ( access( tmp, R_OK ) == 0 )
         {
             /* md5sum exists and readable, obey the new standard */
-            snprintf ( tmp, CMD_BUF, "%s%s%c", temp, "\\md5sum", '\0' );
+            snprintf ( tmp, CMD_BUF, "%s%s", temp, "\\md5sum" );
             if ( ( sumf = fopen ( tmp, "rt" ) ) != NULL ) /* Open md5sum as text, read only */
             {
                 /* Memory allocation first */
@@ -132,15 +132,15 @@ int init ( img *imginfo, char *osimage, char *ostarget )
         else
         {
             /* (osimage)/md5sum not exists. Try old standard (md5sum.ast) */
-            snprintf ( tmp, CMD_BUF, "%s %s %s%s %s%c", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul", '\0' ); /* NOTICE: ">nul" is not portable */
+            snprintf ( tmp, CMD_BUF, "%s %s %s%s %s", "res\\7z.exe x", osimage, "-o", "%temp%\\", "md5sum.ast -y > nul" ); /* NOTICE: ">nul" is not portable */
             system ( tmp );
             
             /* Check the file's existence */
-            snprintf ( tmp, CMD_BUF, "%s%s%c", temp, "\\md5sum.ast", '\0' ); /* Put it in the buffer */
+            snprintf ( tmp, CMD_BUF, "%s%s", temp, "\\md5sum.ast" ); /* Put it in the buffer */
             if ( access ( tmp, R_OK ) == 0 )
             {
                 /* md5sum.ast exists, obey the old standard */
-                snprintf ( tmp, CMD_BUF, "%s%s%c", temp, "\\md5sum.ast", '\0' );
+                snprintf ( tmp, CMD_BUF, "%s%s", temp, "\\md5sum.ast" );
                 if ( ( sumf = fopen ( tmp, "rt" ) ) != NULL ) /* Open md5sum.ast as text, read only */
                 {
                     /* Memory allocation first */

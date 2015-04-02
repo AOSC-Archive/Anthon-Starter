@@ -33,7 +33,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
     /* Get system drive
      * NOTICE: I think there can't be AB:\ or such kind of volume...
      */
-    snprintf ( systemdrive, 4, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
+    snprintf ( systemdrive, 4, "%s%c", getenv ( "SystemDrive" ), '\\' );
 
     /* Get partition table. Wow. */
     hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
@@ -71,13 +71,13 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
      * If detected BOOTMGR: Windows Vista+
      */
     tmp = malloc ( CMD_BUF );
-    snprintf ( tmp, CMD_BUF, "%s%c%s%c", systemdrive, '\\', "NTLDR", '\0' );
+    snprintf ( tmp, CMD_BUF, "%s%c%s", systemdrive, '\\', "NTLDR" );
     if ( access ( tmp, R_OK ) == 0 )
         *loader = LOADER_NTLDR;
     else
     {
         tmp = realloc ( tmp, strlen ( systemdrive ) + strlen ( "\\Windows\\boot\\" ) + 1 );
-        snprintf ( tmp, CMD_BUF, "%s%s%c", systemdrive, "\\Windows\\boot\\", '\0' );
+        snprintf ( tmp, CMD_BUF, "%s%s", systemdrive, "\\Windows\\boot\\" );
         if ( access ( tmp, R_OK ) == 0 )
             *loader = LOADER_BCD;
         else

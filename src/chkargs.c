@@ -144,7 +144,7 @@ int chkargs ( int argc, char **argv,
         if ( p_osimg_tgt[1] == NULL )
         {
             p_osimg_tgt[1] = malloc ( 4 ); /* C:\'\0' */
-            snprintf ( p_osimg_tgt[1], 4, "%s%c%c", getenv ( "SystemDrive" ), '\\', '\0' );
+            snprintf ( p_osimg_tgt[1], 4, "%s%c", getenv ( "SystemDrive" ), '\\' );
         }
         return 2; /* after getopt_long(), main() invokes run() */
     }
