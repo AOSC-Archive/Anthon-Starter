@@ -17,14 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* # include "ast.h" */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+# include "ast.h"
 
-#define LET_IT_FAIL 0
-
-void *xmalloc (const size_t size);
 #ifdef __cplusplus
 void xfree(void *&ptr) {
     free(ptr);
@@ -36,29 +30,9 @@ void xfree(void *&ptr) {
     (ptr) = NULL; \
 }
 #endif
-
-int main (void)
-{
-    char *test = xmalloc (512);
-    (puts ("Allocation"), test != NULL) ? (puts("SUCC\n")) : (puts("FAIL\n"));
-    
-    // Try to write something in it.
-    memset (test, 'T', 512);
-    puts (test);
-    
-    xfree (test);
-    (puts ("\nFree"), test == NULL) ? (puts("SUCC")) : (puts("FAIL"));
-    return 0;
-}
-
-
-
-
-
 void *xmalloc (const size_t size)
 {
-    void *ptr;
-    (LET_IT_FAIL) ? (ptr = NULL) : (ptr = malloc (size));
+    void *ptr = malloc (size);
 
     /* Check availability */
     if (ptr == NULL)

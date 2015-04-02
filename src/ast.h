@@ -59,6 +59,7 @@ typedef struct
 
 # include "funcs.h"
 # include "defs.h"
+# include "mem_alloc.h"
 
 /* Global variables */
 int always_yes,
