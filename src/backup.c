@@ -26,7 +26,7 @@ static void do_backup_bcd ( char *systemdrive, char *folder );
 
 int backup ( char *systemdrive, int loader, int ptable )
 {
-    char *cmdbuf = malloc (MAX_PATH);
+    char *cmdbuf = xmalloc (MAX_PATH);
     /* We use this directory to store the backup files. */
     snprintf ( cmdbuf, MAX_PATH, "%s\\ast_bkup", systemdrive );
     
@@ -88,13 +88,13 @@ int backup ( char *systemdrive, int loader, int ptable )
         exit ( 1 );
     }
     
-    take ( cmdbuf );
+    xfree ( cmdbuf );
     return 0;
 }
 
 static void do_backup_mbr ( char *systemdrive, char *folder )
 {
-    char *mbrbkup_path = malloc (MAX_PATH);
+    char *mbrbkup_path = xmalloc (MAX_PATH);
     snprintf (mbrbkup_path, MAX_PATH, "%s%s", systemdrive, "\\ast_bkup\\MBRbckup");
     TCHAR szDevice[MAX_PATH] = _T ( "\\\\.\\PhysicalDrive0" ); /* FIXME */
     HANDLE hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
@@ -141,11 +141,11 @@ static void do_backup_esp ( char *systemdrive, char *folder )
 
 static void do_backup_ntldr ( char *systemdrive, char *folder )
 {
-    char *cmdbuf = malloc (MAX_PATH);
+    char *cmdbuf = xmalloc (MAX_PATH);
     snprintf ( cmdbuf, MAX_PATH, "%s%s", systemdrive, "\\boot.ini" ); /* File that will be backed up */
     if ( access ( cmdbuf, R_OK + W_OK ) == 0 )
     {
-        char *backup_target = malloc (MAX_PATH);
+        char *backup_target = xmalloc (MAX_PATH);
         snprintf ( backup_target, MAX_PATH, "%s%s", systemdrive, "\\ast_bkup\\boot.ini.bak" ); /* Backup target */
 
         // SetFileAttributes ( cmdbuf, FILE_ATTRIBUTE_NORMAL );
@@ -156,17 +156,17 @@ static void do_backup_ntldr ( char *systemdrive, char *folder )
         else
             notify ( WARN, "Failed to backup NT Loader configuration file (boot.ini)" );
 
-        take ( backup_target );
+        xfree ( backup_target );
     } /* if ( access ( cmdbuf, R_OK + W_OK ) == 0 ) */
     else
         notify ( WARN, "NT Loader configuration file (boot.ini) not found" ); /* boot.ini not existing? */
 
-    take ( cmdbuf );
+    xfree ( cmdbuf );
 }
 
 static void do_backup_bcd ( char *systemdrive, char *folder )
 {
-    char *cmdbuf = malloc (MAX_PATH);
+    char *cmdbuf = xmalloc (MAX_PATH);
     PVOID OldValue = NULL;
     if ( cmdbuf != NULL )
     {
@@ -211,7 +211,7 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
         
         /* Immediately re-enable redirection. */
         Wow64RevertWow64FsRedirection (OldValue);
-        take ( cmdbuf );
+        xfree ( cmdbuf );
     }
     else
         raise ( SIGSEGV ); /* Will be changed later */

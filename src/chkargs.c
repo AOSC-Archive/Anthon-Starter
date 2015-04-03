@@ -55,7 +55,7 @@ int chkargs ( int argc, char **argv,
             switch ( opttmp )
             {
                 case 'l': /* --live=, -l */
-                    p_osimg_tgt[0] = malloc ( strlen ( optarg ) + 1 ); /* p_osimg_tgt[0] -> osimage */
+                    p_osimg_tgt[0] = xmalloc ( strlen ( optarg ) + 1 ); /* p_osimg_tgt[0] -> osimage */
                     strcpy ( p_osimg_tgt[0], optarg );
                     /* Check if the image file exists. */
                     if ( access ( p_osimg_tgt[0], R_OK ) != 0 )
@@ -66,7 +66,7 @@ int chkargs ( int argc, char **argv,
                     break;
 
                 case 'o': /* --output, -o */
-                    p_osimg_tgt[1] = malloc ( strlen ( optarg ) + 1 ); /* p_osimg_tgt[1] -> ostarget */
+                    p_osimg_tgt[1] = xmalloc ( strlen ( optarg ) + 1 ); /* p_osimg_tgt[1] -> ostarget */
                     strcpy ( p_osimg_tgt[1], optarg );
                     /* Check if the install route exists. */
                     if ( access ( p_osimg_tgt[1], ( W_OK + R_OK ) ) != 0 )
@@ -143,7 +143,7 @@ int chkargs ( int argc, char **argv,
         /* If p_osimg_tgt[1] (ostarget) not set, default is %systemdrive%. */
         if ( p_osimg_tgt[1] == NULL )
         {
-            p_osimg_tgt[1] = malloc ( 4 ); /* C:\'\0' */
+            p_osimg_tgt[1] = xmalloc ( 4 ); /* C:\'\0' */
             snprintf ( p_osimg_tgt[1], 4, "%s%c", getenv ( "SystemDrive" ), '\\' );
         }
         return 2; /* after getopt_long(), main() invokes run() */

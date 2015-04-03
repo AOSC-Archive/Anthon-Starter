@@ -38,7 +38,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
         }
         
         /* tmp: temporary command line buffer */
-        tmp = malloc ( CMD_BUF ); /* FIXME: I can't be bothered to allocate accurate memory :P */
+        tmp = xmalloc ( CMD_BUF ); /* FIXME: I can't be bothered to allocate accurate memory :P */
         
         /* Execute res\7z.exe to extract the md5sum file inside */
         /* New standard: (osimage)/md5sum */
@@ -57,14 +57,14 @@ int init ( img *imginfo, char *osimage, char *ostarget )
             if ( ( sumf = fopen ( tmp, "rt" ) ) != NULL ) /* Open md5sum as text, read only */
             {
                 /* Memory allocation first */
-                imginfo -> dist            = malloc ( 5 ); /* live'\0' */
-                imginfo -> ver             = malloc ( CMD_BUF );
-                imginfo -> vmlinuz_chksum  = malloc ( MD5SUM_LENGTH );
-                imginfo -> initrd_chksum   = malloc ( MD5SUM_LENGTH );
-                imginfo -> livesq_chksum   = malloc ( MD5SUM_LENGTH );
+                imginfo -> dist            = xmalloc ( 5 ); /* live'\0' */
+                imginfo -> ver             = xmalloc ( CMD_BUF );
+                imginfo -> vmlinuz_chksum  = xmalloc ( MD5SUM_LENGTH );
+                imginfo -> initrd_chksum   = xmalloc ( MD5SUM_LENGTH );
+                imginfo -> livesq_chksum   = xmalloc ( MD5SUM_LENGTH );
                 
                 /* Read-in */
-                char *ident = malloc ( 12 ); /* Temporary use: #ast-ident:'\0' */
+                char *ident = xmalloc ( 12 ); /* Temporary use: #ast-ident:'\0' */
                 while ( feof ( sumf ) == 0 )
                 {
                     /* FIXME: A better reading method needed! */
@@ -120,7 +120,7 @@ int init ( img *imginfo, char *osimage, char *ostarget )
                             fscanf ( sumf, "%*[^\n]" ); /* Skip this line. FIXME: Coverity reports bugs here! */
                     }
                 } /* while ( feof ( sumf ) == 0 ) */
-                take ( ident );
+                xfree ( ident );
             } /* if ( ( sumf = fopen ( tmp, "rt" ) ) != NULL ) */
             else
             {
@@ -144,12 +144,12 @@ int init ( img *imginfo, char *osimage, char *ostarget )
                 if ( ( sumf = fopen ( tmp, "rt" ) ) != NULL ) /* Open md5sum.ast as text, read only */
                 {
                     /* Memory allocation first */
-                    imginfo -> dist            = malloc ( 5 ); /* anos'\0' */
-                    imginfo -> ver             = malloc ( CMD_BUF );
-                    imginfo -> lang            = malloc ( 6 ); /* en_US'\0' */
-                    imginfo -> vmlinuz_chksum  = malloc ( MD5SUM_LENGTH );
-                    imginfo -> initrd_chksum   = malloc ( MD5SUM_LENGTH );
-                    imginfo -> livesq_chksum   = malloc ( MD5SUM_LENGTH );
+                    imginfo -> dist            = xmalloc ( 5 ); /* anos'\0' */
+                    imginfo -> ver             = xmalloc ( CMD_BUF );
+                    imginfo -> lang            = xmalloc ( 6 ); /* en_US'\0' */
+                    imginfo -> vmlinuz_chksum  = xmalloc ( MD5SUM_LENGTH );
+                    imginfo -> initrd_chksum   = xmalloc ( MD5SUM_LENGTH );
+                    imginfo -> livesq_chksum   = xmalloc ( MD5SUM_LENGTH );
                 
                     /* Read-in */
                     /* FIXME: A better reading method needed! */
@@ -201,10 +201,10 @@ int init ( img *imginfo, char *osimage, char *ostarget )
         if ( remove ( tmp ) != 0 ) /* Remove the md5sum file */
             notify ( INFO, "%s can't be removed.", tmp ); /* Just notify, nothing can be done? */
         sumf = NULL;    /* FILE *sumf */
-        take ( tmp );   /* Take the memory of buffer */
+        xfree ( tmp );   /* xfree the memory of buffer */
         
         /* NOTICE: temp CANNOT BE FREED for it's a constant string. (Maybe? It fails.) */
-        //take ( temp );  /* Take the memory of %temp% */
+        //xfree ( temp );  /* xfree the memory of %temp% */
     } /* if ( access ( "res\\7z.exe", X_OK ) == 0 ) */
     else
     {

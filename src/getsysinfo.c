@@ -70,13 +70,13 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
      * If detected NTLDR: Windows 2k/XP
      * If detected BOOTMGR: Windows Vista+
      */
-    tmp = malloc ( CMD_BUF );
+    tmp = xmalloc ( CMD_BUF );
     snprintf ( tmp, CMD_BUF, "%s%c%s", systemdrive, '\\', "NTLDR" );
     if ( access ( tmp, R_OK ) == 0 )
         *loader = LOADER_NTLDR;
     else
     {
-        tmp = realloc ( tmp, strlen ( systemdrive ) + strlen ( "\\Windows\\boot\\" ) + 1 );
+        tmp = realloc ( tmp, strlen ( systemdrive ) + strlen ( "\\Windows\\boot\\" ) + 1 ); /* xrealloc() not implemented yet */
         snprintf ( tmp, CMD_BUF, "%s%s", systemdrive, "\\Windows\\boot\\" );
         if ( access ( tmp, R_OK ) == 0 )
             *loader = LOADER_BCD;
@@ -142,7 +142,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
         notify ( WARN, "You may have no enough free space on your RAM. (less than 1.5 GiB)" );
     
     /* Free the memory */
-    take ( tmp );
+    xfree ( tmp );
 
     return 0;
 }

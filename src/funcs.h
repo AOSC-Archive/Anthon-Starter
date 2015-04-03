@@ -101,7 +101,7 @@ void notify ( int TNotice, char *format, ... );
  * take: To take specify pointer's memory easily.
  */
 // int take ( void *ptr );
-# define take(ptr) if(ptr!=NULL){free(ptr);ptr=NULL;}
+//# define take(ptr) if(ptr!=NULL){free(ptr);ptr=NULL;}
 
 /*
  * oops: Proceed with signals

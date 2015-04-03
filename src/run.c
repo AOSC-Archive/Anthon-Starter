@@ -25,7 +25,7 @@ int run ( char *osimage, char *ostarget,
 {
     /* Set variables */
     int loader = LOADER_UNKNOWN, ptable = PTABLE_UNKNOWN;
-    char *systemdrive = malloc ( 4 );
+    char *systemdrive = xmalloc ( 4 );
     /* End of setting variables */
     
     /* Initialize the program: checking if resource files work.
@@ -94,6 +94,6 @@ int run ( char *osimage, char *ostarget,
         }
     }
     
-    take ( systemdrive );
+    xfree ( systemdrive );
     return 0;
 }
