@@ -115,7 +115,7 @@ static void do_backup_mbr ( char *systemdrive, char *folder )
         {
             int iBeWrite = fwrite ( &mbr, sizeof ( BYTE ), 0x200, fp );
             if ( iBeWrite == 0x200 )
-                notify ( INFO, "Master Boot Record data is saved to:\n     %s", mbrbkup_path );
+                notify ( SUCC, "Master Boot Record data is saved to:\n     %s", mbrbkup_path );
             else
                 notify ( WARN, "Failed to backup Master Boot Record!" );
         }
@@ -152,7 +152,7 @@ static void do_backup_ntldr ( char *systemdrive, char *folder )
         duplicate ( cmdbuf, backup_target );
         /* Check the file's existance */
         if ( access ( backup_target, F_OK ) == 0 )
-            notify ( INFO, "NT Loader configuration file (boot.ini) has been saved to:\n    %s", backup_target );
+            notify ( SUCC, "NT Loader configuration file (boot.ini) has been saved to:\n    %s", backup_target );
         else
             notify ( WARN, "Failed to backup NT Loader configuration file (boot.ini)" );
 
@@ -193,11 +193,11 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
             /* Execute it.
              * No no please forgive my using system()
              */
-            system ( "bcd_backup.bat" );
+            system ( "bcd_backup.bat > nul" );
             
             /* Check the file's existance */
             if ( access ( cmdbuf, F_OK ) == 0 )
-                notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+                notify ( SUCC, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
             else
                 notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
             
