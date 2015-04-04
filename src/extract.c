@@ -100,7 +100,7 @@ int extract ( int will_extract, char *osimage, char *ostarget )
                 /* TODO: And (osimage)/boot/initrd.img */
                 notify (INFO, "Extracting pre-install environment RAM disk... (Skipped: Not finished)");
                 /* TODO: Finally (osimage)/live/live.squashfs */
-                notify (INFO, "Extracting the operating system... (Skipped: Not finished)\n    It may takes a few minutes, please wait patiently...");
+                notify (INFO, "Extracting the operating system... (Skipped: Not finished)\n    It may take a few minutes, please wait patiently...");
 
                 return 0; // Back to run()
             } /* if (access (temp_path, R_OK + W_OK) == 0) */
