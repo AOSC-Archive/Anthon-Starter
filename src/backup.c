@@ -29,7 +29,7 @@ int backup ( char *systemdrive, int loader, int ptable )
     char *cmdbuf = xmalloc (MAX_PATH);
     /* We use this directory to store the backup files. */
     snprintf ( cmdbuf, MAX_PATH, "%s\\ast_bkup", systemdrive );
-    
+
     /* TODO: A folder or file of the same name.
      *   According to version 0.1.2 (init.bat), when this happens, rename this existing folder, and make "ast_bkup" normally.
      */
@@ -37,15 +37,15 @@ int backup ( char *systemdrive, int loader, int ptable )
     {
         /* A folder or file of the same name exists. Rename it. */
         /* First generate temporary folder name. */
-		char template[]= "ast_backup_XXXXXX";
-		_mktemp (template); //Use mkstemp to work around tmpnam's bug.
+        char template[]= "ast_backup_XXXXXX";
+        _mktemp (template); //Use mkstemp to work around tmpnam's bug.
         /* NOTICE: We just CANNOT directly rename a folder (tested on Windows 8.1: retval=-1 errno=13(EACCES))
          * Solution: Use a new folder. Needed better solution. (FIXME)
          */
         //printf("retval=%d, errno=%d",retval,*(_errno()));
         snprintf (cmdbuf, MAX_PATH, "%s\\%s", systemdrive, template);
     }
-    
+
     if ( mkdir ( cmdbuf ) == 0 )
     {
         /* MBR / ESP backup comes first. */
@@ -64,7 +64,7 @@ int backup ( char *systemdrive, int loader, int ptable )
                 notify ( FAIL, "Unknown error: Unknown partition table when backing up. Program exits." );
                 exit ( 1 );
         }
-        
+
         /* Native system's boot loader */
         switch ( loader )
         {
@@ -87,7 +87,7 @@ int backup ( char *systemdrive, int loader, int ptable )
         notify (FAIL, "Failed to create another backup directory (Error %d)", *(_errno()));
         exit ( 1 );
     }
-    
+
     xfree ( cmdbuf );
     return 0;
 }
@@ -100,13 +100,13 @@ static void do_backup_mbr ( char *systemdrive, char *folder )
     HANDLE hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
     BYTE mbr[0x200] = {0};
     DWORD dwBeRead = 0;
-    
+
     if ( hDevice == INVALID_HANDLE_VALUE )
     {
         notify ( FAIL, "Fatal: Can\'t determine the partition table! (CreateFile)\n    Program exists." );
         exit ( 1 );
     }
-    
+
     BOOL bRet = ReadFile ( hDevice, &mbr, 0x200, &dwBeRead, NULL );
     if ( bRet && dwBeRead )
     {
@@ -166,29 +166,25 @@ static void do_backup_ntldr ( char *systemdrive, char *folder )
 
 static void do_backup_bcd ( char *systemdrive, char *folder )
 {
-    char *cmdbuf = xmalloc (MAX_PATH);
+    char backup_file[MAX_PATH] = {0};
     PVOID OldValue = NULL;
-    if ( cmdbuf != NULL )
-    {
-        /* FIXME:
-         *   1. This does not work at all. (Fixed)
-         *   2. system() is not safe enough.(Fixed)
-         */
-        /* Redirect to the native System32 folder (See issue #11) */
-        Wow64DisableWow64FsRedirection (&OldValue);
-        
-            /* Check the file's existance */
-           if ( (access ( cmdbuf, F_OK ) == 0) && (!(spawnlp (_P_WAIT,"bcdedit.exe","bcdedit","/export", cmdbuf, NULL))) ){
-				notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
-			}
-            else{
-				notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
-				}
-        /* Immediately re-enable redirection. */
-        Wow64RevertWow64FsRedirection (OldValue);
-        xfree ( cmdbuf );
-    }
+    /* FIXME:
+     *   1. This does not work at all. (Fixed)
+     *   2. system() is not safe enough.(Fixed)
+     */
+
+    snprintf (backup_file, MAX_PATH, "%s\\%s", folder, "BCDbckup");
+
+    /* Redirect to the native System32 folder (See issue #11) */
+    Wow64DisableWow64FsRedirection (&OldValue);
+
+    /* Execute bcdedit.exe to backup BCD file */
+    if (!(spawnlp (_P_WAIT,"bcdedit.exe", "bcdedit", "/export", backup_file, NULL)))
+        notify (INFO, "Boot Configuration Data has been saved to:\n    %s", backup_file);
     else
-        raise ( SIGSEGV ); /* Will be changed later */
+        notify (WARN, "Failed to backup the Boot Configuration Data: %d", *(_errno())); /* File doesn't exist */
+
+    /* Immediately re-enable redirection. */
+    Wow64RevertWow64FsRedirection (OldValue);
 }
 
