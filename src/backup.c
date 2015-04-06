@@ -172,43 +172,18 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
     {
         /* FIXME:
          *   1. This does not work at all. (Fixed)
-         *   2. system() is not safe enough.
+         *   2. system() is not safe enough.(Fixed)
          */
-        
-        /* Generate a batch script */
-        FILE *batch = fopen ( "bcd_backup.bat", "wt+" );
-        
-        /* Redirect to the target backup folder */
-        snprintf ( cmdbuf, MAX_PATH, "%s\\BCDbckup", folder );
-        
         /* Redirect to the native System32 folder (See issue #11) */
         Wow64DisableWow64FsRedirection (&OldValue);
         
-        if ( batch != NULL )
-        {
-            /* Write script, and close it. */
-            fprintf ( batch, "@bcdedit /export %s\n", cmdbuf );
-            fclose ( batch );
-            
-            /* Execute it.
-             * No no please forgive my using system()
-             */
-            system ( "bcd_backup.bat > nul" );
-            
             /* Check the file's existance */
-            if ( access ( cmdbuf, F_OK ) == 0 )
-                notify ( SUCC, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
-            else
-                notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
-            
-            if (remove ("bcd_backup.bat") != 0)
-                notify (WARN, "Failed to remove bcd_backup.bat (not urgent)"); /* WARN without pausing may be better */
-        } /* if ( batch != NULL ) */
-        else
-        {
-            notify ( FAIL, "Fatal error: Failed to generate BCD backup script file. Abort." );
-        }
-        
+           if ( (access ( cmdbuf, F_OK ) == 0) && (!(spawnlp (_P_WAIT,"bcdedit.exe","bcdedit","/export", cmdbuf, NULL))) ){
+				notify ( INFO, "Boot Configuration Data has been saved to:\n    %s", cmdbuf );
+			}
+            else{
+				notify ( WARN, "Failed to backup the Boot Configuration Data" ); /* File doesn't exist */
+				}
         /* Immediately re-enable redirection. */
         Wow64RevertWow64FsRedirection (OldValue);
         xfree ( cmdbuf );
