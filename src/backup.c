@@ -42,7 +42,7 @@ int backup ( char *systemdrive, int loader, int ptable )
         /* NOTICE: We just CANNOT directly rename a folder (tested on Windows 8.1: retval=-1 errno=13(EACCES))
          * Solution: Use a new folder. Needed better solution. (FIXME)
          */
-        //printf("retval=%d, errno=%d",retval,*(_errno()));
+        //printf("retval=%d, errno=%d",retval,errno);
         snprintf (cmdbuf, MAX_PATH, "%s\\%s", systemdrive, template);
     }
 
@@ -84,7 +84,7 @@ int backup ( char *systemdrive, int loader, int ptable )
     } /* if ( mkdir ( cmdbuf ) == 0 ) */
     else
     {
-        notify (FAIL, "Failed to create another backup directory (Error %d)", *(_errno()));
+        notify (FAIL, "Failed to create another backup directory (Error %d)", errno);
         exit ( 1 );
     }
 
@@ -182,7 +182,7 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
     if (!(spawnlp (_P_WAIT,"bcdedit.exe", "bcdedit", "/export", backup_file, NULL)))
         notify (INFO, "Boot Configuration Data has been saved to:\n    %s", backup_file);
     else
-        notify (WARN, "Failed to backup the Boot Configuration Data: %d", *(_errno())); /* File doesn't exist */
+        notify (WARN, "Failed to backup the Boot Configuration Data: %d", errno); /* File doesn't exist */
 
     /* Immediately re-enable redirection. */
     Wow64RevertWow64FsRedirection (OldValue);
