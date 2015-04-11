@@ -180,7 +180,7 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
 
     /* Execute bcdedit.exe to backup BCD file */
     if (!(spawnlp (_P_WAIT,"bcdedit.exe", "bcdedit", "/export", backup_file, NULL)))
-        notify (INFO, "Boot Configuration Data has been saved to:\n    %s", backup_file);
+        notify (SUCC, "Boot Configuration Data has been saved to:\n    %s", backup_file);
     else
         notify (WARN, "Failed to backup the Boot Configuration Data: %d", errno); /* File doesn't exist */
 
