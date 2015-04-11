@@ -121,7 +121,7 @@ static int do_extract (const char *image, const char *target, const char *file_t
         //printf ("%s\n", cmdline);
         si.cb = sizeof (si); // Initialize STARTUPINFO structure
         if (!CreateProcess (NULL,
-                            TEXT(cmdline), /* NOTICE: According to MSDN Library, here cmdline should be able to modify in Unicode version. */
+                            TEXT(cmdline), /* NOTICE: According to MSDN Library, here cmdline should be able to be modified in Unicode version. */
                             NULL,
                             NULL,
                             FALSE,
