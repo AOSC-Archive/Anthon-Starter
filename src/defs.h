@@ -38,7 +38,7 @@
 # define NO_EXTRACT 16
 
 /* Command line buffer */
-# define CMD_BUF 512
+# define CMD_BUF MAX_PATH
 /* Length of MD5 checksum lines (including NUL) */
 # define MD5SUM_LENGTH 33
 
