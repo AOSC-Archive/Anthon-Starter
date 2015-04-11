@@ -30,6 +30,7 @@
 # include <signal.h>
 # include <time.h>
 # include <errno.h>
+# include <direct.h>
 # include <conio.h>
 # include <windows.h>
 # include <tchar.h>

@@ -60,7 +60,7 @@ int backup ( char *systemdrive, int loader, int ptable );
 /*
  * extract: Extract necessary files to the specified destination, usually from the passed arguments.
  */
-int extract ( int will_extract, char *osimage, char *ostarget );
+int extract ( int will_extract, char *systemdrive, char *osimage, char *ostarget );
 
 /*
  * verify: Verify the files that was extracted just now to ensure validity.

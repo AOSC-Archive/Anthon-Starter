@@ -43,7 +43,7 @@ int run ( char *osimage, char *ostarget,
     
     /* Extract files from ISO image. */
     if ( will_extract )
-        extract ( will_extract, osimage, ostarget );
+        extract ( will_extract, systemdrive, osimage, ostarget );
     else /* --no-extract */
         notify ( WARN, "Will not extract the files." );
     
