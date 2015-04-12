@@ -49,7 +49,7 @@ int run ( char *osimage, char *ostarget,
     
     /* Verify the files */
     if ( will_verify )
-        verify ( will_verify, ostarget );
+        verify ( imginfo, will_verify, systemdrive, ostarget );
     else /* --no-verify */
     {
         if ( will_extract )

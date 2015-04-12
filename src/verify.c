@@ -19,7 +19,84 @@
 
 # include "ast.h"
 
-int verify ( int will_verify, char *ostarget )
+/* For do_verify's first parameter, to choose which checksum should be taken */
+# define VMLINUZ  0
+# define INITRD   1
+# define LIVESQ   2
+
+static int do_verify (img *imginfo, int which_file, char *file_to_verify);
+
+int verify ( img *imginfo, int will_verify, char *systemdrive, char *ostarget )
 {
+    char file[MAX_PATH] = {0};
+
+    /* First (osimage)/boot/vmlinuz */
+    snprintf (file, MAX_PATH, "%s\\ast_strt\\vmlinuz", systemdrive);
+    if (access (file, R_OK) == EXIT_SUCCESS)
+    {
+        if (do_verify (imginfo, VMLINUZ, file) == 0)
+            ; /* Nothing to do! */
+        else
+            notify (WARN, "Failed to verify %s: File tainted.", file);
+    }
+    else
+        notify (WARN, "Failed to verify %s: File lost.", file);
+
+    /* Then (osimage)/boot/initrd */
+    snprintf (file, MAX_PATH, "%s\\ast_strt\\initrd", systemdrive);
+    if (access (file, R_OK) == EXIT_SUCCESS)
+    {
+        if (do_verify (imginfo, INITRD,file) == 0)
+            ;
+        else
+            notify (WARN, "Failed to verify %s: File tainted.", file);
+    }
+    else
+        notify (WARN, "Failed to verify %s: File lost.", file);
+
+    /* Finally (osimage)/live/live.squashfs */
+    snprintf (file, MAX_PATH, "%s\\live\\live.squashfs", ostarget);
+    if (access (file, R_OK) == EXIT_SUCCESS)
+    {
+        if (do_verify (imginfo, LIVESQ, file) == 0)
+            ;
+        else
+            notify (WARN, "Failed to verify %s: File tainted.", file);
+    }
+    else
+        notify (WARN, "Failed to verify %s: File lost.", file);
+
+    return 0; /* Return to run() */
+}
+
+
+static int do_verify (img *imginfo, int which_file, char *file_to_verify)
+{
+    # define compare(a,b,n) \
+             if (strncmp (a, b, n) == 0) \
+                 ;                                            \
+             else                                             \
+                 return 1;
+
+    char sum[MD5SUM_LENGTH] = {0};
+    int retVal = 0;
+
+    retVal = md5sum(sum, file_to_verify);
+    if (retVal == 0)
+    {
+        /* Verify succeeded, check if it marks */
+        switch (which_file)
+        {
+            case VMLINUZ:
+                compare (imginfo->vmlinuz_chksum, sum, MD5SUM_LENGTH);
+            case INITRD:
+                compare (imginfo->initrd_chksum, sum, MD5SUM_LENGTH);
+            case LIVESQ:
+                compare (imginfo->livesq_chksum, sum, MD5SUM_LENGTH);
+        }
+    }
+    else
+        notify (WARN, "Verify procedure failed (Error %d).", retVal); /* Verify procedure failed. Should have had sent error messages. */
+
     return 0;
 }

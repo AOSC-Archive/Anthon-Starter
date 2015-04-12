@@ -65,7 +65,7 @@ int extract ( int will_extract, char *systemdrive, char *osimage, char *ostarget
 /*
  * verify: Verify the files that was extracted just now to ensure validity.
  */
-int verify ( int will_verify, char *ostarget );
+int verify ( img *imginfo, int will_verify, char *systemdrive, char *ostarget );
 
 /*
  * deploy: Deploy the boot loader.

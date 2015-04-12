@@ -53,7 +53,7 @@ int extract ( int will_extract, char *systemdrive, char *osimage, char *ostarget
             else
                 ; /* Program will be aborted inside the function do_extract() if exceptions was caught, so nothing to do here. */
 
-            /* And (osimage)/boot/initrd.img */
+            /* And (osimage)/boot/initrd */
             notify (INFO, "Extracting pre-install environment RAM disk to temporary directory...");
             if (do_extract (osimage, temp_path, "boot\\initrd") == EXIT_SUCCESS)
                 notify (SUCC, "Extracted pre-install environment RAM disk.");
@@ -79,7 +79,7 @@ int extract ( int will_extract, char *systemdrive, char *osimage, char *ostarget
             snprintf (bufTgt, MAX_PATH, "%s\\ast_strt\\vmlinuz", systemdrive);
             duplicate (bufSrc, bufTgt);
             notify (SUCC, "Copied pre-install environment kernel.");
-            /* Then (osimage)/boot/initrd.img */
+            /* Then (osimage)/boot/initrd */
             notify (INFO, "Copying pre-install environment RAM disk to the actual directory...");
             snprintf (bufSrc, MAX_PATH, "%s\\boot\\initrd", temp_path);
             snprintf (bufTgt, MAX_PATH, "%s\\ast_strt\\initrd", systemdrive);
