@@ -1,14 +1,19 @@
 language: c
-compiler:
-  - gcc
+
+# Restrict the building branch to "0.2.0-devel".
+branches:
+  only:
+    - 0.2.0-devel
+
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get -qq install binutils-mingw-w64-i686 gcc-mingw-w64-i686
+
 env:
   global:
-  # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-  #   via the "Travis encrypt" command using the project repository's public key
-  - secure: "mTqn44XSHfP9wzBOAP2W14k3c6lkE9LFGF1BYIBhg6FgzF0Ywev+yUAG4CsneGzQDRDElK+382/KsUCD7EyBD1KE8kH3viSABJeRJtGG0ZBbt9Ptsd9qbpFpH3+gP5esiHw+8VpA/78ojuCLAiFOV3sHNycKAG+s+9Tiporesdw="
+# The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+# via the "Travis encrypt" command using the project repository's public key
+    - secure: "mTqn44XSHfP9wzBOAP2W14k3c6lkE9LFGF1BYIBhg6FgzF0Ywev+yUAG4CsneGzQDRDElK+382/KsUCD7EyBD1KE8kH3viSABJeRJtGG0ZBbt9Ptsd9qbpFpH3+gP5esiHw+8VpA/78ojuCLAiFOV3sHNycKAG+s+9Tiporesdw="
 
 addons:
   coverity_scan:
@@ -16,11 +21,13 @@ addons:
       name: "AOSC-Dev/Anthon-Starter"
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
-    build_command_prepend: "cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
-    build_command: "make clean && make -j"
+    build_command_prepend: "make clean && cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
+    build_command: "make -j"
     branch_pattern: 0.2.0-devel
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 
+script:
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j ; fi
 
 notifications:
   irc:
@@ -29,8 +36,3 @@ notifications:
     template:
       - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
       - "Difference: %{compare_url} , and build process: %{build_url}."
-
-script:
-  - make clean
-  - make -j
-
