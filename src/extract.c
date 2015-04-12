@@ -20,7 +20,6 @@
 # include "ast.h"
 
 static int do_extract (const char *image, const char *target, const char *file_to_extract);
-extern int duplicate ( const char *src, char *dest ); /* FIXME: HEAD FILE LOST (in src/duplicate.c, should include duplicate.h) */
 
 int extract ( int will_extract, char *systemdrive, char *osimage, char *ostarget )
 {
