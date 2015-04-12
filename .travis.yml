@@ -17,7 +17,7 @@ addons:
       description: "Build submitted via Travis CI with coverity_scan"
     notification_email: liushuyu_011@163.com
     build_command_prepend: "cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
-    build_command: "make -j"
+    build_command: "make clean && make -j"
     branch_pattern: 0.2.0-devel
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 
@@ -31,5 +31,6 @@ notifications:
       - "Difference: %{compare_url} , and build process: %{build_url}."
 
 script:
+  - make clean
   - make -j
 
