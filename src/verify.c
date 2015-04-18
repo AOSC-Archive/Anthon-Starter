@@ -89,10 +89,13 @@ static int do_verify (img *imginfo, int which_file, char *file_to_verify)
         {
             case VMLINUZ:
                 compare (imginfo->vmlinuz_chksum, sum, MD5SUM_LENGTH);
+                break;
             case INITRD:
                 compare (imginfo->initrd_chksum, sum, MD5SUM_LENGTH);
+                break;
             case LIVESQ:
                 compare (imginfo->livesq_chksum, sum, MD5SUM_LENGTH);
+                break;
         }
     }
     else
