@@ -15,14 +15,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-HOST ?= i686-w64-mingw32
-CC   := ${HOST}-gcc
-LD   := ${HOST}-gcc
-RES  := ${HOST}-windres
+ifdef DEBUG
+#   Debug option: should use 64-bits GDB to debug 64-bits executable.
+    HOST ?= x86_64-w64-mingw32
+else
+#   Release option: should make sure that it can work on 32-bits computers.
+    HOST ?= i686-w64-mingw32
+endif
 
-CFLAGS    = -O0 -g -Wall -pipe
-LDFLAGS   =
-RCFLAGS   =
+CC    := ${HOST}-gcc
+LD    := ${HOST}-gcc
+RES   := ${HOST}-windres
+STRIP := ${HOST}-strip
+
+ifdef DEBUG
+#   Debug option: to add debug information into the executable as much as possible.
+    CFLAGS    = -O0 -ggdb3 -Wall -pipe
+    LDFLAGS   =
+    RCFLAGS   =
+else
+#   Release option: to optimize the executable as much as possible.
+    CFLAGS    = -O2 -Wall -pipe -flto
+    LDFLAGS   = -flto
+    RCFLAGS   =
+endif
+
 SRCDIR    = src
 BUILDDIR  = build
 DESTDIR  ?= $(shell pwd)
@@ -43,8 +60,12 @@ mkdir:
 	-$@ -p ${BUILDDIR}
 
 ast.exe: ${OBJS}
-#	FIXME: Automatic variables not used. (not advanced enouth :P)
+#	FIXME: Automatic variables not used. (not advanced enough :P)
 	${LD} ${LDFLAGS} -o ${DESTDIR}/$@ $(foreach i,${OBJS},${BUILDDIR}/${i})
+    ifndef DEBUG
+#       Release option: strip the executable.
+		${STRIP} $@
+    endif
 
 %.o: %.c ast.h
 	${CC} ${CFLAGS} -c -o ${BUILDDIR}/$@ $<
