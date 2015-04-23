@@ -28,6 +28,37 @@ Warning: You may have some unfinished process when this exception was caught.\n\
            - Backed-up files (if exist)\n\
          You can find backup files in folder %systemdrive%\\ast_bkup."
 
+static char sigint_message[] = {
+"Program received SIGINT (Interrupted).\n"
+"This is usually because you have pressed \"Control-C\".\n\n"
+WARNINGS
+"\n\nExit.\n"
+};
+
+static char sigterm_message[] = {
+"Program received SIGTERM (#%d).\n"
+"This is usually because you have sent a terminal signal.\n\n"
+WARNINGS
+"\n\nExit.\n"
+};
+
+static char sigbreak_message[] = {
+"Program received SIGBREAK.\n"
+"This is ususlly because you have pressed \"Control-Break\".\n\n"
+WARNINGS
+"\n\nExit.\n"
+};
+
+static char sigsegv_message[] = {
+"Program received SIGSEGV (Segmentation Fault).\n"
+"This is usually because of an internal error (BUG).\n"
+"Please report this bug to:\n"
+"  <https://bugs.anthonos.org> or\n"
+"  <https://github.com/AOSC-Dev/Anthon-Starter/issues>\n\n"
+WARNINGS
+"\n\nExit.\n"
+};
+
 void oops ( int signo )
 {
     time_t timer = time ( NULL );
@@ -35,16 +66,16 @@ void oops ( int signo )
     switch ( signo )
     {
         case SIGINT: /* Control-C */
-            printf ( "Program received SIGINT (#%d).\nThis is usually because you have pressed \"Control-C\".\n\n%s\n\nExit.\n", SIGINT, WARNINGS );
+            fputs (sigint_message, stderr);
             exit ( 255 );
         case SIGTERM:
-            printf ( "Program received SIGTERM (#%d).\nThis is usually because you have sent a terminal signal.\n\n%s\n\nExit.\n", SIGTERM, WARNINGS );
+            fputs (sigterm_message, stderr);
             exit ( 255 );
         case SIGBREAK: /* Control-Pause (Break) */
-            printf ( "Program received SIGBREAK (#%d).\nThis is ususlly because you have pressed \"Control-Break\".\n\n%s\n\nExit.\n", SIGBREAK, WARNINGS );
+            fputs (sigbreak_message, stderr);
             exit ( 255 );
         case SIGSEGV: /* Segmentation violation */
-            printf ( "Program received SIGSEGV (Segmentation Fault: #%d).\nThis is usually because of an internal error (BUG).\nPlease report this bug to:\n  <https://bugs.anthonos.org> or\n  <https://github.com/AOSC-Dev/Anthon-Starter/issues>\n\n%s\n\nExit.\n", SIGSEGV, WARNINGS );
+            fputs (sigsegv_message, stderr);
             exit ( SIGSEGV ); /* Signal #11 (May be changed later) */
             // break;
     }
