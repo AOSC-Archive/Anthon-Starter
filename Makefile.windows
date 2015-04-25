@@ -34,9 +34,9 @@ ifdef DEBUG
     RCFLAGS   = --output-format=coff
 else
 #   Release option: should make sure that it can work on 32-bits computers (with -m32).
-#   Release option: to optimize the executable as much as possible.
-    CFLAGS    = -m32 -O2 -Wall -pipe -flto
-    LDFLAGS   = -m32 -flto
+#   Release option: to optimize the executable as much as possible. (Without LTO)
+    CFLAGS    = -m32 -O2 -Wall -pipe
+    LDFLAGS   = -m32
     RCFLAGS   = --output-format=coff --target=pe-i386
 endif
 
