@@ -30,13 +30,13 @@ ifdef DEBUG
 #   Debug option: should use 64-bits GDB to debug 64-bits executable (without -m32).
 #   Debug option: to add debug information into the executable as much as possible.
     CFLAGS    = -O0 -ggdb3 -Wall -pipe
-    LDFLAGS   =
+    LDFLAGS   = -Wl,--sort-common,-z,relro
     RCFLAGS   = --output-format=coff
 else
 #   Release option: should make sure that it can work on 32-bits computers (with -m32).
 #   Release option: to optimize the executable as much as possible. (Without LTO)
     CFLAGS    = -m32 -O2 -Wall -pipe
-    LDFLAGS   = -m32
+    LDFLAGS   = -m32 -Wl,-O1,--sort-common,-z,relro
     RCFLAGS   = --output-format=coff --target=pe-i386
 endif
 
