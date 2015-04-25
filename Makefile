@@ -30,13 +30,13 @@ STRIP := ${HOST}-strip
 
 ifdef DEBUG
 #   Debug option: to add debug information into the executable as much as possible.
-    CFLAGS    = -O0 -ggdb3 -Wall -pipe
-    LDFLAGS   =
+    CFLAGS    = -O0 -ggdb3 -Wall -pipe --param=ssp-buffer-size=4
+    LDFLAGS   = -Wl,--sort-common,-z,relro
     RCFLAGS   =
 else
 #   Release option: to optimize the executable as much as possible. (Except LTO)
-    CFLAGS    = -O2 -Wall -pipe
-    LDFLAGS   =
+    CFLAGS    = -O2 -Wall -pipe --param=ssp-buffer-size=4
+    LDFLAGS   = -Wl,-O1,--sort-common,-z,relro
     RCFLAGS   =
 endif
 
