@@ -168,15 +168,18 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
 {
     char backup_file[MAX_PATH] = {0};
     PVOID OldValue = NULL;
-    /* FIXME:
-     *   1. This does not work at all. (Fixed)
-     *   2. system() is not safe enough.(Fixed)
-     */
+    void (*func)(); // This is for resolving issue #12
 
     snprintf (backup_file, MAX_PATH, "%s\\%s", folder, "BCDbckup");
 
     /* Redirect to the native System32 folder (See issue #11) */
-    Wow64DisableWow64FsRedirection (&OldValue);
+    /* Avoid invoking it in Windows XP or earlier systems (See issue #12) */
+    func = (void (*)()) GetProcAddress (GetModuleHandle (TEXT("kernel32.dll")), "Wow64DisableWow64FsRedirection");
+    if (func != NULL)
+        func (&OldValue);
+    else
+        ; // Nothing to do
+    //Wow64DisableWow64FsRedirection (&OldValue);
 
     /* Execute bcdedit.exe to backup BCD file */
     if (!(spawnlp (_P_WAIT,"bcdedit.exe", "bcdedit", "/export", backup_file, NULL)))
@@ -185,6 +188,11 @@ static void do_backup_bcd ( char *systemdrive, char *folder )
         notify (WARN, "Failed to backup the Boot Configuration Data: %d", errno); /* File doesn't exist */
 
     /* Immediately re-enable redirection. */
-    Wow64RevertWow64FsRedirection (OldValue);
+    func = (void (*)()) GetProcAddress (GetModuleHandle (TEXT("kernel32.dll")), "Wow64RevertWow64FsRedirection");
+    if (func != NULL)
+        func (OldValue);
+    else
+        ;
+    //Wow64RevertWow64FsRedirection (OldValue);
 }
 
