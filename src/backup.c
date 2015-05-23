@@ -61,7 +61,7 @@ int backup ( char *systemdrive, int loader, int ptable )
                 /* This is impossible at present, for the program will abort when getting partition table.
                  * But for safety, abort.
                  */
-                notify ( FAIL, "Unknown error: Unknown partition table when backing up. Program exits." );
+                notify ( FAIL, "Unknown error: Unknown partition table when backing up. Abort." );
                 exit ( 1 );
         }
 
@@ -78,7 +78,7 @@ int backup ( char *systemdrive, int loader, int ptable )
                 /* LOADER_UNKNOWN??? But I've never used it!
                  * I'd better abort the program...
                  */
-                notify ( FAIL, "Unknown error: Unknown boot loader when backing up. Program exits." );
+                notify ( FAIL, "Unknown error: Unknown boot loader when backing up. Abort." );
                 exit ( 1 );
         }
     } /* if ( mkdir ( cmdbuf ) == 0 ) */
@@ -103,7 +103,7 @@ static void do_backup_mbr ( char *systemdrive, char *folder )
 
     if ( hDevice == INVALID_HANDLE_VALUE )
     {
-        notify ( FAIL, "Fatal: Can\'t determine the partition table! (CreateFile)\n    Program exists." );
+        notify ( FAIL, "Fatal: Can\'t determine the partition table! (CreateFile)\n    Abort." );
         exit ( 1 );
     }
 
@@ -123,7 +123,7 @@ static void do_backup_mbr ( char *systemdrive, char *folder )
     }
     else
     {
-        notify ( FAIL, "Fatal: Can\'t determine the partition table! (ReadFile: %d)\n    Program exists.", GetLastError() );
+        notify ( FAIL, "Fatal: Can\'t determine the partition table! (ReadFile: %d)\n    Abort.", GetLastError() );
         exit ( 1 );
     }
     CloseHandle ( hDevice );
