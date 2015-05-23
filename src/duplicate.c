@@ -23,25 +23,24 @@
 
 int duplicate ( const char *src, char *dest )
 {
-    FILE *fin  = NULL,
-         *fout = NULL;
+    int errVal = 0;
     
-    if ( access ( src, R_OK ) == 0 )
+    switch (CopyFile (src, dest, TRUE))
     {
-            fin  = fopen ( src , "rb" );
-            fout = fopen ( dest, "wb" );
-            setvbuf ( fout, NULL, _IOFBF, BUFSIZE );
-            while ( !feof ( fin ) )
-                fputc ( fgetc ( fin ), fout );
+        case 0:
+            /* Copying procedure failed (according to MSDN Library) */
+            errVal = GetLastError ();
+            switch (errVal)
+            {
+                case ERROR_FILE_NOT_FOUND:
+                    notify (FAIL, "File not found: %s\n    We cannot do more. Abort.", src);
+                default:
+                    notify (FAIL, "Unknown error (%d) occurred when copying %s\n    Abort.", errVal, src);
+                    exit (1);
+            }
+        default:
+            break; /* Copying procedure succeeded */
     }
-    else
-    {
-        notify ( FAIL, "Fatal error: Source not available when copying: %s -> %s\n    Abort.", src, dest );
-        exit ( 2 );
-    }
-    
-    fclose ( fin  );
-    fclose ( fout );
     
     return 0;
 }
