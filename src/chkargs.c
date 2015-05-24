@@ -104,8 +104,8 @@ int chkargs ( int argc, char **argv,
                              *instform = EDIT_DONOT;
                     else
                     {
-                        puts ( "Wrong formula." );
-                        return 0;
+                        notify (FAIL, "You\'ve specified a wrong install method!");
+                        return 1;
                     }
                     break;
                 
