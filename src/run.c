@@ -61,7 +61,7 @@ int run ( char *osimage, char *ostarget,
     /* Deploy boot loader.
      * This is a dangerous operation, so must be careful.
      */
-    deploy ( loader, ptable );
+    deploy ( instform, loader, ptable );
     
     /* will_* */
     if ( will_pause )

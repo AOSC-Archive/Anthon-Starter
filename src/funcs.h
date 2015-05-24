@@ -70,7 +70,7 @@ int verify ( img *imginfo, int will_verify, char *systemdrive, char *ostarget );
 /*
  * deploy: Deploy the boot loader.
  */
-int deploy ( int loader, int ptable );
+int deploy ( int instform, int loader, int ptable );
 
 /*
  * help_message: Show help messages.
