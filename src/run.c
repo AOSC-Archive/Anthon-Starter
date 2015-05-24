@@ -59,7 +59,7 @@ int run ( char *osimage, char *ostarget,
     }
     
     /* Deploy boot loader.
-     * This is a danger operation, so must be careful.
+     * This is a dangerous operation, so must be careful.
      */
     deploy ( loader, ptable );
     
