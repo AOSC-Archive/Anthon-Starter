@@ -5,7 +5,7 @@
 4.  **DD** Colour output for prompting message ---- Junde Yi
 5.  **DD** MD5 check-sum: Bug fix completed and ready for using ---- LZX
 6.  **DD** Value passing mistake ---- Junde Yi
-7.  **D1** Backup: Stage 1 done! (at testing/backup.h) ---- LZX
+7.  **D2** Backup: Stage 2 done!  ---- LZX
 8.  **DD** Hang up the null pointers to prevent memory leaks ---- Junde Yi
 9.  **D1** oops() function for signal processing ---- Junde Yi
 10. **DD** Iterative including ---- Junde Yi
@@ -34,9 +34,9 @@
   - [X] run                 -> Junde Yi
   - [X] getsysinfo          -> Junde Yi
   - [X] init                -> Minhui Du, Junde Yi
-  - [ ] backup              -> Zixing Liu
+  - [ ] backup              -> Zixing Liu, Junde Yi
   - [ ] extract             -> 
-  - [ ] verify              -> 
+  - [X] verify              -> Junde Yi
   - [ ] deploy              -> 
   - [ ] startup             -> 
   - [X] help_message        -> Junde Yi
