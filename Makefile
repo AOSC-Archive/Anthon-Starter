@@ -34,7 +34,7 @@ ifdef DEBUG
     RCFLAGS   =
 else
 #   Release option: to optimize the executable as much as possible. (Except LTO)
-    CFLAGS    = -O2 -Wall -pipe
+    CFLAGS    = -O0 -Wall -pipe
     LDFLAGS   =
     RCFLAGS   =
 endif
