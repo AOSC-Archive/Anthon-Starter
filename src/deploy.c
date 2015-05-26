@@ -25,6 +25,9 @@ static void deploy_edit_ntldr (void);
 static void deploy_edit_mbr (void);
 static void deploy_edit_esp (void);
 
+static void gen_grub_cfg (void);
+static void copy_files (void);
+
 
 int deploy ( int instform, int loader, int ptable )
 {
@@ -110,8 +113,10 @@ int deploy ( int instform, int loader, int ptable )
     }
     
     /* Step 2: Generate grub.cfg */
+    gen_grub_cfg ();
     
     /* Step 3: Put GRUB image and necessities to ast_strt folder */
+    copy_files ();
     
     /* Step 4: Generate information file for start-up procedure to use (info.ast) */
     
@@ -140,5 +145,19 @@ static void deploy_edit_mbr (void)
 static void deploy_edit_esp (void)
 {
     notify (INFO, "ESP deployment on GPT not completed yet :P");
+}
+
+static void gen_grub_cfg (void)
+{
+    notify (INFO, "Generating grub.cfg... (Not implemented yet)");
+    /* Generate grub.cfg */
+    notify (SUCC, "Generated grub.cfg.");
+}
+
+static void copy_files (void)
+{
+    notify (INFO, "Copying necessities... (Not implemented yet)");
+    /* Copy necessities */
+    notify (SUCC, "Necessary files are all at thier posts.");
 }
 
