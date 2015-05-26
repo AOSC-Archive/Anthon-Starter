@@ -26,7 +26,6 @@ endif
 CC    := ${HOST}-gcc
 LD    := ${HOST}-gcc
 RES   := ${HOST}-windres
-STRIP := ${HOST}-strip
 
 ifdef DEBUG
 #   Debug option: to add debug information into the executable as much as possible.
@@ -62,10 +61,6 @@ mkdir:
 ast.exe: ${OBJS}
 #	FIXME: Automatic variables not used. (not advanced enough :P)
 	${LD} ${LDFLAGS} -o ${DESTDIR}/$@ $(foreach i,${OBJS},${BUILDDIR}/${i})
-    ifndef DEBUG
-#       Release option: strip the executable.
-		${STRIP} $@
-    endif
 
 %.o: %.c ast.h
 	${CC} ${CFLAGS} -c -o ${BUILDDIR}/$@ $<

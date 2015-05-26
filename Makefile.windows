@@ -22,9 +22,8 @@
 HOST  ?= x86_64-w64-mingw32
 CC    := ${HOST}-gcc
 LD    := ${HOST}-gcc
-# Note: Often windres and strip have no prefixes.
+# Note: Often windres have no prefixes.
 RES   := windres
-STRIP := strip
 
 ifdef DEBUG
 #   Debug option: should use 64-bits GDB to debug 64-bits executable (without -m32).
@@ -62,10 +61,6 @@ mkdir:
 ast.exe: ${OBJS}
 #	FIXME: Automatic variables not used. (not advanced enough :P)
 	${LD} ${LDFLAGS} -o ${DESTDIR}\$@ $(foreach i,${OBJS},${BUILDDIR}/${i})
-    ifndef DEBUG
-#       Release option: strip the executable.
-		${STRIP} $@
-    endif
 
 %.o: %.c ast.h
 	${CC} ${CFLAGS} -c -o ${BUILDDIR}\$@ $<
