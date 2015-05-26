@@ -115,7 +115,7 @@ static void do_backup_mbr ( char *systemdrive, char *folder )
         {
             int iBeWrite = fwrite ( &mbr, sizeof ( BYTE ), 0x200, fp );
             if ( iBeWrite == 0x200 )
-                notify ( SUCC, "Master Boot Record data is saved to:\n     %s", mbrbkup_path );
+                notify ( SUCC, "Master Boot Record data is saved to:\n    %s", mbrbkup_path );
             else
                 notify ( WARN, "Failed to backup Master Boot Record!" );
         }
