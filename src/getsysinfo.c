@@ -103,7 +103,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
     notify ( INFO, "Free space on %s: %I64d bytes", ostarget, tgtdrive_space.QuadPart );
     if ( tgtdrive_space.QuadPart < 5368709120 ) /* 5 GiB */
     {
-        notify ( WARN, "You may have no enough free space on your system drive. (less than 5 GiB)" );
+        notify ( WARN, "You may have no enough free space on %s. (less than 5 GiB)", ostarget );
     }
 
     /* Detect CPU architecture, use WinAPI
