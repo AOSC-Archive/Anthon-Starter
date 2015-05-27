@@ -34,6 +34,8 @@ int duplicate ( const char *src, char *dest )
             {
                 case ERROR_FILE_NOT_FOUND:
                     notify (FAIL, "File not found: %s\n    We cannot do more. Abort.", src);
+                    exit (1);
+                /* More cases needed */
                 default:
                     notify (FAIL, "Unknown error (%d) occurred when copying %s\n    Abort.", errVal, src);
                     exit (1);
