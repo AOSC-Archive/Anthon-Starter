@@ -19,6 +19,8 @@
 
 # include "ast.h"
 
+static void print_image_info (img *imginfo);
+
 int init ( img *imginfo, char *osimage, char *ostarget )
 {
     /* First check if 7-Zip exists :) */
@@ -193,8 +195,8 @@ int init ( img *imginfo, char *osimage, char *ostarget )
             }
         } /* End of old standard reading */
 
-        /* This will be changed when release. (Won't be so ugly) */
-        notify ( INFO, "Image info:\n      os    : %d\n      dist  : %s\n      ver   : %s\n      lang  : %s\n      vmlchk: %s\n      inichk: %s\n      livchk: %s\n", imginfo->os, imginfo->dist, imginfo->ver, imginfo->lang, imginfo->vmlinuz_chksum, imginfo->initrd_chksum, imginfo->livesq_chksum );
+        /* Print image information */
+        print_image_info (imginfo);
 
         fclose ( sumf );
         /* FIXME: Coverity reports bug here? */
@@ -215,3 +217,49 @@ int init ( img *imginfo, char *osimage, char *ostarget )
 
     return 0;
 }
+
+static void print_image_info (img *imginfo)
+{
+    notify (INFO, "Image information:");
+    /* Below we will simply use printf() */
+    
+    switch (imginfo->os)
+    {
+        case 2:
+            /* AOSC OS2 (old md5sum.ast) */
+            puts ("      AOSC OS2");
+            /* Distribution */
+            if (strcmp (imginfo->dist, "anos") == 0)
+                puts ("      AnthonOS Desktop");
+            else
+                if (strcmp (imginfo->dist, "ancp") == 0)
+                    puts ("      CentralPoint Server");
+                else
+                    if (strcmp (imginfo->dist, "icnl") == 0)
+                        puts ("      IcenowyLinux Technological Preview");
+                    else
+                        if (strcmp (imginfo->dist, "spin") == 0)
+                            puts ("      An AOSC Spin");
+                        else /* This should not happen */
+                            puts ("      Unknown AOSC Distribution");
+            
+            /* Version string */
+            printf ("      Version %s\n", imginfo->ver);
+            
+            /* Localization (Default language) */
+            printf ("      Localization: %s\n", imginfo->lang);
+            
+        case 3:
+            /* AOSC OS3 (new md5sum) */
+            puts ("      AOSC OS3");
+            /* OS3 always published as Live medium */
+            puts ("      LiveCD (DVD)");
+            
+            /* Version string (Publish date) */
+            printf ("      Version %s\n", imginfo->ver);
+            
+        /* default: // This should not happen */
+    }
+}
+
+
