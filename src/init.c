@@ -249,6 +249,7 @@ static void print_image_info (img *imginfo)
             /* Localization (Default language) */
             printf ("      Localization: %s\n", imginfo->lang);
             
+            break;
         case 3:
             /* AOSC OS3 (new md5sum) */
             puts ("      AOSC OS3");
@@ -258,6 +259,7 @@ static void print_image_info (img *imginfo)
             /* Version string (Publish date) */
             printf ("      Version %s\n", imginfo->ver);
             
+            break;
         /* default: // This should not happen */
     }
 }
