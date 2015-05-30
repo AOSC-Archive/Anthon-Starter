@@ -95,7 +95,7 @@ int backup ( char *systemdrive, int loader, int ptable )
 static void do_backup_mbr ( char *systemdrive, char *folder )
 {
     char *mbrbkup_path = xmalloc (MAX_PATH);
-    snprintf (mbrbkup_path, MAX_PATH, "%s%s", systemdrive, "\\ast_bkup\\MBRbckup");
+    snprintf (mbrbkup_path, MAX_PATH, "%s\\%s", folder, "MBRbckup");
     TCHAR szDevice[MAX_PATH] = _T ( "\\\\.\\PhysicalDrive0" ); /* FIXME */
     HANDLE hDevice = CreateFile ( szDevice, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
     BYTE mbr[0x200] = {0};
@@ -146,7 +146,7 @@ static void do_backup_ntldr ( char *systemdrive, char *folder )
     if ( access ( cmdbuf, R_OK + W_OK ) == 0 )
     {
         char *backup_target = xmalloc (MAX_PATH);
-        snprintf ( backup_target, MAX_PATH, "%s%s", systemdrive, "\\ast_bkup\\boot.ini.bak" ); /* Backup target */
+        snprintf ( backup_target, MAX_PATH, "%s\\%s", folder, "boot.ini.bak" ); /* Backup target */
 
         // SetFileAttributes ( cmdbuf, FILE_ATTRIBUTE_NORMAL );
         duplicate ( cmdbuf, backup_target );
