@@ -3,7 +3,7 @@ language: c
 # Restrict the building branch to "0.2.0-devel".
 branches:
   only:
-    - 0.2.0-devel
+    - ci
 
 before_install:
   - sudo apt-get -qq update
@@ -23,7 +23,7 @@ addons:
     notification_email: liushuyu_011@163.com
     build_command_prepend: "make clean && cov-configure --template --comptype gcc --compiler i686-w64-mingw32-gcc"
     build_command: "make -j"
-    branch_pattern: 0.2.0-devel
+    branch_pattern: ci
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 
 script:
