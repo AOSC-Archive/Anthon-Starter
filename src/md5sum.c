@@ -215,7 +215,7 @@ void MD5Update(struct MD5Context *ctx, unsigned char *buf, unsigned len)
 }
 
 /*
- * Final wrapup - pad to 64-byte boundary with the bit pattern 
+ * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
 void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
@@ -299,18 +299,18 @@ int md5sum ( char *rtn, char *file )
 
 	    _setmode(_fileno(in), _O_BINARY);
 #endif
-    
+
     	    MD5Init(&md5c);
 	    while ((j = (int) fread(buffer, 1, sizeof(buffer), in)) > 0) {
 		MD5Update(&md5c, buffer, (unsigned) j);
 	    }
-	    
+
 	    if (opened) {
 	    	fclose(in);
 	    }
 	}
 	MD5Final(signature, &md5c);
-	
+
 	    for (j = 0; j < sizeof(signature); j++) {
 			int k;
 			k=j*2;
