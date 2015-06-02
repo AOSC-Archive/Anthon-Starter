@@ -54,12 +54,6 @@ struct MD5Context {
 };
 
 /*
- * This is needed to make RSAREF happy on some MS-DOS compilers.
- */
-typedef struct MD5Context MD5_CTX;
-
-
-/*
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
