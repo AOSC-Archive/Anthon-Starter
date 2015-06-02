@@ -27,6 +27,7 @@
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #define HIGHFIRST
 
@@ -34,18 +35,9 @@
 #undef HIGHFIRST
 #endif
 
-/*  On machines where "long" is 64 bits, we need to declare
-    uint32 as something guaranteed to be 32 bits.  */
-
-#ifdef __alpha
-typedef unsigned int uint32;
-#else
-typedef unsigned long uint32;
-#endif
-
 struct MD5Context {
-        uint32 buf[4];
-        uint32 bits[2];
+        uint32_t buf[4];
+        uint32_t bits[2];
         unsigned char in[64];
 };
 
@@ -67,11 +59,11 @@ typedef struct MD5Context MD5_CTX;
 void byteReverse(buf, longs)
     unsigned char *buf; unsigned longs;
 {
-    uint32 t;
+    uint32_t t;
     do {
-	t = (uint32) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
+	t = (uint32_t) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
 	    ((unsigned) buf[1] << 8 | buf[0]);
-	*(uint32 *) buf = t;
+	*(uint32_t *) buf = t;
 	buf += 4;
     } while (--longs);
 }
@@ -110,9 +102,9 @@ void MD5Init(ctx)
  * the data and converts bytes into longwords for this routine.
  */
 void MD5Transform(buf, in)
-    uint32 buf[4]; uint32 in[16];
+    uint32_t buf[4]; uint32_t in[16];
 {
-    register uint32 a, b, c, d;
+    register uint32_t a, b, c, d;
 
     a = buf[0];
     b = buf[1];
@@ -199,12 +191,12 @@ void MD5Transform(buf, in)
 void MD5Update(ctx, buf, len)
     struct MD5Context *ctx; unsigned char *buf; unsigned len;
 {
-    uint32 t;
+    uint32_t t;
 
     /* Update bitcount */
 
     t = ctx->bits[0];
-    if ((ctx->bits[0] = t + ((uint32) len << 3)) < t)
+    if ((ctx->bits[0] = t + ((uint32_t) len << 3)) < t)
 	ctx->bits[1]++; 	/* Carry from low to high */
     ctx->bits[1] += len >> 29;
 
@@ -222,7 +214,7 @@ void MD5Update(ctx, buf, len)
 	}
 	memcpy(p, buf, t);
 	byteReverse(ctx->in, 16);
-	MD5Transform(ctx->buf, (uint32 *) ctx->in);
+	MD5Transform(ctx->buf, (uint32_t *) ctx->in);
 	buf += t;
 	len -= t;
     }
@@ -231,7 +223,7 @@ void MD5Update(ctx, buf, len)
     while (len >= 64) {
 	memcpy(ctx->in, buf, 64);
 	byteReverse(ctx->in, 16);
-	MD5Transform(ctx->buf, (uint32 *) ctx->in);
+	MD5Transform(ctx->buf, (uint32_t *) ctx->in);
 	buf += 64;
 	len -= 64;
     }
@@ -267,7 +259,7 @@ void MD5Final(digest, ctx)
 	/* Two lots of padding:  Pad the first block to 64 bytes */
 	memset(p, 0, count);
 	byteReverse(ctx->in, 16);
-	MD5Transform(ctx->buf, (uint32 *) ctx->in);
+	MD5Transform(ctx->buf, (uint32_t *) ctx->in);
 
 	/* Now fill the next block with 56 bytes */
 	memset(ctx->in, 0, 56);
@@ -278,10 +270,10 @@ void MD5Final(digest, ctx)
     byteReverse(ctx->in, 14);
 
     /* Append length in bits and transform */
-    ((uint32 *) ctx->in)[14] = ctx->bits[0];
-    ((uint32 *) ctx->in)[15] = ctx->bits[1];
+    ((uint32_t *) ctx->in)[14] = ctx->bits[0];
+    ((uint32_t *) ctx->in)[15] = ctx->bits[1];
 
-    MD5Transform(ctx->buf, (uint32 *) ctx->in);
+    MD5Transform(ctx->buf, (uint32_t *) ctx->in);
     byteReverse((unsigned char *) ctx->buf, 4);
     memcpy(digest, ctx->buf, 16);
     memset(ctx, 0, sizeof(*ctx));        /* In case it's sensitive */
@@ -299,7 +291,7 @@ int md5sum ( char *rtn, char *file )
     struct MD5Context md5c;
     #ifdef CHECK_HARDWARE_PROPERTIES
     /*	Verify unit32 is, in fact, a 32 bit data type.  */
-    if (sizeof(uint32) != 4) {
+    if (sizeof(uint32_t) != 4) {
     	fprintf(stderr, "** Configuration error.  Setting for uint32 in file md5.h\n");
 	fprintf(stderr, "   is incorrect.  This must be a 32 bit data type, but it\n");
 	fprintf(stderr, "   is configured as a %u bit data type.\n", sizeof(uint32) * 8);
@@ -310,7 +302,7 @@ int md5sum ( char *rtn, char *file )
     	in fact, a little-endian architecture.  */
 	
 #ifndef HIGHFIRST
-    {	uint32 t = 0x12345678;
+    {	uint32_t t = 0x12345678;
     	if (*((char *) &t) != 0x78) {
     	fprintf(stderr, "** Configuration error.  Setting for HIGHFIRST in file md5.h\n");
 	    fprintf(stderr, "   is incorrect.  This symbol has not been defined, yet this\n");
