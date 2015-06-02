@@ -172,14 +172,14 @@ void MD5Transform(uint32_t buf[4], uint32_t in[16])
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void MD5Update(struct MD5Context *ctx, unsigned char *buf, unsigned len)
+void MD5Update(struct MD5Context *ctx, unsigned char *buf, uint32_t len)
 {
     uint32_t t;
 
     /* Update bitcount */
 
     t = ctx->bits[0];
-    if ((ctx->bits[0] = t + ((uint32_t) len << 3)) < t)
+    if ((ctx->bits[0] = t + (len << 3)) < t)
         ctx->bits[1]++;         /* Carry from low to high */
     ctx->bits[1] += len >> 29;
 
@@ -305,8 +305,8 @@ int md5sum(char *rtn, char *file)
 #endif
 
         MD5Init(&md5c);
-        while ((j = (int) fread(buffer, 1, sizeof(buffer), in)) > 0) {
-            MD5Update(&md5c, buffer, (unsigned) j);
+        while ((j = fread(buffer, 1, sizeof(buffer), in)) > 0) {
+            MD5Update(&md5c, buffer, j);
         }
 
         if (opened) {
