@@ -17,8 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-# include "ast.h"
-# include <memory.h>		 /* for memcpy() */
+#include "ast.h"
+#include <memory.h>             /* for memcpy() */
 //optimized again by LZX
 #include <ctype.h>
 #ifdef _WIN32
@@ -30,17 +30,17 @@
 #include <stdint.h>
 
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#define byteReverse(buf, len)  /* nothing */
+#define byteReverse(buf, len)   /* nothing */
 #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 void byteReverse(unsigned char *buf, unsigned longs)
 {
     /* Note: this code is harmless on little-endian machines. */
     uint32_t t;
     do {
-	t = (uint32_t) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
-	    ((unsigned) buf[1] << 8 | buf[0]);
-	*(uint32_t *) buf = t;
-	buf += 4;
+        t = (uint32_t) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
+            ((unsigned) buf[1] << 8 | buf[0]);
+        *(uint32_t *) buf = t;
+        buf += 4;
     } while (--longs);
 }
 #else
@@ -48,9 +48,9 @@ void byteReverse(unsigned char *buf, unsigned longs)
 #endif
 
 struct MD5Context {
-        uint32_t buf[4];
-        uint32_t bits[2];
-        unsigned char in[64];
+    uint32_t buf[4];
+    uint32_t bits[2];
+    unsigned char in[64];
 };
 
 /*
@@ -67,6 +67,7 @@ void MD5Init(struct MD5Context *ctx)
     ctx->bits[0] = 0;
     ctx->bits[1] = 0;
 }
+
 /* The four core functions - F1 is optimized somewhat */
 
 /* #define F1(x, y, z) (x & y | ~x & z) */
@@ -166,6 +167,7 @@ void MD5Transform(uint32_t buf[4], uint32_t in[16])
     buf[2] += c;
     buf[3] += d;
 }
+
 /*
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
@@ -178,35 +180,35 @@ void MD5Update(struct MD5Context *ctx, unsigned char *buf, unsigned len)
 
     t = ctx->bits[0];
     if ((ctx->bits[0] = t + ((uint32_t) len << 3)) < t)
-	ctx->bits[1]++; 	/* Carry from low to high */
+        ctx->bits[1]++;         /* Carry from low to high */
     ctx->bits[1] += len >> 29;
 
-    t = (t >> 3) & 0x3f;	/* Bytes already in shsInfo->data */
+    t = (t >> 3) & 0x3f;        /* Bytes already in shsInfo->data */
 
     /* Handle any leading odd-sized chunks */
 
     if (t) {
-	unsigned char *p = (unsigned char *) ctx->in + t;
+        unsigned char *p = (unsigned char *) ctx->in + t;
 
-	t = 64 - t;
-	if (len < t) {
-	    memcpy(p, buf, len);
-	    return;
-	}
-	memcpy(p, buf, t);
-	byteReverse(ctx->in, 16);
-	MD5Transform(ctx->buf, (uint32_t *) ctx->in);
-	buf += t;
-	len -= t;
+        t = 64 - t;
+        if (len < t) {
+            memcpy(p, buf, len);
+            return;
+        }
+        memcpy(p, buf, t);
+        byteReverse(ctx->in, 16);
+        MD5Transform(ctx->buf, (uint32_t *) ctx->in);
+        buf += t;
+        len -= t;
     }
     /* Process data in 64-byte chunks */
 
     while (len >= 64) {
-	memcpy(ctx->in, buf, 64);
-	byteReverse(ctx->in, 16);
-	MD5Transform(ctx->buf, (uint32_t *) ctx->in);
-	buf += 64;
-	len -= 64;
+        memcpy(ctx->in, buf, 64);
+        byteReverse(ctx->in, 16);
+        MD5Transform(ctx->buf, (uint32_t *) ctx->in);
+        buf += 64;
+        len -= 64;
     }
 
     /* Handle any remaining bytes of data. */
@@ -236,16 +238,17 @@ void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
 
     /* Pad out to 56 mod 64 */
     if (count < 8) {
-	/* Two lots of padding:  Pad the first block to 64 bytes */
-	memset(p, 0, count);
-	byteReverse(ctx->in, 16);
-	MD5Transform(ctx->buf, (uint32_t *) ctx->in);
+        /* Two lots of padding:  Pad the first block to 64 bytes */
+        memset(p, 0, count);
+        byteReverse(ctx->in, 16);
+        MD5Transform(ctx->buf, (uint32_t *) ctx->in);
 
-	/* Now fill the next block with 56 bytes */
-	memset(ctx->in, 0, 56);
-    } else {
-	/* Pad block to 56 bytes */
-	memset(p, 0, count - 8);
+        /* Now fill the next block with 56 bytes */
+        memset(ctx->in, 0, 56);
+    }
+    else {
+        /* Pad block to 56 bytes */
+        memset(p, 0, count - 8);
     }
     byteReverse(ctx->in, 14);
 
@@ -256,12 +259,12 @@ void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
     MD5Transform(ctx->buf, (uint32_t *) ctx->in);
     byteReverse((unsigned char *) ctx->buf, 4);
     memcpy(digest, ctx->buf, 16);
-    memset(ctx, 0, sizeof(*ctx));        /* In case it's sensitive */
+    memset(ctx, 0, sizeof(*ctx));       /* In case it's sensitive */
 }
 
 
 
-int md5sum ( char *rtn, char *file )
+int md5sum(char *rtn, char *file)
 {
     size_t j;
     bool cdata = false;
@@ -271,51 +274,52 @@ int md5sum ( char *rtn, char *file )
     unsigned char buffer[16384], signature[16];
     struct MD5Context md5c;
 
-	if (!cdata) {
-	    bool opened = false;
-	    if (strcmp(file, "-") != 0) {
-		if ((in = fopen(file, "rb")) == NULL) {
-	    	    fprintf(stderr, "Cannot open input file %s\n", file);
-		    return 2;
-		}
-		opened = true;
-	    } else {
-		in = stdin;
-	    }
+    if (!cdata) {
+        bool opened = false;
+        if (strcmp(file, "-") != 0) {
+            if ((in = fopen(file, "rb")) == NULL) {
+                fprintf(stderr, "Cannot open input file %s\n", file);
+                return 2;
+            }
+            opened = true;
+        }
+        else {
+            in = stdin;
+        }
 #ifdef _WIN32
 
-	    /* Warning! On systems which distinguish text mode and
-	     * binary I/O (MS-DOS, Macintosh, etc.), when we're
-	     * reading from standard input, the mode is ambiguous.
-	     *
-	     * Thus, we need to specific the mode to "binary"
-	     * explicitly on _WIN32.
-	     *
-	     * This method comes from Microsoft Visual C 7.0
-	     * (a.k.a "Monkey C"), and also works on MinGW-based
-	     * compilers. You may need to change it if you're
-	     * porting it to other platforms/compilers.
-	     */
+        /* Warning! On systems which distinguish text mode and
+         * binary I/O (MS-DOS, Macintosh, etc.), when we're
+         * reading from standard input, the mode is ambiguous.
+         *
+         * Thus, we need to specific the mode to "binary"
+         * explicitly on _WIN32.
+         *
+         * This method comes from Microsoft Visual C 7.0
+         * (a.k.a "Monkey C"), and also works on MinGW-based
+         * compilers. You may need to change it if you're
+         * porting it to other platforms/compilers.
+         */
 
-	    _setmode(_fileno(in), _O_BINARY);
+        _setmode(_fileno(in), _O_BINARY);
 #endif
 
-    	    MD5Init(&md5c);
-	    while ((j = (int) fread(buffer, 1, sizeof(buffer), in)) > 0) {
-		MD5Update(&md5c, buffer, (unsigned) j);
-	    }
+        MD5Init(&md5c);
+        while ((j = (int) fread(buffer, 1, sizeof(buffer), in)) > 0) {
+            MD5Update(&md5c, buffer, (unsigned) j);
+        }
 
-	    if (opened) {
-	    	fclose(in);
-	    }
-	}
-	MD5Final(signature, &md5c);
+        if (opened) {
+            fclose(in);
+        }
+    }
+    MD5Final(signature, &md5c);
 
-	    for (j = 0; j < sizeof(signature); j++) {
-			int k;
-			k=j*2;
-			snprintf(&md5res[k],4,hexfmt,signature[j]);
-	    }
-			strcpy(rtn,md5res);
+    for (j = 0; j < sizeof(signature); j++) {
+        int k;
+        k = j * 2;
+        snprintf(&md5res[k], 4, hexfmt, signature[j]);
+    }
+    strcpy(rtn, md5res);
     return 0;
 }
