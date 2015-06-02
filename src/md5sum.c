@@ -263,7 +263,8 @@ void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
 
 int md5sum ( char *rtn, char *file )
 {
-    int j, cdata = false;
+    int j;
+    bool cdata = false;
     char *hexfmt = "%02X";
     char md5res[32];
     FILE *in = stdin;
@@ -271,7 +272,7 @@ int md5sum ( char *rtn, char *file )
     struct MD5Context md5c;
 
 	if (!cdata) {
-	    int opened = false;
+	    bool opened = false;
 	    if (strcmp(file, "-") != 0) {
 		if ((in = fopen(file, "rb")) == NULL) {
 	    	    fprintf(stderr, "Cannot open input file %s\n", file);
