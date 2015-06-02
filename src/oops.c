@@ -28,28 +28,28 @@ Warning: You may have some unfinished process when this exception was caught.\n\
            - Backed-up files (if exist)\n\
          You can find backup files in folder %systemdrive%\\ast_bkup."
 
-static char sigint_message[] = {
+static const char sigint_message[] = {
 "Program received SIGINT (Interrupted).\n"
 "This is usually because you have pressed \"Control-C\".\n\n"
 WARNINGS
 "\n\nExit.\n"
 };
 
-static char sigterm_message[] = {
+static const char sigterm_message[] = {
 "Program received SIGTERM (#%d).\n"
 "This is usually because you have sent a terminal signal.\n\n"
 WARNINGS
 "\n\nExit.\n"
 };
 
-static char sigbreak_message[] = {
+static const char sigbreak_message[] = {
 "Program received SIGBREAK.\n"
 "This is ususlly because you have pressed \"Control-Break\".\n\n"
 WARNINGS
 "\n\nExit.\n"
 };
 
-static char sigsegv_message[] = {
+static const char sigsegv_message[] = {
 "Program received SIGSEGV (Segmentation Fault).\n"
 "This is usually because of an internal error (BUG).\n"
 "Please report this bug to:\n"
