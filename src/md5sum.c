@@ -263,7 +263,7 @@ void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
 
 int md5sum ( char *rtn, char *file )
 {
-    int j;
+    size_t j;
     bool cdata = false;
     char *hexfmt = "%02X";
     char md5res[32];
