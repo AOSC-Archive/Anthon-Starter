@@ -29,10 +29,23 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define HIGHFIRST
-
-#ifdef __i386__
-#undef HIGHFIRST
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#define byteReverse(buf, len)  /* nothing */
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+void byteReverse(buf, longs)
+    unsigned char *buf; unsigned longs;
+{
+    /* Note: this code is harmless on little-endian machines. */
+    uint32_t t;
+    do {
+	t = (uint32_t) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
+	    ((unsigned) buf[1] << 8 | buf[0]);
+	*(uint32_t *) buf = t;
+	buf += 4;
+    } while (--longs);
+}
+#else
+#error "Unsupported Platform, is this a PDP-11"
 #endif
 
 struct MD5Context {
@@ -46,24 +59,6 @@ struct MD5Context {
  */
 typedef struct MD5Context MD5_CTX;
 
-#ifndef HIGHFIRST
-#define byteReverse(buf, len)	/* Nothing */
-#else
-/*
- * Note: this code is harmless on little-endian machines.
- */
-void byteReverse(buf, longs)
-    unsigned char *buf; unsigned longs;
-{
-    uint32_t t;
-    do {
-	t = (uint32_t) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
-	    ((unsigned) buf[1] << 8 | buf[0]);
-	*(uint32_t *) buf = t;
-	buf += 4;
-    } while (--longs);
-}
-#endif
 
 /*
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
@@ -286,21 +281,6 @@ int md5sum ( char *rtn, char *file )
     unsigned char buffer[16384], signature[16];
     struct MD5Context md5c;
 
-    /*	If HIGHFIRST is not defined, verify that this machine is,
-    	in fact, a little-endian architecture.  */
-	
-#ifndef HIGHFIRST
-    {	uint32_t t = 0x12345678;
-    	if (*((char *) &t) != 0x78) {
-    	fprintf(stderr, "** Configuration error.  Setting for HIGHFIRST in file md5.h\n");
-	    fprintf(stderr, "   is incorrect.  This symbol has not been defined, yet this\n");
-	    fprintf(stderr, "   machine is a big-endian (most significant byte first in\n");
-	    fprintf(stderr, "   memory) architecture.  Please modify md5.h so HIGHFIRST is\n");
-	    fprintf(stderr, "   defined when building for this machine.\n");
-	    return 2;
-	}
-    }
-#endif
 	if (!cdata) {
 	    int opened = false;
 	    if (strcmp(file, "-") != 0) {
