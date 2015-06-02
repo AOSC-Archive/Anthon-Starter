@@ -26,9 +26,7 @@
 #include <io.h>
 #endif
 
-
-#define FALSE	0
-#define TRUE	1
+#include <stdbool.h>
 
 #define HIGHFIRST
 
@@ -293,7 +291,7 @@ void MD5Final(digest, ctx)
 
 int md5sum ( char *rtn, char *file )
 {
-    int j, cdata = FALSE;
+    int j, cdata = false;
     char *hexfmt = "%02X";
     char md5res[32];
     FILE *in = stdin;
@@ -325,13 +323,13 @@ int md5sum ( char *rtn, char *file )
 #endif
 #endif
 	if (!cdata) {
-	    int opened = FALSE;
+	    int opened = false;
 	    if (strcmp(file, "-") != 0) {
 		if ((in = fopen(file, "rb")) == NULL) {
 	    	    fprintf(stderr, "Cannot open input file %s\n", file);
 		    return 2;
 		}
-		opened = TRUE;
+		opened = true;
 	    } else {
 		in = stdin;
 	    }
