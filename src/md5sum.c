@@ -267,7 +267,7 @@ int md5sum ( char *rtn, char *file )
     bool cdata = false;
     char *hexfmt = "%02X";
     char md5res[32];
-    FILE *in = stdin;
+    FILE *in;
     unsigned char buffer[16384], signature[16];
     struct MD5Context md5c;
 
