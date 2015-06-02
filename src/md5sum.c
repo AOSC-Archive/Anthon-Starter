@@ -30,8 +30,6 @@
 #define FALSE	0
 #define TRUE	1
 
-#define EOS     '\0'
-
 #define HIGHFIRST
 
 #ifdef __i386__
