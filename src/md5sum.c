@@ -305,7 +305,7 @@ int md5sum ( char *rtn, char *file )
 #endif
     
     	    MD5Init(&md5c);
-	    while ((j = (int) fread(buffer, 1, sizeof buffer, in)) > 0) {
+	    while ((j = (int) fread(buffer, 1, sizeof(buffer), in)) > 0) {
 		MD5Update(&md5c, buffer, (unsigned) j);
 	    }
 	    
@@ -315,7 +315,7 @@ int md5sum ( char *rtn, char *file )
 	}
 	MD5Final(signature, &md5c);
 	
-	    for (j = 0; j < sizeof signature; j++) {
+	    for (j = 0; j < sizeof(signature); j++) {
 			int k;
 			k=j*2;
 			snprintf(&md5res[k],4,hexfmt,signature[j]);
