@@ -284,22 +284,18 @@ int md5sum ( char *rtn, char *file )
 	    }
 #ifdef _WIN32
 
-	    /** Warning!  On systems which distinguish text mode and
-		binary I/O (MS-DOS, Macintosh, etc.) the modes in the open
-        	statement for "in" should have forced the input file into
-        	binary mode.  But what if we're reading from standard
-		input?  Well, then we need to do a system-specific tweak
-        	to make sure it's in binary mode.  While we're at it,
-        	let's set the mode to binary regardless of however fopen
-		set it.
-
-		The following code, conditional on _WIN32, sets binary
-		mode using the method prescribed by Microsoft Visual C 7.0
-        	("Monkey C"); this may require modification if you're
-		using a different compiler or release of Monkey C.	If
-        	you're porting this code to a different system which
-        	distinguishes text and binary files, you'll need to add
-		the equivalent call for that system. */
+	    /* Warning! On systems which distinguish text mode and
+	     * binary I/O (MS-DOS, Macintosh, etc.), when we're
+	     * reading from standard input, the mode is ambiguous.
+	     *
+	     * Thus, we need to specific the mode to "binary"
+	     * explicitly on _WIN32.
+	     *
+	     * This method comes from Microsoft Visual C 7.0
+	     * (a.k.a "Monkey C"), and also works on MinGW-based
+	     * compilers. You may need to change it if you're
+	     * porting it to other platforms/compilers.
+	     */
 
 	    _setmode(_fileno(in), _O_BINARY);
 #endif
