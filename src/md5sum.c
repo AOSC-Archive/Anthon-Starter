@@ -46,10 +46,6 @@ struct MD5Context {
  */
 typedef struct MD5Context MD5_CTX;
 
-/*  Define CHECK_HARDWARE_PROPERTIES to have main,c verify
-    byte order and uint32 settings.  */
-#define CHECK_HARDWARE_PROPERTIES
-
 #ifndef HIGHFIRST
 #define byteReverse(buf, len)	/* Nothing */
 #else
@@ -289,15 +285,7 @@ int md5sum ( char *rtn, char *file )
     FILE *in = stdin;
     unsigned char buffer[16384], signature[16];
     struct MD5Context md5c;
-    #ifdef CHECK_HARDWARE_PROPERTIES
-    /*	Verify unit32 is, in fact, a 32 bit data type.  */
-    if (sizeof(uint32_t) != 4) {
-    	fprintf(stderr, "** Configuration error.  Setting for uint32 in file md5.h\n");
-	fprintf(stderr, "   is incorrect.  This must be a 32 bit data type, but it\n");
-	fprintf(stderr, "   is configured as a %u bit data type.\n", sizeof(uint32) * 8);
-	return 2;
-    }
-    
+
     /*	If HIGHFIRST is not defined, verify that this machine is,
     	in fact, a little-endian architecture.  */
 	
