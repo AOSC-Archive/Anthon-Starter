@@ -301,7 +301,6 @@ int md5sum ( char *rtn, char *file )
 	}
     }
 #endif
-#endif
 	if (!cdata) {
 	    int opened = false;
 	    if (strcmp(file, "-") != 0) {
