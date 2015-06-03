@@ -25,6 +25,7 @@
  */
 
 #include "ast.h"
+#include <stdint.h>
 
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #define WORDS_BIGENDIAN 1
