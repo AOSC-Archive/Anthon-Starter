@@ -64,7 +64,8 @@ These parameters are for TDM-GCC-64 (including mingw-w64), and added x86_32 comp
 ## Developers
 
 * Junde Yi <lmy441900@gmail.com>
-* Zixing Liu <liushuyu011@gmail.com>
+* Tom Li <biergaizi@member.fsf.org>
+* Jeff Bai <jeffbaichina@members.fsf.org>
 * Mike Manilone <crtmike@gmail.com>
 * Minhui Du <duminghui@126.com>
-
+* Zixing Liu <liushuyu011@gmail.com>
