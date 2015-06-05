@@ -47,8 +47,7 @@ int getsysinfo ( int *loader, int *ptable, char *systemdrive, char *ostarget )
     BOOL bRet = ReadFile ( hDevice, &efi, 0x200, &dwBeRead, NULL );
     if ( bRet && dwBeRead )
     {
-        if ( ( efi[0] == 0x45 ) && ( efi[1] == 0x46 ) && ( efi[2] == 0x49 ) && ( efi[3] == 0x20 ) &&
-             ( efi[4] == 0x50 ) && ( efi[5] == 0x41 ) && ( efi[6] == 0x52 ) && ( efi[7] == 0x54 ) ) /* "EFI PART" */
+	if (memcmp(efi, "EFI PART", 8) == 0)
         {
             *ptable = PTABLE_GPT;
             notify ( INFO, "Partition table: GUID Partition Table (GPT)" );
