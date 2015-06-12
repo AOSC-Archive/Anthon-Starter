@@ -144,6 +144,17 @@ static void deploy_edit_mbr (void)
 
 static void deploy_edit_esp (void)
 {
+    /********** In 0fdd75b (branch 0.1.2.0)
+    :cn_nt6_bcd_edit
+    for /f "delims=" %%i in ('bcdedit /create /d "启动 AOSC Live" /application bootsector') do set uid=%%i
+    bcdedit /set %uid:~2,38% device partition=%systemdrive%
+    bcdedit /set %uid:~2,38% path \ast_strt\g2ldr.mbr
+    bcdedit /displayorder %uid:~2,38% /addlast
+    bcdedit /default %uid:~2,38%
+    bcdedit /timeout 10
+    */
+    
+    
     notify (INFO, "ESP deployment on GPT not completed yet :P");
 }
 
