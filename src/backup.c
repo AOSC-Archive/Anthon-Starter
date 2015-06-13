@@ -126,6 +126,8 @@ static void do_backup_mbr ( char *systemdrive, char *folder )
         notify ( FAIL, "Fatal: Can\'t determine the partition table! (ReadFile: %d)\n    Abort.", GetLastError() );
         exit ( 1 );
     }
+    
+    xfree (mbrbkup_path);
     CloseHandle ( hDevice );
 }
 
