@@ -27,26 +27,26 @@ int run ( char *osimage, char *ostarget,
     int loader = LOADER_UNKNOWN, ptable = PTABLE_UNKNOWN;
     char *systemdrive = xmalloc ( 4 );
     /* End of setting variables */
-    
+
     /* Initialize the program: checking if resource files work.
      * NOTICE: init() will invoke exit(1) if it detected something wrong.
      */
     init ( imginfo, osimage, ostarget );
-    
+
     /* Get the info of the system, including system drive, memory, CPU architecture, etc. */
     getsysinfo ( &loader, &ptable, systemdrive, ostarget );
-    
+
     /* Before doing anything, backup the important files.
      * Variables are set in getsysinfo().
      */
     backup ( systemdrive, loader, ptable );
-    
+
     /* Extract files from ISO image. */
     if ( will_extract )
         extract ( will_extract, systemdrive, osimage, ostarget );
     else /* --no-extract */
         notify ( WARN, "Will not extract the files." );
-    
+
     /* Verify the files */
     if ( will_verify )
         verify ( imginfo, will_verify, systemdrive, ostarget );
@@ -57,12 +57,12 @@ int run ( char *osimage, char *ostarget,
         else /* --no-extract --no-verify */
             notify ( WARN, "Files are not extracted, skip verifying." );
     }
-    
+
     /* Deploy boot loader.
      * This is a dangerous operation, so must be careful.
      */
-    deploy ( instform, loader, ptable );
-    
+    deploy ( instform, loader, ptable, systemdrive );
+
     /* will_* */
     if ( will_pause )
     {
@@ -93,7 +93,7 @@ int run ( char *osimage, char *ostarget,
             notify ( SUCC, "Operation finished ^o^" );
         }
     }
-    
+
     xfree ( systemdrive );
     return 0;
 }

@@ -70,7 +70,7 @@ int verify ( img *imginfo, int will_verify, char *systemdrive, char *ostarget );
 /*
  * deploy: Deploy the boot loader.
  */
-int deploy ( int instform, int loader, int ptable );
+int deploy ( int instform, int loader, int ptable, const char *systemdrive );
 
 /*
  * help_message: Show help messages.
@@ -117,4 +117,3 @@ int md5sum ( char *rtn, char *file );
  * duplicate: Make a duplicate from src to dest
  */
 int duplicate ( const char *src, char *dest );
-

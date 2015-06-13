@@ -19,8 +19,11 @@
 
 # include "ast.h"
 
+#define MAX_BUF    10240
+#define UID_LENGTH 40
+
 // Patameters are not decided yet
-static void deploy_edit_bcd (void);
+static void deploy_edit_bcd (const char *systemdrive);
 static void deploy_edit_ntldr (void);
 static void deploy_edit_mbr (void);
 static void deploy_edit_esp (void);
@@ -29,7 +32,7 @@ static void gen_grub_cfg (void);
 static void copy_files (void);
 
 
-int deploy ( int instform, int loader, int ptable )
+int deploy ( int instform, int loader, int ptable, const char *systemdrive )
 {
     /* Step 1: Write boot loader
      * Judge the "instform" (--form={edit,mbr,gpt,nodeploy}) and do it.
@@ -49,7 +52,7 @@ int deploy ( int instform, int loader, int ptable )
                     break;
                 case LOADER_BCD:
                     /* Windows NT6 (Vista or later) */
-                    deploy_edit_bcd ();
+                    deploy_edit_bcd (systemdrive);
                     break;
                 case LOADER_UNKNOWN:
                     /* Unknown loader type */
@@ -111,15 +114,15 @@ int deploy ( int instform, int loader, int ptable )
             notify (FAIL, "Unknown internal error: tainted data: instform: %d.\n    We cannot do more. Abort.", instform);
             abort ();
     }
-    
+
     /* Step 2: Generate grub.cfg */
     gen_grub_cfg ();
-    
+
     /* Step 3: Put GRUB image and necessities to ast_strt folder */
     copy_files ();
-    
+
     /* Step 4: Generate information file for start-up procedure to use (info.ast) */
-    
+
     return 0;
 }
 
@@ -127,8 +130,58 @@ int deploy ( int instform, int loader, int ptable )
 
 
 
-static void deploy_edit_bcd (void)
+static void deploy_edit_bcd (const char *systemdrive)
 {
+    char pipeBuf[MAX_BUF] = {0};
+    char uid[UID_LENGTH] = {0};
+    FILE *pipe;
+    void *OldValue = NULL;
+    void (*func)();
+
+    /* Redirect to the native System32 folder (See issue #11) */
+    /* Avoid invoking it in Windows XP or earlier systems (See issue #12) */
+    func = (void (*)()) GetProcAddress (GetModuleHandle (TEXT("kernel32.dll")), "Wow64DisableWow64FsRedirection");
+    if (func != NULL)
+        func (&OldValue);
+    else
+        ; // Nothing to do
+
+    /* First execute bcdedit to get the UID of BCD item */
+    if ((pipe = _tpopen ("bcdedit /create /d \"Start AOSC LiveKit\" /application bootsector", "rt")) && (pipe != NULL))
+    {
+        while (fgets (pipeBuf, MAX_BUF, pipe));
+        if (sscanf (pipeBuf, "%*s %s %*s", uid))
+        {
+            notify (INFO, "Get BCD boot item UID:\n    %s", uid);
+            spawnlp (_P_WAIT, "bcdedit.exe", "/set", uid, "device", "partition=", systemdrive);
+            spawnlp (_P_WAIT, "bcdedit.exe", "/set", uid, "path", "\\ast_strt\\g2ldr.mbr");
+            spawnlp (_P_WAIT, "bcdedit.exe", "/displayorder", uid, "/addlast");
+            spawnlp (_P_WAIT, "bcdedit.exe", "/default", uid);
+            spawnlp (_P_WAIT, "bcdedit.exe", "/timeout", 5);
+        }
+        else
+        {
+            /* Read buffer error */
+            notify (FAIL, "Buffer reading error: in %s:\n    %s\n    Abort.", __func__, pipeBuf);
+            /* FIXME: Here we need to revert the create procedure */
+            exit (1);
+        }
+    }
+    else
+    {
+        /* Pipe open error */
+        notify (FAIL, "Error when creating pipe in %s\n    Abort.", __func__);
+        /* FIXME: Here we need to revert the create procedure */
+        exit (1);
+    }
+
+    /* Immediately re-enable redirection. */
+    func = (void (*)()) GetProcAddress (GetModuleHandle (TEXT("kernel32.dll")), "Wow64RevertWow64FsRedirection");
+    if (func != NULL)
+        func (OldValue);
+    else
+        ;
+
     notify (INFO, "Bootmgr deployment not completed yet :P");
 }
 
@@ -144,17 +197,6 @@ static void deploy_edit_mbr (void)
 
 static void deploy_edit_esp (void)
 {
-    /********** In 0fdd75b (branch 0.1.2.0)
-    :cn_nt6_bcd_edit
-    for /f "delims=" %%i in ('bcdedit /create /d "启动 AOSC Live" /application bootsector') do set uid=%%i
-    bcdedit /set %uid:~2,38% device partition=%systemdrive%
-    bcdedit /set %uid:~2,38% path \ast_strt\g2ldr.mbr
-    bcdedit /displayorder %uid:~2,38% /addlast
-    bcdedit /default %uid:~2,38%
-    bcdedit /timeout 10
-    */
-    
-    
     notify (INFO, "ESP deployment on GPT not completed yet :P");
 }
 
@@ -171,4 +213,3 @@ static void copy_files (void)
     /* Copy necessities */
     notify (SUCC, "Necessary files are all at thier posts.");
 }
-
