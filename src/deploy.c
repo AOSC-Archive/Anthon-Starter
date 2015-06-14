@@ -19,10 +19,10 @@
 
 # include "ast.h"
 
-#define MAX_BUF    10240
-#define UID_LENGTH 40
+#define MAX_BUF    128 /* Command line buffer size */
+#define UID_LENGTH 39  /* 36(UID) + 2("{}") + 1('\0') = 39 */
 
-// Patameters are not decided yet
+// Parameters are not decided yet
 static void deploy_edit_bcd (const char *systemdrive);
 static void deploy_edit_ntldr (void);
 static void deploy_edit_mbr (void);
@@ -138,6 +138,8 @@ static void deploy_edit_bcd (const char *systemdrive)
     void *OldValue = NULL;
     void (*func)();
 
+    notify (INFO, "Processing Bootmgr deployment...");
+
     /* Redirect to the native System32 folder (See issue #11) */
     /* Avoid invoking it in Windows XP or earlier systems (See issue #12) */
     func = (void (*)()) GetProcAddress (GetModuleHandle (TEXT("kernel32.dll")), "Wow64DisableWow64FsRedirection");
@@ -152,26 +154,33 @@ static void deploy_edit_bcd (const char *systemdrive)
         while (fgets (pipeBuf, MAX_BUF, pipe));
         if (sscanf (pipeBuf, "%*s %s %*s", uid))
         {
-            notify (INFO, "Get BCD boot item UID:\n    %s", uid);
-            spawnlp (_P_WAIT, "bcdedit.exe", "/set", uid, "device", "partition=", systemdrive);
-            spawnlp (_P_WAIT, "bcdedit.exe", "/set", uid, "path", "\\ast_strt\\g2ldr.mbr");
-            spawnlp (_P_WAIT, "bcdedit.exe", "/displayorder", uid, "/addlast");
-            spawnlp (_P_WAIT, "bcdedit.exe", "/default", uid);
-            spawnlp (_P_WAIT, "bcdedit.exe", "/timeout", 5);
+            char bufPart[16] = {0};
+
+            notify (INFO, "Got BCD boot item UID: %s", uid);
+
+            /* Work around: "partition=[systemdrive]" */
+            snprintf (bufPart, 15, "%s%c%c", "partition=", systemdrive[0], systemdrive[1]);
+
+            /* NOTE: Here we use detach mode, for these 5 procedures may fail when they're run
+             *         in synchronous mode. (Tested on Windows 8.1)
+             */
+            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/set", uid, "device", bufPart, NULL);
+            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/set", uid, "path", "\\ast_strt\\g2ldr.mbr", NULL);
+            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/displayorder", uid, "/addlast", NULL);
+            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/default", uid, NULL);
+            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/timeout", "5", NULL);
         }
         else
         {
             /* Read buffer error */
-            notify (FAIL, "Buffer reading error: in %s:\n    %s\n    Abort.", __func__, pipeBuf);
-            /* FIXME: Here we need to revert the create procedure */
+            notify (FAIL, "Buffer reading error: in %s:\n    \"%s\"\n    Abort.", __func__, pipeBuf);
             exit (1);
         }
     }
     else
     {
         /* Pipe open error */
-        notify (FAIL, "Error when creating pipe in %s\n    Abort.", __func__);
-        /* FIXME: Here we need to revert the create procedure */
+        notify (FAIL, "Error when creating pipe in %s (Error %d)\n    Abort.", __func__, errno);
         exit (1);
     }
 
@@ -182,7 +191,7 @@ static void deploy_edit_bcd (const char *systemdrive)
     else
         ;
 
-    notify (INFO, "Bootmgr deployment not completed yet :P");
+    notify (SUCC, "Bootmgr deployment completed.");
 }
 
 static void deploy_edit_ntldr (void)
