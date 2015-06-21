@@ -19,12 +19,13 @@
 
 # include "ast.h"
 
-#define MAX_BUF    128 /* Command line buffer size */
-#define UID_LENGTH 39  /* 36(UID) + 2("{}") + 1('\0') = 39 */
+#define BUF_MAX    128  /* Command line buffer size */
+#define LINE_MAX   4096 /* File line buffer size */
+#define UID_LENGTH 39   /* 36(UID) + 2("{}") + 1('\0') = 39 */
 
 // Parameters are not decided yet
 static void deploy_edit_bcd (const char *systemdrive);
-static void deploy_edit_ntldr (void);
+static void deploy_edit_ntldr (const char *systemdrive);
 static void deploy_edit_mbr (void);
 static void deploy_edit_esp (void);
 
@@ -48,7 +49,7 @@ int deploy ( int instform, int loader, int ptable, const char *systemdrive )
             {
                 case LOADER_NTLDR:
                     /* Windows NT5 (2k/XP) */
-                    deploy_edit_ntldr ();
+                    deploy_edit_ntldr (systemdrive);
                     break;
                 case LOADER_BCD:
                     /* Windows NT6 (Vista or later) */
@@ -132,7 +133,7 @@ int deploy ( int instform, int loader, int ptable, const char *systemdrive )
 
 static void deploy_edit_bcd (const char *systemdrive)
 {
-    char pipeBuf[MAX_BUF] = {0};
+    char pipeBuf[BUF_MAX] = {0};
     char uid[UID_LENGTH] = {0};
     FILE *pipe;
     void *OldValue = NULL;
@@ -151,7 +152,7 @@ static void deploy_edit_bcd (const char *systemdrive)
     /* First execute bcdedit to get the UID of BCD item */
     if ((pipe = _tpopen ("bcdedit /create /d \"Start AOSC LiveKit\" /application bootsector", "rt")) && (pipe != NULL))
     {
-        while (fgets (pipeBuf, MAX_BUF, pipe));
+        while (fgets (pipeBuf, BUF_MAX, pipe));
         if (sscanf (pipeBuf, "%*s %s %*s", uid))
         {
             char bufPart[16] = {0};
@@ -194,9 +195,176 @@ static void deploy_edit_bcd (const char *systemdrive)
     notify (SUCC, "Bootmgr deployment completed.");
 }
 
-static void deploy_edit_ntldr (void)
+static void deploy_edit_ntldr (const char *systemdrive)
 {
-    notify (INFO, "NT5 Loader deployment not completed yet :P");
+    char  lineBuf[LINE_MAX] = {0};
+    char  template[] = "boot.ini.XXXXXX"; // For _tmktemp
+    char  cmdBuf[PATH_MAX] = {0};         // misc
+    char  cmdBuf2[PATH_MAX] = {0};        // misc 2
+    FILE  *origBootIni, *tgtBootIni;      // Original boot.ini and target boot.ini
+    DWORD fileAttr = 0;                   // For GetFileAttributes
+
+    notify (INFO, "Processing NT5 Loader deployment...");
+
+
+    /* Generate file name for target boot.ini */
+    if (_tmktemp (template) == NULL)
+    {
+        notify (FAIL, "Failed to generate target boot.ini. Abort.");
+        exit (1);
+    }
+
+    _sntprintf (cmdBuf, PATH_MAX, "%s\\%s", systemdrive, "boot.ini");
+
+    /* Do not change the attributes of the original boot.ini */
+    fileAttr = GetFileAttributes (cmdBuf);
+    if (fileAttr == INVALID_FILE_ATTRIBUTES)
+    {
+        /* Failed to get original boot.ini attributes.
+         * NOTE: I don't think this is serious.
+         */
+        notify (WARN, "Failed to get attributes of the original boot.ini. (not urgent)");
+    }
+
+    /* Open the original and target boot.ini. Read from the original one,
+     *   and write to the new(target) one.
+     */
+    if ((origBootIni = _tfopen (cmdBuf, "rt")) && (origBootIni != NULL)) // cmdBuf is still the original boot.ini
+    {
+        _sntprintf (cmdBuf, PATH_MAX, "%s\\%s", systemdrive, template);
+        if ((tgtBootIni = _tfopen (cmdBuf, "wt")) && (tgtBootIni != NULL))
+        {
+            char bootItem[PATH_MAX] = {0}; // For adding boot item
+            /* Search lines need to be modified, and write to target boot.ini */
+            while (_fgetts (lineBuf, LINE_MAX, origBootIni))
+            {
+                /* timeout=5 */
+                if (_tcsstr (lineBuf, "timeout") != NULL) // tchar version of strstr
+                {
+                    /* Currently timeout line. We need a 5-second wait.
+                     *   timeout=23333'\0' ; Well this is possible... Need to deal with it.
+                     * ; ^       ^           (See below)
+                     * ; 0       8         --> a[8] is what we want.
+                     */
+                    lineBuf[8] = '5';
+
+                    /* What if the line longer than 8 characters? */
+                    if (_tcslen (lineBuf) > 8)
+                    {
+                        int i;
+                        /* Clean it. */
+                        for (i = _tcslen (lineBuf); i > 9; i--)
+                            lineBuf[i] = '\0';
+                        lineBuf[9] = '\n'; // Line break
+                    }
+
+                    goto write_line;
+                }
+
+                /* default=C:\g2ldr.mbr */
+                if (_tcsstr (lineBuf, "default") != NULL)
+                {
+                    char *bufPtr = lineBuf + 8;
+                    char ldrPath[PATH_MAX] = {0};
+                    /* default=multi(0)disk(0)rdisk(0)partition(1)\WINDOWS'\0'
+                     * ^0      ^8    --> from a[8]
+                     *         ^ bufPtr points to here
+                     */
+                    _sntprintf (ldrPath, PATH_MAX, "%s\\%s", systemdrive, "g2ldr.mbr");
+                    if (_tcsncpy (bufPtr, ldrPath, _tcsclen (bufPtr)) != NULL)
+                    {
+                        /* Succeeded, and clean useless characters behind.
+                         * default=C:\\g2ldr.mbr'\0''\0'......
+                         *                       ^^ <= '\n'
+                         */
+                        lineBuf[_tcsclen (lineBuf)] = '\n'; // Line break
+                    }
+                    else
+                    {
+                        /* Set default string error
+                         * NOTE: I don't think this is serious enough to break the program.
+                         */
+                        notify (WARN, "Failed to set default item.");
+                    }
+
+                    goto write_line;
+                }
+
+                /* PHILOSOPHY: USING "GOTO"
+                 * Why not? Those lines are definite, why not print them immediately?
+                 */
+                write_line:
+                /* Write current line into the target boot.ini */
+                if (_fputts (lineBuf, tgtBootIni) == EOF)
+                {
+                    notify (FAIL, "Failed to write target boot.ini (Met EOF). Current line is:\n    %s\n    Error code: %d. We cannot do more. Abort.", lineBuf, errno);
+                    exit (1);
+                }
+            } /* while (_fgetts (lineBuf, LINE_MAX, origBootIni)) */
+
+            /* Add boot item (at the end of the file) */
+            fseek (tgtBootIni, 0, SEEK_END);
+            _sntprintf (bootItem, PATH_MAX, "%s\\g2ldr.mbr=\"Start AOSC LiveKit\"", systemdrive);
+
+            if (_fputts (bootItem, tgtBootIni) == EOF)
+            {
+                notify (FAIL, "Failed to add boot item to boot.ini (Met EOF, error code %d)\n    We cannot do more. Abort.", errno);
+                exit (1);
+            }
+        } /* if (tgtBootIni = _tfopen (cmdBuf, "wt")) */
+        else
+        {
+            notify (FAIL, "Failed to open target boot.ini: %s\n    Abort.", cmdBuf);
+            exit (1);
+        }
+    } /* if (origBootIni = _tfopen (cmdBuf, "rt")) */
+    else
+    {
+        notify (FAIL, "Failed to open original boot.ini. Abort.");
+        exit (1);
+    }
+
+    /*  Close files */
+    fclose (origBootIni);
+    fclose (tgtBootIni);
+
+    /* Set attributes of the target boot.ini to the same as the original one. */
+    if (fileAttr != INVALID_FILE_ATTRIBUTES)
+    {
+        _sntprintf (cmdBuf2, PATH_MAX, "%s\\%s", systemdrive, template);
+        if (SetFileAttributes (cmdBuf2, fileAttr) == 0)
+        {
+            /* It failed. NOTE: Not urgent. */
+            notify (WARN, "Failed to set attributes for the target boot.ini (Error %d, not urgent)", GetLastError ());
+        }
+    }
+
+    /* Delete the original one. Only the target boot.ini is useful.
+     * A duplicate of the original one have been copied to the backup folder.
+     */
+    _sntprintf (cmdBuf, PATH_MAX, "%s\\boot.ini", systemdrive);
+    if (SetFileAttributes (cmdBuf, FILE_ATTRIBUTE_NORMAL) != 0) // Take all attributes away
+    {
+        if (_tremove (cmdBuf) == -1)
+        {
+            notify (FAIL, "Failed to delete the original boot.ini (Error %d)", GetLastError ());
+            exit (1);
+        }
+    }
+    else
+    {
+        notify (FAIL, "Failed to replace the original boot.ini (Error %d)\n    Abort.", GetLastError ());
+        exit (1);
+    }
+
+    /* Rename the target boot.ini so that can be read by NTLDR */
+    //_sntprintf (cmdBuf2, PATH_MAX, "%s\\%s", systemdrive, template); // Already set
+    if (_trename (cmdBuf2, cmdBuf) != 0)
+    {
+        notify (FAIL, "Failed to rename %s to boot.ini (Error %d)\n    We cannot do more. Abort.", template);
+    }
+
+    notify (SUCC, "NT5 Loader deployment completed.");
 }
 
 static void deploy_edit_mbr (void)
