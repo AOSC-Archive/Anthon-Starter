@@ -195,14 +195,14 @@ static void deploy_edit_bcd (const char *systemdrive)
     notify (SUCC, "Bootmgr deployment completed.");
 }
 
-static void deploy_edit_ntldr (const char *systemdrive)
+static void deploy_edit_ntldr (const _TCHAR *systemdrive)
 {
-    char  lineBuf[LINE_MAX] = {0};
-    char  template[] = "boot.ini.XXXXXX"; // For _tmktemp
-    char  cmdBuf[PATH_MAX] = {0};         // misc
-    char  cmdBuf2[PATH_MAX] = {0};        // misc 2
-    FILE  *origBootIni, *tgtBootIni;      // Original boot.ini and target boot.ini
-    DWORD fileAttr = 0;                   // For GetFileAttributes
+    _TCHAR lineBuf[LINE_MAX] = {0};
+    _TCHAR template[] = "boot.ini.XXXXXX"; // For _tmktemp
+    _TCHAR cmdBuf[PATH_MAX] = {0};         // misc
+    _TCHAR cmdBuf2[PATH_MAX] = {0};        // misc 2
+    FILE   *origBootIni, *tgtBootIni;      // Original boot.ini and target boot.ini
+    DWORD  fileAttr = 0;                   // For GetFileAttributes
 
     notify (INFO, "Processing NT5 Loader deployment...");
 
@@ -234,7 +234,7 @@ static void deploy_edit_ntldr (const char *systemdrive)
         _sntprintf (cmdBuf, PATH_MAX, "%s\\%s", systemdrive, template);
         if ((tgtBootIni = _tfopen (cmdBuf, "wt")) && (tgtBootIni != NULL))
         {
-            char bootItem[PATH_MAX] = {0}; // For adding boot item
+            _TCHAR bootItem[PATH_MAX] = {0}; // For adding boot item
             /* Search lines need to be modified, and write to target boot.ini */
             while (_fgetts (lineBuf, LINE_MAX, origBootIni))
             {
@@ -264,8 +264,8 @@ static void deploy_edit_ntldr (const char *systemdrive)
                 /* default=C:\g2ldr.mbr */
                 if (_tcsstr (lineBuf, "default") != NULL)
                 {
-                    char *bufPtr = lineBuf + 8;
-                    char ldrPath[PATH_MAX] = {0};
+                    _TCHAR *bufPtr = lineBuf + 8;
+                    _TCHAR ldrPath[PATH_MAX] = {0};
                     /* default=multi(0)disk(0)rdisk(0)partition(1)\WINDOWS'\0'
                      * ^0      ^8    --> from a[8]
                      *         ^ bufPtr points to here
