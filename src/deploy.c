@@ -302,6 +302,10 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                 }
             } /* while (_fgetts (lineBuf, LINE_MAX, origBootIni)) */
 
+            /* TODO: Don't add an existing "Start AOSC LiveKit" boot item,
+             *       caused when run Anthon-Starter repeatly.
+             */
+
             /* Add boot item (at the end of the file) */
             fseek (tgtBootIni, 0, SEEK_END);
             _sntprintf (bootItem, PATH_MAX, "%s\\g2ldr.mbr=\"Start AOSC LiveKit\"\n", systemdrive);
