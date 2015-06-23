@@ -304,7 +304,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
 
             /* Add boot item (at the end of the file) */
             fseek (tgtBootIni, 0, SEEK_END);
-            _sntprintf (bootItem, PATH_MAX, "%s\\g2ldr.mbr=\"Start AOSC LiveKit\"", systemdrive);
+            _sntprintf (bootItem, PATH_MAX, "%s\\g2ldr.mbr=\"Start AOSC LiveKit\"\n", systemdrive);
 
             if (_fputts (bootItem, tgtBootIni) == EOF)
             {
