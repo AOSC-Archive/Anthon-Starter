@@ -235,6 +235,8 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
         if ((tgtBootIni = _tfopen (cmdBuf, "wt")) && (tgtBootIni != NULL))
         {
             _TCHAR bootItem[PATH_MAX] = {0}; // For adding boot item
+            _TINT  isAoscItemExists   = 0;
+
             /* Search lines need to be modified, and write to target boot.ini */
             while (_fgetts (lineBuf, LINE_MAX, origBootIni))
             {
@@ -290,6 +292,12 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                     goto write_line;
                 }
 
+                /* Same boot item as we want to add: that's interesting...
+                 * Mark a bit and do not add a same item.
+                 */
+                if (_tcsstr (lineBuf, "Start AOSC LiveKit") != NULL)
+                    isAoscItemExists = 1; // Exists
+
                 /* PHILOSOPHY: USING "GOTO"
                  * Why not? Those lines are definite, why not print them immediately?
                  */
@@ -302,15 +310,20 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                 }
             } /* while (_fgetts (lineBuf, LINE_MAX, origBootIni)) */
 
-            /* Add boot item (at the end of the file) */
-            fseek (tgtBootIni, 0, SEEK_END);
-            _sntprintf (bootItem, PATH_MAX, "%s\\g2ldr.mbr=\"Start AOSC LiveKit\"\n", systemdrive);
-
-            if (_fputts (bootItem, tgtBootIni) == EOF)
+            /* Add boot item (at the end of the file). Don't add an existing "Start AOSC LiveKit" boot item */
+            if (isAoscItemExists)
             {
-                notify (FAIL, "Failed to add boot item to boot.ini (Met EOF, error code %d)\n    We cannot do more. Abort.", errno);
-                exit (1);
+                fseek (tgtBootIni, 0, SEEK_END);
+                _sntprintf (bootItem, PATH_MAX, "%s\\g2ldr.mbr=\"Start AOSC LiveKit\"\n", systemdrive);
+
+                if (_fputts (bootItem, tgtBootIni) == EOF)
+                {
+                    notify (FAIL, "Failed to add boot item to boot.ini (Met EOF, error code %d)\n    We cannot do more. Abort.", errno);
+                    exit (1);
+                }
             }
+            else
+                notify (INFO, "It seems that you have added an AOSC LiveKit boot item! Skipped.");
         } /* if (tgtBootIni = _tfopen (cmdBuf, "wt")) */
         else
         {
