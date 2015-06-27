@@ -1,5 +1,7 @@
 # Anthon-Starter 0.2.0
-[![Travis-CI Build Status](https://travis-ci.org/AOSC-Dev/Anthon-Starter.svg?branch=0.2.0-devel)](https://travis-ci.org/AOSC-Dev/Anthon-Starter) [![https://scan.coverity.com/projects/2952](https://scan.coverity.com/projects/2952/badge.svg)](https://scan.coverity.com/projects/2952)[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AOSC-Dev/Anthon-Starter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Travis-CI Build Status](https://travis-ci.org/AOSC-Dev/Anthon-Starter.svg?branch=0.2.0-devel)](https://travis-ci.org/AOSC-Dev/Anthon-Starter)
+[![https://scan.coverity.com/projects/2952](https://scan.coverity.com/projects/2952/badge.svg)](https://scan.coverity.com/projects/2952)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AOSC-Dev/Anthon-Starter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Installation helper for AOSC OSes, written with C.
 
@@ -59,7 +61,7 @@ LDFLAGS   = -m32
 RCFLAGS   = --output-format=coff --target=pe-i386
 ````
 
-These parameters are for TDM-GCC-64 (including mingw-w64), and added x86_32 compiling options to cross-compile 32 bits program. 
+These parameters are for TDM-GCC-64 (including mingw-w64), and added x86_32 compiling options to cross-compile 32 bits program.
 
 ## Developers
 
