@@ -198,7 +198,7 @@ static void deploy_edit_bcd (const char *systemdrive)
 static void deploy_edit_ntldr (const _TCHAR *systemdrive)
 {
     _TCHAR lineBuf[LINE_MAX] = {0};
-    _TCHAR template[] = "boot.ini.XXXXXX"; // For _tmktemp
+    _TCHAR template[] = _T("boot.ini.XXXXXX"); // For _tmktemp
     _TCHAR cmdBuf[PATH_MAX] = {0};         // misc
     _TCHAR cmdBuf2[PATH_MAX] = {0};        // misc 2
     FILE   *origBootIni, *tgtBootIni;      // Original boot.ini and target boot.ini
@@ -214,7 +214,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
         exit (1);
     }
 
-    _sntprintf (cmdBuf, PATH_MAX, "%s\\%s", systemdrive, "boot.ini");
+    _sntprintf (cmdBuf, PATH_MAX, _T("%s\\%s"), systemdrive, _T("boot.ini"));
 
     /* Do not change the attributes of the original boot.ini */
     fileAttr = GetFileAttributes (cmdBuf);
@@ -229,10 +229,10 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
     /* Open the original and target boot.ini. Read from the original one,
      *   and write to the new(target) one.
      */
-    if ((origBootIni = _tfopen (cmdBuf, "rt")) && (origBootIni != NULL)) // cmdBuf is still the original boot.ini
+    if ((origBootIni = _tfopen (cmdBuf, _T("rt"))) && (origBootIni != NULL)) // cmdBuf is still the original boot.ini
     {
-        _sntprintf (cmdBuf, PATH_MAX, "%s\\%s", systemdrive, template);
-        if ((tgtBootIni = _tfopen (cmdBuf, "wt")) && (tgtBootIni != NULL))
+        _sntprintf (cmdBuf, PATH_MAX, _T("%s\\%s"), systemdrive, template);
+        if ((tgtBootIni = _tfopen (cmdBuf, _T("wt"))) && (tgtBootIni != NULL))
         {
             _TCHAR bootItem[PATH_MAX] = {0}; // For adding boot item
             _TINT  isAoscItemExists   = 0;
@@ -241,7 +241,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
             while (_fgetts (lineBuf, LINE_MAX, origBootIni))
             {
                 /* timeout=5 */
-                if (_tcsstr (lineBuf, "timeout") != NULL) // tchar version of strstr
+                if (_tcsstr (lineBuf, _T("timeout")) != NULL) // tchar version of strstr
                 {
                     /* Currently timeout line. We need a 5-second wait.
                      *   timeout=23333'\0' ; Well this is possible... Need to deal with it.
@@ -264,7 +264,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                 }
 
                 /* default=C:\g2ldr.mbr */
-                if (_tcsstr (lineBuf, "default") != NULL)
+                if (_tcsstr (lineBuf, _T("default")) != NULL)
                 {
                     _TCHAR *bufPtr = lineBuf + 8;
                     _TCHAR ldrPath[PATH_MAX] = {0};
@@ -272,7 +272,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                      * ^0      ^8    --> from a[8]
                      *         ^ bufPtr points to here
                      */
-                    _sntprintf (ldrPath, PATH_MAX, "%s\\%s", systemdrive, "g2ldr.mbr");
+                    _sntprintf (ldrPath, PATH_MAX, _T("%s\\%s"), systemdrive, _T("g2ldr.mbr"));
                     if (_tcsncpy (bufPtr, ldrPath, _tcsclen (bufPtr)) != NULL)
                     {
                         /* Succeeded, and clean useless characters behind.
@@ -295,7 +295,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                 /* Same boot item as we want to add: that's interesting...
                  * Mark a bit and do not add a same item.
                  */
-                if (_tcsstr (lineBuf, "Start AOSC LiveKit") != NULL)
+                if (_tcsstr (lineBuf, _T("Start AOSC LiveKit")) != NULL)
                     isAoscItemExists = 1; // Exists
 
                 /* PHILOSOPHY: USING "GOTO"
@@ -314,7 +314,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
             if (isAoscItemExists)
             {
                 fseek (tgtBootIni, 0, SEEK_END);
-                _sntprintf (bootItem, PATH_MAX, "%s\\g2ldr.mbr=\"Start AOSC LiveKit\"\n", systemdrive);
+                _sntprintf (bootItem, PATH_MAX, _T("%s\\g2ldr.mbr=\"Start AOSC LiveKit\"\n"), systemdrive);
 
                 if (_fputts (bootItem, tgtBootIni) == EOF)
                 {
@@ -344,7 +344,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
     /* Set attributes of the target boot.ini to the same as the original one. */
     if (fileAttr != INVALID_FILE_ATTRIBUTES)
     {
-        _sntprintf (cmdBuf2, PATH_MAX, "%s\\%s", systemdrive, template);
+        _sntprintf (cmdBuf2, PATH_MAX, _T("%s\\%s"), systemdrive, template);
         if (SetFileAttributes (cmdBuf2, fileAttr) == 0)
         {
             /* It failed. NOTE: Not urgent. */
@@ -355,7 +355,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
     /* Delete the original one. Only the target boot.ini is useful.
      * A duplicate of the original one have been copied to the backup folder.
      */
-    _sntprintf (cmdBuf, PATH_MAX, "%s\\boot.ini", systemdrive);
+    _sntprintf (cmdBuf, PATH_MAX, _T("%s\\boot.ini"), systemdrive);
     if (SetFileAttributes (cmdBuf, FILE_ATTRIBUTE_NORMAL) != 0) // Take all attributes away
     {
         if (_tremove (cmdBuf) == -1)
