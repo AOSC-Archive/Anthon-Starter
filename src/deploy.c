@@ -272,7 +272,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                      * ^0      ^8    --> from a[8]
                      *         ^ bufPtr points to here
                      */
-                    _sntprintf (ldrPath, PATH_MAX, _T("%s\\%s"), systemdrive, _T("g2ldr.mbr"));
+                    _sntprintf (ldrPath, PATH_MAX, _T("%s\\%s"), systemdrive, _T("ast_strt\\g2ldr.mbr"));
                     if (_tcsncpy (bufPtr, ldrPath, _tcsclen (bufPtr)) != NULL)
                     {
                         /* Succeeded, and clean useless characters behind.
