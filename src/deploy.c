@@ -240,6 +240,9 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
             /* Search lines need to be modified, and write to target boot.ini */
             while (_fgetts (lineBuf, LINE_MAX, origBootIni))
             {
+                /* Convert lineBuf to lowercase before comparing. (See issue #17) */
+                strToLower (lineBuf);
+
                 /* timeout=5 */
                 if (_tcsstr (lineBuf, _T("timeout")) != NULL) // tchar version of strstr
                 {
