@@ -253,7 +253,7 @@ static void deploy_edit_ntldr (const _TCHAR *systemdrive)
                     /* What if the line longer than 8 characters? */
                     if (_tcslen (lineBuf) > 8)
                     {
-                        int i;
+                        _TINT i;
                         /* Clean it. */
                         for (i = _tcslen (lineBuf); i > 9; i--)
                             lineBuf[i] = '\0';
