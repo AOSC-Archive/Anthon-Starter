@@ -29,7 +29,7 @@ static void deploy_edit_ntldr (const char *systemdrive);
 static void deploy_edit_mbr (void);
 static void deploy_edit_esp (void);
 
-static void gen_grub_cfg (const char *systemdrive, const int instform);
+static void gen_grub_cfg (const _TCHAR *systemdrive, const _TINT instform);
 static void copy_files (void);
 
 
