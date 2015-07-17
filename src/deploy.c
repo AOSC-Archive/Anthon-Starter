@@ -42,7 +42,8 @@ int deploy ( int instform, int loader, int ptable, const char *systemdrive )
     {
         case 0:
             /* Default (--form not set) */
-            notify (WARN, "You haven\'t chose an install method yet.\n    Will use default setting (Edit present boot loader).");
+            notify (WARN, "You haven\'t chosen an install method yet.\n    Will use default setting (Edit present boot loader).");
+
         case EDIT_PRESENT:
             /* Edit native boot loader's configuration file to boot grub and boot live environment. */
             switch (loader)
