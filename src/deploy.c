@@ -30,7 +30,7 @@ static void deploy_edit_mbr (void);
 static void deploy_edit_esp (void);
 
 static void gen_grub_cfg (const _TCHAR *systemdrive, const _TINT instform);
-static void copy_files (void);
+static void copy_files (const _TCHAR *systemdrive, const _TINT instform);
 
 
 int deploy ( int instform, int loader, int ptable, const char *systemdrive )
@@ -122,7 +122,7 @@ int deploy ( int instform, int loader, int ptable, const char *systemdrive )
     gen_grub_cfg (systemdrive, instform);
 
     /* Step 3: Put GRUB image and necessities to ast_strt folder */
-    copy_files ();
+    copy_files (systemdrive, instform);
 
     /* Step 4: Generate information file for start-up procedure to use (info.ast) */
 
@@ -431,7 +431,7 @@ static void gen_grub_cfg (const _TCHAR *systemdrive, const _TINT instform)
         default:
             notify (WARN, "Unknown situation: unknown instform code: %d.\n    If you choose to continue, we will try editing present Windows boot loader.", instform);
             /* fall through */
-        case EDIT_PRESENT:
+        case EDIT_PRESENT: // fall through
         case EDIT_MBR:
             /* Item 0: AOSC OS LiveKit */
             _fputts (
@@ -444,6 +444,7 @@ static void gen_grub_cfg (const _TCHAR *systemdrive, const _TINT instform)
                 "  boot\n"
                 "}\n"
             , GrubCfg);
+            break;
 
         case EDIT_ESP:
             /* Not implemented yet */
@@ -457,9 +458,95 @@ static void gen_grub_cfg (const _TCHAR *systemdrive, const _TINT instform)
     notify (SUCC, "Generated grub.cfg.");
 }
 
-static void copy_files (void)
+static void copy_files (const _TCHAR *systemdrive, const _TINT instform)
 {
-    notify (INFO, "Copying necessities... (Not implemented yet)");
-    /* Copy necessities */
+    notify (INFO, "Copying necessities...");
+    char bufCmd[PATH_MAX] = {0};
+
+    /* 1. GRUB2 bootable image */
+    if ((instform == EDIT_PRESENT) || (instform == EDIT_MBR))
+    {
+        /* Using g2ldr.mbr to boot GRUB2 (i386-pc GRUB2 image) */
+        if (access ("res\\g2ldr.pc", R_OK) == 0)
+        {
+            _sntprintf (bufCmd, PATH_MAX, "%s\\g2ldr", systemdrive); // Rename: g2ldr.pc -> g2ldr
+            duplicate ("res\\g2ldr.pc", bufCmd);
+        }
+        else
+        {
+            notify (FAIL, "Cannot find res\\g2ldr.pc! We cannot do more. Abort.");
+            exit (2);
+        }
+
+        notify (SUCC, "  - Copied g2ldr");
+    }
+    else
+        if (instform == EDIT_ESP)
+        {
+            /* Using EFI to boot grub2 (x86_64-efi GRUB2 image) */
+            if (access ("res\\grubx64.efi", R_OK) == 0)
+            {
+                /* 1. Mount ESP
+                 * 2. Copy grubx64.efi
+                 * >>> NOT IMPL <<<
+                 */
+            }
+        }
+        else
+            ; // Needn't to consider EDIT_DONOT (Already skipped deploy())
+
+    /* 2. GRUB2 MBR file for booting the image
+     *    NOTE: Only using EDIT_PRESENT needs to copy this
+     */
+    if (instform == EDIT_PRESENT)
+    {
+        if (access ("res\\g2ldr.mbr", R_OK) == 0)
+        {
+            _sntprintf (bufCmd, PATH_MAX, "%s\\ast_strt\\g2ldr.mbr");
+            duplicate ("res\\g2ldr.mbr", bufCmd);
+        }
+        else
+        {
+            notify (FAIL, "Cannot find res\\g2ldr.mbr! We cannot do more. Abort.");
+            exit (1);
+        }
+
+        notify (SUCC, "  - Copied g2ldr.mbr");
+    }
+    else
+        ;
+
+    /* 3. Unicode font file for GRUB2 (may be unnecessary?) */
+
+    /* 4. Splash image */
+    if (access ("res\\splash.png", R_OK) == 0)
+    {
+        switch (instform)
+        {
+            case EDIT_MBR: // fall through
+            case EDIT_PRESENT:
+                _sntprintf (bufCmd, PATH_MAX, "%s\\ast_strt\\splash.png");
+                duplicate ("res\\splash.png", bufCmd);
+                break;
+
+            case EDIT_ESP:
+                /* 1. Mount ESP
+                 * 2. Copy splash.png
+                 * >>> NOT IMPL <<<
+                 */
+            case EDIT_DONOT:
+            default:
+                /* ?????? (Should never happen) */
+                notify (WARN, "Unknown instform number %d when copying splash.png", instform);
+        }
+
+        notify (SUCC, "  - Copied splash.png");
+    }
+    else
+    {
+        /* NOTE: WARN: Missing a picture won't let somebody be killed. */
+        notify (WARN, "Cannot find res\\splash.png (not urgent)");
+    }
+
     notify (SUCC, "Necessary files are all at thier posts.");
 }

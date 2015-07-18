@@ -24,7 +24,7 @@
 int duplicate ( const char *src, char *dest )
 {
     int errVal = 0;
-    
+
     switch (CopyFile (src, dest, TRUE))
     {
         case 0:
@@ -35,6 +35,9 @@ int duplicate ( const char *src, char *dest )
                 case ERROR_FILE_NOT_FOUND:
                     notify (FAIL, "File not found: %s\n    We cannot do more. Abort.", src);
                     exit (1);
+                case ERROR_FILE_EXISTS:
+                    notify (FAIL, "File %s already exists. Please delete it first.", dest);
+                    exit (1);
                 /* More cases needed */
                 default:
                     notify (FAIL, "Unknown error (%d) occurred when copying %s\n    Abort.", errVal, src);
@@ -43,7 +46,6 @@ int duplicate ( const char *src, char *dest )
         default:
             break; /* Copying procedure succeeded */
     }
-    
+
     return 0;
 }
-
