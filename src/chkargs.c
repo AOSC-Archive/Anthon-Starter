@@ -42,7 +42,7 @@ int chkargs ( int argc, char **argv,
     /* These are for getopt_long() */
     extern char *optarg;
     char opttmp = '\0';
-    
+
     /* argv[1] is command */
 
     if ( argc < 2 )
@@ -96,10 +96,10 @@ int chkargs ( int argc, char **argv,
                     /* Set the install formula */
                     if ( strcmp ( optarg, "edit" ) == 0 )
                         *instform = EDIT_PRESENT;
-                    else if ( strcmp ( optarg, "mbr" ) == 0 )
-                             *instform = EDIT_MBR;
-                    else if ( strcmp ( optarg, "gpt" ) == 0 )
-                             *instform = EDIT_ESP;
+                    // else if ( strcmp ( optarg, "mbr" ) == 0 )
+                    //          *instform = EDIT_MBR;
+                    // else if ( strcmp ( optarg, "gpt" ) == 0 )
+                    //          *instform = EDIT_ESP;
                     else if ( strcmp ( optarg, "nodeploy" ) == 0 )
                              *instform = EDIT_DONOT;
                     else
@@ -108,7 +108,7 @@ int chkargs ( int argc, char **argv,
                         return 1;
                     }
                     break;
-                
+
                 case 'y': /* --yes, -y */
                     always_yes = 1;
                     break;

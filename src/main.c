@@ -25,8 +25,8 @@
 int main ( int argc, char **argv )
 {
     /* Declare variables and initialize them. */
-    int instform = EDIT_PRESENT,
-        will_pause = 0, will_reboot = 0, will_verify = 1, will_extract = 1;
+    int instform = 0; /* Don't set default value here. */
+    int will_pause = 0, will_reboot = 0, will_verify = 1, will_extract = 1;
     /* Maybe not used?
     char *osimage = ( char* ) NULL,  // Store the path to image file
          *ostarget = ( char* ) NULL; // Store the path to which "live.squashfs" be pushed
