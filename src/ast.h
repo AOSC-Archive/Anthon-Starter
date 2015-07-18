@@ -61,9 +61,9 @@ typedef struct
 # include "funcs.h"
 # include "defs.h"
 # include "mem_alloc.h"
+# include "strconv.h"
 
 /* Global variables */
 int always_yes,
     verbose_mode,
     quiet_mode;
-

@@ -36,10 +36,10 @@ int help_message ( char *progname ) /* "progname" is argv[0] */
                        should be put\n\
   --form=, -f        Set the installation method of boot loader\n\
                        Available parameters:\n\
-                         edit: Edit the present NT loader (default)\n\
-                         mbr: Edit the MBR (Only for machines have MBR)\n\
-                         gpt: Edit the ESP (Only for machines have GPT)\n\
-                         nodeploy: DO NOT deploy boot loader (not recommend)\n\
+                         edit: Edit the present NT loader (default)\n"
+                        //  mbr: Edit the MBR (Only for machines have MBR)\n
+                        //  gpt: Edit the ESP (Only for machines have GPT)\n
+"                         nodeploy: DO NOT deploy boot loader (not recommend)\n\
   --verbose, -v      To be verbose\n\
   --quiet, -q        To be quiet if there\'s no error\n\
   --pause, -p        Automatically pause after operation\n\
@@ -53,4 +53,3 @@ Report bugs to https://bugs.anthonos.org\n\
             or https://github.com/AOSC-Dev/Anthon-Starter/issues\n", progname );
       return 0;
 }
-
