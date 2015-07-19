@@ -194,6 +194,7 @@ static void deploy_edit_bcd (const _TCHAR *systemdrive)
     else
         ;
 
+    fclose (pipe);
     notify (SUCC, "Bootmgr deployment completed.");
 }
 
