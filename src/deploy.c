@@ -162,16 +162,26 @@ static void deploy_edit_bcd (const _TCHAR *systemdrive)
             notify (INFO, "Got BCD boot item UID: %s", uid);
 
             /* Work around: "partition=[systemdrive]" */
-            _sntprintf (bufPart, 15, _T("%s%c%c"), _T("partition="), systemdrive[0], systemdrive[1]);
-
-            /* NOTE: Here we use detach mode, for these 5 procedures may fail when they're run
-             *         in synchronous mode. (Tested on Windows 8.1)
+            /* "Let len be the length of the formatted data string,... If len > count,
+             *  count characters are stored in buffer, no null-terminator is appended, and a negative value is returned."
+             *    -- MSDN Library (https://msdn.microsoft.com/en-us/library/2ts7cx93.aspx)
              */
-            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("device"), bufPart, NULL);
-            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("path"), _T("\\ast_strt\\g2ldr.mbr"), NULL);
-            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/displayorder"), uid, _T("/addlast"), NULL);
-            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/default"), uid, NULL);
-            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/timeout"), _T("5"), NULL);
+            if (_sntprintf (bufPart, 15, _T("%s%c%c"), _T("partition="), systemdrive[0], systemdrive[1]) > 0)
+            {
+                /* NOTE: Here we use detach mode, for these 5 procedures may fail when they're run
+                *         in synchronous mode. (Tested on Windows 8.1)
+                */
+                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("device"), bufPart, NULL);
+                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("path"), _T("\\ast_strt\\g2ldr.mbr"), NULL);
+                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/displayorder"), uid, _T("/addlast"), NULL);
+                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/default"), uid, NULL);
+                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/timeout"), _T("5"), NULL);
+            }
+            else
+            {
+                notify (FAIL, "Error in %s: meet a fatal error when formatting a string.\n    Cannot set BCD. Abort.");
+                exit (1);
+            }
         }
         else
         {
