@@ -24,8 +24,8 @@
 #define UID_LENGTH 39   /* 36(UID) + 2("{}") + 1('\0') = 39 */
 
 // Parameters are not decided yet
-static void deploy_edit_bcd (const char *systemdrive);
-static void deploy_edit_ntldr (const char *systemdrive);
+static void deploy_edit_bcd (const _TCHAR *systemdrive);
+static void deploy_edit_ntldr (const _TCHAR *systemdrive);
 static void deploy_edit_mbr (void);
 static void deploy_edit_esp (void);
 
@@ -133,10 +133,10 @@ int deploy ( int instform, int loader, int ptable, const char *systemdrive )
 
 
 
-static void deploy_edit_bcd (const char *systemdrive)
+static void deploy_edit_bcd (const _TCHAR *systemdrive)
 {
-    char pipeBuf[BUF_MAX] = {0};
-    char uid[UID_LENGTH] = {0};
+    _TCHAR pipeBuf[BUF_MAX] = {0};
+    _TCHAR uid[UID_LENGTH] = {0};
     FILE *pipe;
     void *OldValue = NULL;
     void (*func)();
@@ -145,33 +145,33 @@ static void deploy_edit_bcd (const char *systemdrive)
 
     /* Redirect to the native System32 folder (See issue #11) */
     /* Avoid invoking it in Windows XP or earlier systems (See issue #12) */
-    func = (void (*)()) GetProcAddress (GetModuleHandle (TEXT("kernel32.dll")), "Wow64DisableWow64FsRedirection");
+    func = (void (*)()) GetProcAddress (GetModuleHandle (_T("kernel32.dll")), _T("Wow64DisableWow64FsRedirection"));
     if (func != NULL)
         func (&OldValue);
     else
         ; // Nothing to do
 
     /* First execute bcdedit to get the UID of BCD item */
-    if ((pipe = _tpopen ("bcdedit /create /d \"Start AOSC LiveKit\" /application bootsector", "rt")) && (pipe != NULL))
+    if ((pipe = _tpopen (_T("bcdedit /create /d \"Start AOSC LiveKit\" /application bootsector"), _T("rt"))) && (pipe != NULL))
     {
-        while (fgets (pipeBuf, BUF_MAX, pipe));
-        if (sscanf (pipeBuf, "%*s %s %*s", uid))
+        while (_fgetts (pipeBuf, BUF_MAX, pipe));
+        if (_stscanf (pipeBuf, "%*s %s %*s", uid))
         {
-            char bufPart[16] = {0};
+            _TCHAR bufPart[16] = {0};
 
             notify (INFO, "Got BCD boot item UID: %s", uid);
 
             /* Work around: "partition=[systemdrive]" */
-            snprintf (bufPart, 15, "%s%c%c", "partition=", systemdrive[0], systemdrive[1]);
+            _sntprintf (bufPart, 15, _T("%s%c%c"), _T("partition="), systemdrive[0], systemdrive[1]);
 
             /* NOTE: Here we use detach mode, for these 5 procedures may fail when they're run
              *         in synchronous mode. (Tested on Windows 8.1)
              */
-            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/set", uid, "device", bufPart, NULL);
-            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/set", uid, "path", "\\ast_strt\\g2ldr.mbr", NULL);
-            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/displayorder", uid, "/addlast", NULL);
-            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/default", uid, NULL);
-            _tspawnlp (_P_DETACH, "bcdedit.exe", "bcdedit", "/timeout", "5", NULL);
+            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("device"), bufPart, NULL);
+            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("path"), _T("\\ast_strt\\g2ldr.mbr"), NULL);
+            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/displayorder"), uid, _T("/addlast"), NULL);
+            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/default"), uid, NULL);
+            _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/timeout"), _T("5"), NULL);
         }
         else
         {
@@ -188,7 +188,7 @@ static void deploy_edit_bcd (const char *systemdrive)
     }
 
     /* Immediately re-enable redirection. */
-    func = (void (*)()) GetProcAddress (GetModuleHandle (TEXT("kernel32.dll")), "Wow64RevertWow64FsRedirection");
+    func = (void (*)()) GetProcAddress (GetModuleHandle (_T("kernel32.dll")), _T("Wow64RevertWow64FsRedirection"));
     if (func != NULL)
         func (OldValue);
     else
@@ -461,7 +461,7 @@ static void gen_grub_cfg (const _TCHAR *systemdrive, const _TINT instform)
 static void copy_files (const _TCHAR *systemdrive, const _TINT instform)
 {
     notify (INFO, "Copying necessities...");
-    char bufCmd[PATH_MAX] = {0};
+    _TCHAR bufCmd[PATH_MAX] = {0};
 
     /* 1. GRUB2 bootable image */
     if ((instform == EDIT_PRESENT) || (instform == EDIT_MBR))
