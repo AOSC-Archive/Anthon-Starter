@@ -513,7 +513,7 @@ static void copy_files (const _TCHAR *systemdrive, const _TINT instform)
     {
         if (access ("res\\g2ldr.mbr", R_OK) == 0)
         {
-            _sntprintf (bufCmd, PATH_MAX, "%s\\ast_strt\\g2ldr.mbr");
+            _sntprintf (bufCmd, PATH_MAX, "%s\\ast_strt\\g2ldr.mbr", systemdrive);
             duplicate ("res\\g2ldr.mbr", bufCmd);
         }
         else
@@ -536,7 +536,7 @@ static void copy_files (const _TCHAR *systemdrive, const _TINT instform)
         {
             case EDIT_MBR: // fall through
             case EDIT_PRESENT:
-                _sntprintf (bufCmd, PATH_MAX, "%s\\ast_strt\\splash.png");
+                _sntprintf (bufCmd, PATH_MAX, "%s\\ast_strt\\splash.png", systemdrive);
                 duplicate ("res\\splash.png", bufCmd);
                 break;
 
