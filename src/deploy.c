@@ -200,19 +200,20 @@ static void deploy_edit_bcd (const _TCHAR *systemdrive)
                     else
                         notify (WARN, "It seems that something went wrong when editing BCD. (Step %d)", i);
                 }
+            } /* if (_sntprintf (bufPart, 15, _T("%s%c%c"), _T("partition="), systemdrive[0], systemdrive[1]) > 0) */
             else
             {
                 notify (FAIL, "Error in %s: meet a fatal error when formatting a string.\n    Cannot set BCD. Abort.");
                 exit (1);
             }
-        }
+        } /* if (_stscanf (pipeBuf, "%*s %s %*s", uid)) */
         else
         {
             /* Read buffer error */
             notify (FAIL, "Buffer reading error: in %s:\n    \"%s\"\n    Abort.", __func__, pipeBuf);
             exit (1);
         }
-    }
+    } /* if ((pipe = _tpopen (_T("bcdedit /create /d \"Start AOSC LiveKit\" /application bootsector"), _T("rt"))) && (pipe != NULL)) */
     else
     {
         /* Pipe open error */
