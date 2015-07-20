@@ -211,6 +211,7 @@ static void deploy_edit_bcd (const _TCHAR *systemdrive)
         {
             /* Read buffer error */
             notify (FAIL, "Buffer reading error: in %s:\n    \"%s\"\n    Abort.", __func__, pipeBuf);
+            pclose (pipe);
             exit (1);
         }
     } /* if ((pipe = _tpopen (_T("bcdedit /create /d \"Start AOSC LiveKit\" /application bootsector"), _T("rt"))) && (pipe != NULL)) */
@@ -218,6 +219,7 @@ static void deploy_edit_bcd (const _TCHAR *systemdrive)
     {
         /* Pipe open error */
         notify (FAIL, "Error when creating pipe in %s (Error %d)\n    Abort.", __func__, errno);
+        pclose (pipe);
         exit (1);
     }
 
