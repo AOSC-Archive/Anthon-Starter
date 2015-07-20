@@ -168,15 +168,38 @@ static void deploy_edit_bcd (const _TCHAR *systemdrive)
              */
             if (_sntprintf (bufPart, 15, _T("%s%c%c"), _T("partition="), systemdrive[0], systemdrive[1]) > 0)
             {
-                /* NOTE: Here we use detach mode, for these 5 procedures may fail when they're run
-                *         in synchronous mode. (Tested on Windows 8.1)
+                /* NOTE: "You must explicitly flush (using fflush or _flushall) or close any stream
+                *         before calling a _spawn function."
+                *           -- MSDN Library (https://msdn.microsoft.com/en-us/library/20y988d2.aspx)
+                *  NOTE: Sleep 0.5 seconds after every BCD editing procedure for frequently operate BCD
+                *        could lead to data loss (I don't know but it does don't add some critical items).
                 */
-                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("device"), bufPart, NULL);
-                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("path"), _T("\\ast_strt\\g2ldr.mbr"), NULL);
-                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/displayorder"), uid, _T("/addlast"), NULL);
-                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/default"), uid, NULL);
-                _tspawnlp (_P_DETACH, _T("bcdedit.exe"), _T("bcdedit"), _T("/timeout"), _T("5"), NULL);
-            }
+                int retVal[5]    = {0}; // For _cwait to store result codes.
+                int i;                  // Temporary variable
+
+                _flushall ();
+                retVal[0] = _tspawnlp (_P_WAIT, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("device"), bufPart, NULL);
+                Sleep (500);
+                _flushall ();
+                retVal[1] = _tspawnlp (_P_WAIT, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("path"), _T("\\ast_strt\\g2ldr.mbr"), NULL);
+                Sleep (500);
+                _flushall ();
+                retVal[2] = _tspawnlp (_P_WAIT, _T("bcdedit.exe"), _T("bcdedit"), _T("/displayorder"), uid, _T("/addlast"), NULL);
+                Sleep (500);
+                _flushall ();
+                retVal[3] = _tspawnlp (_P_WAIT, _T("bcdedit.exe"), _T("bcdedit"), _T("/default"), uid, NULL);
+                Sleep (500);
+                _flushall ();
+                retVal[4] = _tspawnlp (_P_WAIT, _T("bcdedit.exe"), _T("bcdedit"), _T("/timeout"), _T("5"), NULL);
+
+                /* Check return values */
+                for (i = 0; i < 5; i++)
+                {
+                    if (retVal[i] == 0)
+                        continue;
+                    else
+                        notify (WARN, "It seems that something went wrong when editing BCD. (Step %d)", i);
+                }
             else
             {
                 notify (FAIL, "Error in %s: meet a fatal error when formatting a string.\n    Cannot set BCD. Abort.");
