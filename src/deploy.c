@@ -174,8 +174,8 @@ static void deploy_edit_bcd (const _TCHAR *systemdrive)
                 *  NOTE: Sleep 0.5 seconds after every BCD editing procedure for frequently operate BCD
                 *        could lead to data loss (I don't know but it does don't add some critical items).
                 */
-                int retVal[5]    = {0}; // For _cwait to store result codes.
-                int i;                  // Temporary variable
+                _TINT retVal[5]    = {0}; // For _cwait to store result codes.
+                _TINT i;                  // Temporary variable
 
                 _flushall ();
                 retVal[0] = _tspawnlp (_P_WAIT, _T("bcdedit.exe"), _T("bcdedit"), _T("/set"), uid, _T("device"), bufPart, NULL);
