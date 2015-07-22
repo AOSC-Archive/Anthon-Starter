@@ -1,0 +1,12 @@
+# Identification file for Anthon-Starter, in new standard
+# For AOSC OS3
+
+#ast-ident: os3 live 20150723
+
+#md5sum
+e060fbc609abb6397540ead8a49bc5cd *boot/vmlinuz
+3f91aa116add926aad62c4bb120511bf *boot/initrd
+e6dd5b942722d247906a5500da3f091f *live/live.squashfs
+
+# extra line
+balabala
