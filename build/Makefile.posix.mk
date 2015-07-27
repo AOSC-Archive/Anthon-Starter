@@ -15,48 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-ifdef DEBUG
-#   Debug option: should use 64-bits GDB to debug 64-bits executable.
-    HOST ?= x86_64-w64-mingw32
-else
-#   Release option: should make sure that it can work on 32-bits computers.
-    HOST ?= i686-w64-mingw32
-endif
-
-CC    := ${HOST}-gcc
-LD    := ${HOST}-gcc
-RES   := ${HOST}-windres
-
-ifdef DEBUG
-#   Debug option: to add debug information into the executable as much as possible.
-    CFLAGS    = -O0 -ggdb3 -Wall -pipe
-    LDFLAGS   =
-    RCFLAGS   =
-else
-#   Release option: to optimize the executable as much as possible. (Except LTO)
-    CFLAGS    = -O0 -Wall -pipe
-    LDFLAGS   =
-    RCFLAGS   =
-endif
-
-SRCDIR    = src
-BUILDDIR  = build
-DESTDIR  ?= $(shell pwd)
-
 vpath %.c  ${SRCDIR}
 vpath %.h  ${SRCDIR}
 vpath %.rc ${SRCDIR}
-vpath %.o  ${BUILDDIR}
 
 .PHONY: all clean mkdir
 
 OBJS := rc.o main.o chkargs.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o notify.o md5sum.o fclrprintf.o duplicate.o mem_alloc.o strconv.o
 
-all: mkdir ast.exe
-
-mkdir:
-#	Make "./build" directory first (to store object files)
-	-$@ -p ${BUILDDIR}
+all: ast.exe
 
 ast.exe: ${OBJS}
 #	FIXME: Automatic variables not used. (not advanced enough :P)
@@ -69,4 +36,4 @@ rc.o: ast.rc
 	${RES} ${RCFLAGS} -i $< -o ${BUILDDIR}/$@
 
 clean:
-	-rm -rf ${BUILDDIR}
+	-rm -f *.o

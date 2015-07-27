@@ -19,44 +19,15 @@
 # GNU tools or something.
 # Using TDM-GCC (x86_64-w64-mingw32)
 
-HOST  ?= x86_64-w64-mingw32
-CC    := ${HOST}-gcc
-LD    := ${HOST}-gcc
-# Note: Often windres have no prefixes.
-RES   := windres
-
-ifdef DEBUG
-#   Debug option: should use 64-bits GDB to debug 64-bits executable (without -m32).
-#   Debug option: to add debug information into the executable as much as possible.
-    CFLAGS    = -O0 -ggdb3 -Wall -pipe
-    LDFLAGS   =
-    RCFLAGS   = --output-format=coff
-else
-#   Release option: should make sure that it can work on 32-bits computers (with -m32).
-#   Release option: to optimize the executable as much as possible. (Without LTO)
-    CFLAGS    = -m32 -O0 -Wall -pipe
-    LDFLAGS   = -m32
-    RCFLAGS   = --output-format=coff --target=pe-i386
-endif
-
-SRCDIR    = src
-BUILDDIR  = build
-DESTDIR  ?= $(shell cd)\\
-
 vpath %.c  ${SRCDIR}
 vpath %.h  ${SRCDIR}
 vpath %.rc ${SRCDIR}
-vpath %.o  ${BUILDDIR}
 
 .PHONY: all clean mkdir
 
 OBJS := rc.o main.o chkargs.o run.o init.o getsysinfo.o backup.o extract.o verify.o deploy.o help_message.o oops.o notify.o md5sum.o fclrprintf.o duplicate.o mem_alloc.o strconv.o
 
-all: mkdir ast.exe
-
-mkdir:
-#	Make ".\build" directory first (to store object files)
-	-$@ ${BUILDDIR}
+all: ast.exe
 
 ast.exe: ${OBJS}
 #	FIXME: Automatic variables not used. (not advanced enough :P)
@@ -69,4 +40,4 @@ rc.o: ast.rc
 	${RES} ${RCFLAGS} -i $< -o ${BUILDDIR}\$@
 
 clean:
-	-rd /s /q ${BUILDDIR}
+	-del /f *.o
