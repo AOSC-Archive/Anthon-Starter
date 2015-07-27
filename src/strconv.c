@@ -25,7 +25,7 @@ void strToUpper (_TCHAR *string)
     _TINT i;
 
     for (i = 0; i < length; i++)
-        _totupper (string[i]);
+        string[i] = _totupper (string[i]);
 }
 
 void strToLower (_TCHAR *string)
@@ -34,5 +34,5 @@ void strToLower (_TCHAR *string)
     _TINT i;
 
     for (i = 0; i < length; i++)
-        _totlower (string[i]);
+        string[i] = _totlower (string[i]);
 }
