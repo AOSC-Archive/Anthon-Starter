@@ -72,6 +72,17 @@ else
 endif
 endif
 
+# ========== Command settings
+ifdef WIN32
+    RM      = del
+    RMFLAGS = /f
+    RMTGT   = ${BUILDDIR}\\*.o
+else
+    RM      = rm
+    RMFLAGS = -f
+    RMTGT   = ${BUILDDIR}/*.o
+endif
+
 # ========== Makefile settings
 ifdef WIN32
     MKFILE = Makefile.win32.mk
@@ -87,4 +98,4 @@ all:
 	cd ${BUILDDIR} && $(MAKE) -f ${MKFILE}
 
 clean:
-	cd ${BUILDDIR} && $(MAKE) -f ${MKFILE} clean
+	-${RM} ${RMFLAGS} ${RMTGT}

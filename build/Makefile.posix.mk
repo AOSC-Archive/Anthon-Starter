@@ -34,6 +34,3 @@ ast.exe: ${OBJS}
 
 rc.o: ast.rc
 	${RES} ${RCFLAGS} -i $< -o ${BUILDDIR}/$@
-
-clean:
-	-rm -f *.o
