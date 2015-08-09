@@ -231,17 +231,14 @@ static void print_image_info (img *imginfo)
             /* Distribution */
             if (strcmp (imginfo->dist, "anos") == 0)
                 puts ("      AnthonOS Desktop");
-            else
-                if (strcmp (imginfo->dist, "ancp") == 0)
-                    puts ("      CentralPoint Server");
-                else
-                    if (strcmp (imginfo->dist, "icnl") == 0)
-                        puts ("      IcenowyLinux Technological Preview");
-                    else
-                        if (strcmp (imginfo->dist, "spin") == 0)
-                            puts ("      An AOSC Spin");
-                        else /* This should not happen */
-                            puts ("      Unknown AOSC Distribution");
+            else if (strcmp (imginfo->dist, "ancp") == 0)
+                puts ("      CentralPoint Server");
+            else if  (strcmp (imginfo->dist, "icnl") == 0)
+                puts ("      IcenowyLinux Technological Preview");
+            else if (strcmp (imginfo->dist, "spin") == 0)
+                puts ("      An AOSC Spin");
+            else /* This should not happen */
+                puts ("      Unknown AOSC Distribution");
             
             /* Version string */
             printf ("      Version %s\n", imginfo->ver);
