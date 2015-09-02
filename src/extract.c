@@ -66,6 +66,16 @@ int extract ( int will_extract, char *systemdrive, char *osimage, char *ostarget
             /* Make target directory to put files */
             /* For pre-install environment */
             snprintf (bufTgt, MAX_PATH, "%s\\ast_strt\\", systemdrive);
+            if (access (bufTgt, F_OK) == 0)
+            {
+                /* Remove the existing folder (it just has no use at all) */
+                if (_rmdir (bufTgt) != EXIT_SUCCESS)
+                {
+                    notify (FAIL, "Failed to remove the existing startup directory (Error %d). Abort.", errno);
+                    exit (1);
+                }
+            }
+
             if (_mkdir (bufTgt) != EXIT_SUCCESS)
             {
                 notify (FAIL, "Failed to create startup directory (Error %d). Abort.", errno);
