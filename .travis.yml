@@ -1,10 +1,9 @@
 language: c
 sudo: false
 
-# Restrict the building branch to "0.2.0-devel".
-branches:
-  only:
-    - ci
+#branches:
+#  except:
+#    - 0.1.2
 
 addons:
   apt:
