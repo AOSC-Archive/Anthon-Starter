@@ -1,13 +1,15 @@
 language: c
+sudo: false
 
-# Restrict the building branch to "0.2.0-devel".
-branches:
-  only:
-    - ci
+#branches:
+#  except:
+#    - 0.1.2
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install binutils-mingw-w64-i686 gcc-mingw-w64-i686
+addons:
+  apt:
+    packages:
+    - binutils-mingw-w64-i686
+    - gcc-mingw-w64-i686
 
 env:
   global:
@@ -32,7 +34,7 @@ script:
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#anthon"
+      - "chat.freenode.net#aosc"
     template:
       - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
       - "Difference: %{compare_url} , and build process: %{build_url}."
