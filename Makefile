@@ -49,6 +49,7 @@ else
 endif
 
 # ========== Parameter settings
+# TODO: We can merge a lot of options.
 ifdef DEBUG
 #   Debug option: should use 64-bits GDB to debug 64-bits executable (without -m32).
 ifdef WIN32
@@ -63,11 +64,11 @@ endif
 else
 #   Release option: should make sure that it can work on 32-bits computers (with -m32).
 ifdef WIN32
-    CFLAGS  = -m32 -O0 -Wall -pipe
+    CFLAGS  = -m32 -O2 -Wall -pipe
     LDFLAGS = -m32
     RCFLAGS = --output-format=coff --target=pe-i386
 else
-    CFLAGS  = -O0 -Wall -pipe
+    CFLAGS  = -O2 -Wall -pipe
     LDFLAGS =
     RCFLAGS =
 endif
