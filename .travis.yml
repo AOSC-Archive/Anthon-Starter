@@ -29,7 +29,7 @@ addons:
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j ; fi
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j -k; fi
 
 notifications:
   irc:
