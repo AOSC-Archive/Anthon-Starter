@@ -17,6 +17,7 @@
 
 # Pseudo Makefile, true Makefiles are in build/
 
+# This makefile requires GNU make.
 ifdef WIN32
     SRCDIR    = $(shell cd)\\src
     BUILDDIR  = $(shell cd)\\build
