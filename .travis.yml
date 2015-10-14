@@ -5,12 +5,6 @@ sudo: false
 #  except:
 #    - 0.1.2
 
-addons:
-  apt:
-    packages:
-    - binutils-mingw-w64-i686
-    - gcc-mingw-w64-i686
-
 env:
   global:
 # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -18,6 +12,10 @@ env:
     - secure: "mTqn44XSHfP9wzBOAP2W14k3c6lkE9LFGF1BYIBhg6FgzF0Ywev+yUAG4CsneGzQDRDElK+382/KsUCD7EyBD1KE8kH3viSABJeRJtGG0ZBbt9Ptsd9qbpFpH3+gP5esiHw+8VpA/78ojuCLAiFOV3sHNycKAG+s+9Tiporesdw="
 
 addons:
+  apt:
+    packages:
+    - binutils-mingw-w64-i686
+    - gcc-mingw-w64-i686
   coverity_scan:
     project:
       name: "AOSC-Dev/Anthon-Starter"
@@ -29,7 +27,7 @@ addons:
 #   build_script_url: "https://raw.githubusercontent.com/liushuyu/DraftBin/master/scan_script.sh"
 
 script:
-  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then make -j -k; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then make -j -k; fi
 
 notifications:
   irc:
