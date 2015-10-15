@@ -1,7 +1,7 @@
 Anthon-Starter
 ==============
 
-[![Travis-CI Build Status](https://travis-ci.org/AOSC-Dev/Anthon-Starter.svg?branch=0.2.0-devel)](https://travis-ci.org/AOSC-Dev/Anthon-Starter)
+[![Travis-CI Build Status](https://travis-ci.org/AOSC-Dev/Anthon-Starter.svg?branch=0.2.5-devel)](https://travis-ci.org/AOSC-Dev/Anthon-Starter)
 [![Coverity Project 2952](https://scan.coverity.com/projects/2952/badge.svg)](https://scan.coverity.com/projects/2952)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AOSC-Dev/Anthon-Starter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
@@ -11,6 +11,13 @@ Homepage:[https://portal.anthonos.org/ast](https://portal.anthonos.org/ast)
 
 Building
 --------
+
+```Bash
+autoreconf -fis -Wall;
+# -m32 is for our poor x86
+CFLAGS='-O2 -pipe -Wall -m32' ./configure --target=i686-w64-mingw32;
+make -j4
+```
 
 To build Anthon-Starter, you need these tools be installed:
 
@@ -22,30 +29,7 @@ To build Anthon-Starter, you need these tools be installed:
     - **binutils-mingw-w64-i686**
     - **gcc-mingw-w64-i686**
 
-At present we haven't prepared `configure` (autotools) yet, but we have specified these variables in `Makefile`:
-
-````Makefile
-HOST ?= i686-w64-mingw32
-CC   := ${HOST}-gcc
-LD   := ${HOST}-gcc
-RES  := ${HOST}-windres
-````
-
-Unless knowing what you're doing, please use the pre-configured `${HOST}` variable. Mistakenly specify or empty this variable can be failed to compile.
-
-**Note:** In file `Makefile.windows` we have specified some special variables (such as, shell commands) for Windows native toolchains:
-
-````Makefile
-HOST ?= x86_64-w64-mingw32
-CC   := ${HOST}-gcc
-LD   := ${HOST}-gcc
-# Note: Often windres has no prefix.
-RES  := windres
-
-CFLAGS    = -m32 -O0 -g -Wall -pipe
-LDFLAGS   = -m32
-RCFLAGS   = --output-format=coff --target=pe-i386
-````
+We are making experimental autotool builds.
 
 These parameters are for TDM-GCC-64 (including mingw-w64),
 and added `-m32` compiling options to generate x86 code.

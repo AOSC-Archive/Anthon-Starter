@@ -56,7 +56,7 @@ $(BUILDIR)/deploy.o: $(SRCDIR)/deploy.c $(SRCDIR)/ast.h
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)/deploy.o $(SRCDIR)/deploy.c
 
 # Assistance function block
-ASSISTANCE: $(BUILDIR)/oops.o $(BUILDIR)/md5sum.o $(BUILDIR)/notify.o $(BUILDIR)/info.o
+ASSISTANCE: $(BUILDIR)/oops.o $(BUILDIR)/md5sum.o $(BUILDIR)/notify.o $(BUILDIR)/about.o
 
 $(BUILDIR)/oops.o: $(SRCDIR)/oops.c $(SRCDIR)/ast.h
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)/oops.o $(SRCDIR)/oops.c
@@ -71,8 +71,8 @@ $(BUILDIR)/notify.o: $(BUILDIR)/fclrprintf.o \
 $(BUILDIR)/fclrprintf.o: $(SRCDIR)/fclrprintf.c $(SRCDIR)/ast.h
 	$(CC) $(CFLAGS) -c -o $(BUILDIR)/fclrprintf.o $(SRCDIR)/fclrprintf.c
 
-$(BUILDIR)/info.o: $(SRCDIR)/info.c $(SRCDIR)/ast.h
-	$(CC) $(CFLAGS) -c -o $(BUILDIR)/info.o $(SRCDIR)/info.c
+$(BUILDIR)/about.o: $(SRCDIR)/about.c $(SRCDIR)/ast.h
+	$(CC) $(CFLAGS) -c -o $(BUILDIR)/about.o $(SRCDIR)/about.c
 
 # Resource file
 $(BUILDIR)/rc.o:
