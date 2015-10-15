@@ -4,7 +4,7 @@
 # 
 # TODO: decide CFLAGS based on $(uname) and --enable-debug, etc.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.65])
 AC_INIT([Anthon-Starter], [0.2.5],[lmy441900@gmail.com])
 AC_CONFIG_SRCDIR([src/])
 AC_CONFIG_HEADERS([src/config.h])
