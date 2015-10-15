@@ -14,7 +14,7 @@ Building
 
 ```Bash
 # Or download it yourself, or fetch one from /usr/share/automake-*/
-wget http://git.savannah.gnu.org/cgit/automake.git/plain/lib/install-sh;
+wget http://git.savannah.gnu.org/cgit/automake.git/plain/lib/{install-sh,config.{sub,guess}};
 autoreconf -fis -Wall;
 # -m32 is for our poor x86
 CFLAGS='-O2 -pipe -Wall -m32' ./configure --target=i686-w64-mingw32;

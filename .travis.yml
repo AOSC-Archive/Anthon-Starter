@@ -29,7 +29,7 @@ script:
   - |
     unset CC;
     if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then
-      wget http://git.savannah.gnu.org/cgit/automake.git/plain/lib/install-sh
+      wget http://git.savannah.gnu.org/cgit/automake.git/plain/lib/{install-sh,config.{sub,guess}};
       autoreconf -fis -Wall;
       ./configure --host=i686-w64-mingw32;
       make -k -j;
