@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Anthon-Starter: Installation helper for AOSC OS series, version 0.2.0
  * Copyright (C) 2012-2015 Anthon Open Source Community
