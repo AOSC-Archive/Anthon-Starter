@@ -48,7 +48,7 @@ RCFLAGS   = --output-format=coff --target=pe-i386
 ````
 
 These parameters are for TDM-GCC-64 (including mingw-w64),
-and added x86_32 compiling options to cross-compile 32 bits program.
+and added `-m32` compiling options to generate x86 code.
 
 Developers
 ----------
@@ -59,6 +59,9 @@ Developers
 * Mike Manilone <crtmike@gmail.com>
 * Minhui Du <duminghui@126.com>
 * Zixing Liu <liushuyu011@gmail.com>
+
+For a full list of developers, refer to
+[GitHub](https://github.com/AOSC-Dev/Anthon-Starter/graphs/contributors) or `git log`.
 
 License
 -------
