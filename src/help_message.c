@@ -28,6 +28,7 @@ int help_message ( char *progname ) /* "progname" is argv[0] */
   install            Install the specified AOSC OS Live environment\n\
                        to your computer\n\
   help               Show this help message\n\
+  about              Show about information\n\
   startup            Active startup (to clean up trashes)\n\
 \n\
 <Switches>\n\

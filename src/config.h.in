@@ -1,5 +1,11 @@
 /* src/config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to be a string corresponding the vendor of the machine. */
+#undef BUILDER
+
+/* Define to be the name of the compiler. */
+#undef CC_NAME
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -43,6 +49,9 @@
 
 /* Define to 1 if you have the <windows.h> header file. */
 #undef HAVE_WINDOWS_H
+
+/* Define to be the machine type (microprocessor class or machine model). */
+#undef HOSTTYPE
 
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT

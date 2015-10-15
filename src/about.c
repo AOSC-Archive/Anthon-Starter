@@ -22,14 +22,24 @@
 #ifndef PACKAGE_VERSION
 #define PACKAGE_VERSION "unknown"
 #endif
-int info ()
+#ifndef CC_NAME
+#define CC_NAME "unknown"
+#endif
+#ifndef BUILDER
+#define BUILDER "unknown"
+#endif
+#ifndef HOSTTYPE
+#define HOSTTYPE "unknown"
+#endif
+
+int about ()
 {
-  printf ("Copyright (C) 2014-2015 Anthon Open Source Community \n");
-    printf ("Anthon-Starter %s \n\n",PACKAGE_VERSION);
-    //printf ("Compiled with %s on %s, targetting %s. \n",%compiler%,%builder%,%host%);
+     printf ("Copyright (C) 2014-2015 Anthon Open Source Community \n");
+     printf ("Anthon-Starter %s \n\n",PACKAGE_VERSION);
+     printf ("Built with %s on %s, targetting %s. \n",CC_NAME,BUILDER,HOSTTYPE);
      printf ("This program is free software: you can redistribute it and/or modify \n\
-     it under the terms of the GNU General Public License as published by \n\
-     the Free Software Foundation, either version 2 of the License, or \n\
-     (at your option) any later version.\n");
-  return 0;
+it under the terms of the GNU General Public License as published by \n\
+the Free Software Foundation, either version 2 of the License, or \n\
+(at your option) any later version.\n");
+     return 0;
 }

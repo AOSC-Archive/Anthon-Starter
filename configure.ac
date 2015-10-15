@@ -26,5 +26,18 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset])
 
+# ----------------------------------------------
+# CHECKS FOR MACHINE/VENDOR/OPERATING SYSTEM TYPE
+# ----------------------------------------------
+# Find out machine type, vendor, and operating system
+# What type of host is this?
+AC_CANONICAL_HOST
+AC_DEFINE_UNQUOTED(HOSTTYPE, "$host",
+[Define to be the machine type (microprocessor class or machine model).])
+AC_DEFINE_UNQUOTED(BUILDER,   "$build",
+[Define to be a string corresponding the vendor of the machine.])
+AC_DEFINE_UNQUOTED(CC_NAME,   "$CC",
+[Define to be the name of the compiler.])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

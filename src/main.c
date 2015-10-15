@@ -92,9 +92,9 @@ int main ( int argc, char **argv )
             puts ( "Active startup." );
             /* startup */
             break;
-	case 5:
-	   info ( );
-	   return 0;
+	    case 5:
+	        about ( );
+	        return 0;
         case 4:
             /* unknown argument */
             help_message( argv[0] );

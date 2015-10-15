@@ -37,7 +37,7 @@ int chkargs ( int argc, char **argv,
         { "no-verify"  , no_argument       , NULL, NO_VERIFY  },
         { "no-extract" , no_argument       , NULL, NO_EXTRACT },
         { "help"       , no_argument       , NULL, 'h'        },
-		{"about"       , no_argument       , NULL, 't'        },
+		{ "about"      , no_argument       , NULL, 't'        },
         { 0            , 0                 , 0   , 0          }  };
 
     /* These are for getopt_long() */
@@ -155,6 +155,9 @@ int chkargs ( int argc, char **argv,
 
     if ( strcmp ( argv[1], "help" ) == 0 )
         return 1; /* main() invokes help_message() */
+	
+	if ( strcmp ( argv[1], "about" ) == 0 )
+        return 5; /* main() invokes help_message() */
 
     if ( strcmp ( argv[1], "startup" ) == 0 )
         return 3; /* main() invokes startup() */

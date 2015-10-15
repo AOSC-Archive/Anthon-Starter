@@ -1,5 +1,40 @@
+# Object files
 *.exe
 *.dll
 *.o
 *.tar.bz2
 *.ico
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+/autom4te.cache
+/compile
+/stamp-h1
+Makefile
+config.log
+config.status
+src/config.h
