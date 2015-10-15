@@ -17,10 +17,10 @@ AC_PROG_CC
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h memory.h stdlib.h string.h stdint.h],[],
 	[AC_MSG_ERROR([Standard library includes missing.])])
-AC_CHECK_HEADERS([commctrl.h richedit.h windows.h],[],[AC_MSG_ERROR([Windows library includes missing.])],
-	[[#include <commctrl.h>
-#include <richedit.h>
-#include <windows.h>]])
+AC_CHECK_HEADERS([commctrl.h richedit.h windows.h],[],
+	[AC_MSG_ERROR([Windows library includes missing.])],[])
+# HACK & FIXME: NO CHECK PERFORMED HERE (fourth arg)!
+
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
