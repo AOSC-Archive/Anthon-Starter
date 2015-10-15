@@ -32,7 +32,7 @@ script:
       wget http://git.savannah.gnu.org/cgit/automake.git/plain/lib/{install-sh,config.{sub,guess}};
       autoreconf -fis -Wall;
       ./configure --host=i686-w64-mingw32;
-      printf 'FILES:\t\n'; printf '%q ' * .[!.]*; echo
+      printf 'FILES:\t'; printf '%q ' * .[!.]*; echo
       make -k -j;
     fi
 # - if [ "${COVERITY_SCAN}" = 1 ]; then eval "$COVERITY_SCAN_BUILD"; else eval "$STANDARD_BUILD_COMMAND"; fi
